@@ -61,8 +61,8 @@ public interface Literals {
             expr.error("expected start of string literal");
         }
         expr.gobble();
+        int s = expr.position();
         char c = expr.peek();
-        StringBuilder str = new StringBuilder();
         while (c != Chars.EOF) {
             if (c == '\\') {
                 expr.gobble(); // the \
@@ -70,29 +70,21 @@ public interface Literals {
                 if (c == 'u')
                 { // uXXXX:
                     expr.gobble(); // the u
-                    str.appendCodePoint(parseInt(expr.rawMatch("hex", Chars::isHexDigit, Chars::isHexDigit, Chars::isHexDigit, Chars::isHexDigit), 16));
+                    expr.rawMatch("hex", Chars::isHexDigit, Chars::isHexDigit, Chars::isHexDigit, Chars::isHexDigit);
                 } else if (Chars.isDigit(c))
                 { // 888:
-                    str.appendCodePoint(parseInt(expr.rawMatch("octal", Chars::isOctalDigit, Chars::isOctalDigit, Chars::isOctalDigit), 8));
+                    expr.rawMatch("octal", Chars::isOctalDigit, Chars::isOctalDigit, Chars::isOctalDigit);
                 } else
                 { // escape code
                     expr.gobble(); // the escape code
-                    switch (c) {
-                        case 'b': str.append('\b'); break;
-                        case 't': str.append('\t'); break;
-                        case 'n': str.append('\n'); break;
-                        case 'f': str.append('\f'); break;
-                        case 'r': str.append('\r'); break;
-                        default: str.append(c); // this is the escaped character
-                    }
                 }
             }
             else if (c == '\n' || c == '\r' || c == cq) {
+                String str = expr.raw(s);
                 expr.gobble(); // line break or closing quotes
-                return str.toString();
+                return str;
             } else {
                 expr.gobble(); // the plain character
-                str.append(c);
             }
             c = expr.peek();
         }

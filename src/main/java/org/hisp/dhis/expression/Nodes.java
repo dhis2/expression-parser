@@ -1,5 +1,7 @@
 package org.hisp.dhis.expression;
 
+import org.hisp.dhis.expression.parse.Chars;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
@@ -184,6 +187,44 @@ public interface Nodes {
 
         public SimpleTextNode(NodeType type, String rawValue) {
             super(type, rawValue, Function.identity());
+        }
+    }
+
+    final class StringNode extends SimpleNode<String> {
+
+        public StringNode(NodeType type, String rawValue) {
+            super(type, rawValue, StringNode::decode);
+        }
+
+        static String decode(String rawValue) {
+            if (rawValue.indexOf('\\') < 0) {
+                return rawValue; // no special characters
+            }
+            StringBuilder str = new StringBuilder();
+            char[] chars = rawValue.toCharArray();
+            for (int i = 0; i < chars.length; i++) {
+                char c = chars[i];
+                if (c == '\\') {
+                    c = chars[++i];
+                    if (c == 'u') {
+                        str.appendCodePoint(parseInt(new String(new char[] { chars[++i], chars[++i], chars[++i], chars[++i]}), 16));
+                    } else if (c >= '0' && c <= '9') {
+                        str.appendCodePoint(parseInt(new String(new char[] { chars[++i], chars[++i], chars[++i] }), 8));
+                    } else {
+                        switch (c) {
+                            case 'b': str.append('\b'); break;
+                            case 't': str.append('\t'); break;
+                            case 'n': str.append('\n'); break;
+                            case 'f': str.append('\f'); break;
+                            case 'r': str.append('\r'); break;
+                            default: str.append(c); // this is the escaped character
+                        }
+                    }
+                } else {
+                    str.append(c);
+                }
+            }
+            return str.toString();
         }
     }
 

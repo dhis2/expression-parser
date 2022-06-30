@@ -13,21 +13,18 @@ public class DescriptionTreeWalker implements NodeVisitor {
 
     @Override
     public void visitParentheses(Node<Void> group) {
-        out.append('(');
-        group.forEachChild(child -> child.walk(this));
-        out.append(')');
+        boolean root = out.length() > 0;
+        if (root)
+            out.append('(');
+        group.walkChildren(this, null);
+        if (root)
+            out.append(')');
     }
 
     @Override
     public void visitArgument(Node<Integer> argument) {
-        boolean wasUid = false;
-        for (int i = 0; i < argument.size(); i++)
-        {
-            Node<?> child = argument.child(i);
-            if (wasUid && child.getType() == NodeType.UID) out.append('&');
-            child.walk(this);
-            wasUid = child.getType() == NodeType.UID;
-        }
+        argument.walkChildren(this,
+                (c1,c2) -> out.append(c1.getType() == NodeType.UID && c2.getType() == NodeType.UID ? "&" : ""));
     }
 
     @Override
@@ -46,22 +43,14 @@ public class DescriptionTreeWalker implements NodeVisitor {
     @Override
     public void visitFunction(Node<NamedFunction> function) {
         out.append(function.getValue().getName()).append('(');
-        for (int i = 0; i < function.size(); i++)
-        {
-            if (i > 0) out.append(',');
-            function.child(i).walk(this);
-        }
+        function.walkChildren(this, (c1,c2) -> out.append(','));
         out.append(')');
     }
 
     @Override
     public void visitMethod(Node<NamedMethod> method) {
         out.append('.').append(method.getValue().name()).append('(');
-        for (int i = 0; i < method.size(); i++)
-        {
-            if (i > 0) out.append(',');
-            method.child(i).walk(this);
-        }
+        method.walkChildren(this, (c1,c2) -> out.append(','));
         out.append(')');
     }
 
@@ -95,12 +84,7 @@ public class DescriptionTreeWalker implements NodeVisitor {
 
     @Override
     public void visitNumber(Node<Double> value) {
-        Double d = value.getValue();
-        if (d % 1.0d == 0d) {
-            out.append(d.intValue());
-        } else {
-            out.append(d);
-        }
+        out.append(value.getRawValue() );
     }
 
     @Override
@@ -125,8 +109,7 @@ public class DescriptionTreeWalker implements NodeVisitor {
 
     @Override
     public void visitString(Node<String> value) {
-        //TODO reverse escape
-        out.append("'").append(value.getValue()).append("'");
+        out.append("'").append(value.getRawValue()).append("'");
     }
 
     @Override

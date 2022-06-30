@@ -3,6 +3,7 @@ package org.hisp.dhis.expression;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -50,6 +51,19 @@ public interface Node<T> {
         walker.accept(this);
     }
 
+    default void walkChildren(Consumer<Node<?>> walker, BiConsumer<Node<?>, Node<?>> separator) {
+        Node<?> last = null;
+        for (int i = 0; i < size(); i++)
+        {
+            Node<?> child = child(i);
+            if (separator != null && last != null) {
+                separator.accept(last, child);
+            }
+            child.walk(walker);
+            last = child;
+        }
+    }
+
     default int size() {
         return 0;
     }
@@ -68,12 +82,6 @@ public interface Node<T> {
 
     default void addChild(Node<?> child) {
         throw new UnsupportedOperationException("Node of type "+getType()+" cannot have children.");
-    }
-
-    default void forEachChild(Consumer<Node<?>> run) {
-        for (int i = 0; i < size(); i++) {
-            run.accept(child(i));
-        }
     }
 
     default void transform(java.util.function.UnaryOperator<List<Node<?>>> transformer)
