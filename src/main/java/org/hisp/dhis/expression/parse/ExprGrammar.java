@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
+import static org.hisp.dhis.expression.parse.NonTerminal.oneOrMore;
 
 public interface ExprGrammar
 {
@@ -44,18 +45,18 @@ public interface ExprGrammar
             method( NamedMethod.stageOffset, INTEGER));
 
     List<NonTerminal> BaseFunctions = List.of( // (alphabetical)
-            fn( "firstNonNull", NonTerminal.oneOrMore( expr ) ),
-            fn( "greatest", NonTerminal.oneOrMore( expr ) ),
+            fn( "firstNonNull", oneOrMore( expr ) ),
+            fn( "greatest", oneOrMore( expr ) ),
             fn( "if", expr, expr, expr ),
             fn( "isNotNull", expr ),
             fn( "isNull", expr ),
-            fn( "least", NonTerminal.oneOrMore( expr ) ),
+            fn( "least", oneOrMore( expr ) ),
             fn( "log", expr, expr.maybe() ),
             fn( "log10", expr ),
-            fn( "orgUnit.ancestor", NonTerminal.oneOrMore( UID ) ),
-            fn( "orgUnit.dataSet", NonTerminal.oneOrMore( UID ) ),
-            fn( "orgUnit.group", NonTerminal.oneOrMore( UID ) ),
-            fn( "orgUnit.program", NonTerminal.oneOrMore( UID ) ),
+            fn( "orgUnit.ancestor", oneOrMore( UID ) ),
+            fn( "orgUnit.dataSet", oneOrMore( UID ) ),
+            fn( "orgUnit.group", oneOrMore( UID ) ),
+            fn( "orgUnit.program", oneOrMore( UID ) ),
             fn( "subExpression", expr )
     );
 
@@ -76,7 +77,7 @@ public interface ExprGrammar
     List<NonTerminal> ProgramFunctions = List.of( // (alphabetical)
             fn( "d2:addDays", expr, expr ),
             fn( "d2:ceil", expr ),
-            fn( "d2:concatenate", NonTerminal.oneOrMore( expr ) ),
+            fn( "d2:concatenate", oneOrMore( expr ) ),
             fn( "d2:condition", STRING, expr, expr ),
             fn( "d2:count", dataItem),
             fn( "d2:countIfCondition", expr, STRING),
@@ -106,7 +107,7 @@ public interface ExprGrammar
             fn( "d2:weeksBetween", expr, expr ),
             fn( "d2:yearsBetween", expr, expr ),
             fn( "d2:zing", expr ),
-            fn( "d2:zpvc", NonTerminal.oneOrMore( expr ) ),
+            fn( "d2:zpvc", oneOrMore( expr ) ),
             fn( "d2:zScoreHFA", expr, expr, expr ),
             fn( "d2:zScoreWFA", expr, expr, expr ),
             fn( "d2:zScoreWFH", expr, expr, expr )

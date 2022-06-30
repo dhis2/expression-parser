@@ -1,6 +1,6 @@
-package org.hisp.dhis.expression;
+package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.parse.*;
+import org.hisp.dhis.expression.Node;
 import org.junit.jupiter.api.Test;
 
 class TestExpr {

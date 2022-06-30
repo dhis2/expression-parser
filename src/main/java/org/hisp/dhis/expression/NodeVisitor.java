@@ -15,11 +15,11 @@ public interface NodeVisitor extends Consumer<Node<?>>
     default void accept(Node<?> node) {
         switch(node.getType()) {
             // complex nodes
-            case UNARY_OPERATOR: visitUnaryOperator((Node<UnaryOperator>) node, node.child(0)); break;
-            case BINARY_OPERATOR: visitBinaryOperator(node.child(0), (Node<BinaryOperator>) node, node.child(1)); break;
+            case UNARY_OPERATOR: visitUnaryOperator((Node<UnaryOperator>) node); break;
+            case BINARY_OPERATOR: visitBinaryOperator((Node<BinaryOperator>) node); break;
             case ARGUMENT: visitArgument((Node<Integer>) node); break;
             case PAR: visitParentheses((Node<Void>) node); break;
-            case FUNCTION: visitFunction(node); break;
+            case FUNCTION: visitFunction((Node<NamedFunction>) node); break;
             case METHOD: visitMethod((Node<NamedMethod>) node); break;
             case DATA_VALUE: visitDataValue(node); break;
 
@@ -44,15 +44,15 @@ public interface NodeVisitor extends Consumer<Node<?>>
 
     }
 
-    default void visitBinaryOperator(Node<?> left, Node<BinaryOperator> operator, Node<?> right) {
+    default void visitBinaryOperator(Node<BinaryOperator> operator) {
 
     }
 
-    default void visitUnaryOperator(Node<UnaryOperator> operator, Node<?> operand) {
+    default void visitUnaryOperator(Node<UnaryOperator> operator) {
 
     }
 
-    default void visitFunction(Node<?> function) {
+    default void visitFunction(Node<NamedFunction> function) {
 
     }
 

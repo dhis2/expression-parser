@@ -20,7 +20,7 @@ public final class Parser implements ParseContext {
     static {
         DEFAULT_FACTORIES.put(NodeType.PAR, Nodes.ComplexTextNode::new);
         DEFAULT_FACTORIES.put(NodeType.ARGUMENT, Nodes.ArgumentNode::new);
-        DEFAULT_FACTORIES.put(NodeType.FUNCTION, Nodes.ComplexTextNode::new);
+        DEFAULT_FACTORIES.put(NodeType.FUNCTION, Nodes.FunctionNode::new);
         DEFAULT_FACTORIES.put(NodeType.METHOD, Nodes.MethodNode::new);
         DEFAULT_FACTORIES.put(NodeType.DATA_VALUE, Nodes.DataValueNode::new);
 

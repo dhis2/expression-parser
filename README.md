@@ -29,11 +29,11 @@ expr1           = UNARY_OPERATOR expr1
                 | NUMBER
                 | DATE
                 | function
-                | data
+                | data-value
                 | constant
 function        = NAME '(' expr (',' expr )* ')'
 method          = '.' NAME '(' expr (',' expr )* ')'
-data            = NAME '{' reference '}'
+data-value      = NAME '{' reference '}'
 reference       = uid ( '.' uid )? ( '.' uid )?
                 | REF
 uid             = tag? UID ('&' UID)*
@@ -57,7 +57,7 @@ STRING          = '"' ... '"'   // ... => its complicated, escaping, unicode
 
 While in general functions and methods have `expr` arguments each named
 function has a particular sequence of parameters which might be limited to a
-case like expecting a `DATE` or a `data` item.
+case like expecting a `DATE` or a `data-value` item.
 
 ### AST
 The parser builds an AST with "flat" operators. Meaning the operands are not

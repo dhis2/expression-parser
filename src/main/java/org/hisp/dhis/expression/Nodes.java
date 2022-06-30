@@ -147,6 +147,13 @@ public interface Nodes {
         }
     }
 
+    final class FunctionNode extends ComplexNode<NamedFunction> {
+
+        public FunctionNode(NodeType type, String rawValue) {
+            super(type, rawValue, NamedFunction::fromName, rethrowAs(NamedFunction.class, NamedFunction::getName));
+        }
+    }
+
     final class MethodNode extends ComplexNode<NamedMethod> {
 
         public MethodNode(NodeType type, String rawValue) {
