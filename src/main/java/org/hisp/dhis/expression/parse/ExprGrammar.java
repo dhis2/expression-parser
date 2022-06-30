@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 public interface ExprGrammar
@@ -141,41 +142,44 @@ public interface ExprGrammar
     static NonTerminal method(NamedMethod method, NonTerminal... args )
     {
         String name = method.name();
-        return call( NodeType.METHOD, name, ',', args ).inRound().named(name);
+        return call( NodeType.METHOD, name, '(',',', ')', args ).named(name);
     }
 
     static NonTerminal fn(NamedFunction function, NonTerminal... args )
     {
         String name = function.getName();
-        return call( NodeType.FUNCTION, name, ',', args ).inRound().named(name);
+        return call( NodeType.FUNCTION, name, '(',',', ')', args ).named(name);
     }
 
     static NonTerminal data(DataValue value, NonTerminal... args)
     {
         String symbol = value.getSymbol();
-        return call(NodeType.DATA_VALUE, symbol, '.', args).inCurly().named(symbol);
+        return call(NodeType.DATA_VALUE, symbol, '{', '.','}', args).named(symbol);
     }
 
-    static NonTerminal call(NodeType type, String name, char argsSeparator, NonTerminal... args )
+    static NonTerminal call(NodeType type, String name, char start, char argsSeparator, char end, NonTerminal... args )
     {
         return ( expr, ctx ) -> {
+            expr.expect(start);
             ctx.beginNode( type, name );
             for ( int i = 0; i < args.length || args[args.length-1].isVarargs(); i++ )
             {
                 expr.skipWS();
                 NonTerminal arg = args[Math.min(i, args.length-1)];
-                if ( i > 0 )
+                char c = expr.peek();
+                if ( c == end )
                 {
-                    char c = expr.peek();
-                    if ( c != argsSeparator )
+                    if ( arg.isMaybe() || args[args.length-1].isVarargs() )
                     {
-                        if ( arg.isMaybe() || args[args.length-1].isVarargs() )
-                        {
-                            ctx.endNode(type);
-                            return;
-                        }
-                        expr.error( "Expected more arguments" );
+                        ctx.endNode(type);
+                        expr.expect(end);
+                        return;
                     }
+                    expr.error( "Expected more arguments" );
+                }
+                if (i > 0) {
+                    if (c != argsSeparator)
+                        expr.error(format("Expected %s or %s", argsSeparator, end));
                     expr.gobble(); // separator
                     expr.skipWS();
                 }
@@ -186,6 +190,7 @@ public interface ExprGrammar
                     ctx.endNode(NodeType.ARGUMENT);
             }
             ctx.endNode(type);
+            expr.expect(end);
         };
     }
 }

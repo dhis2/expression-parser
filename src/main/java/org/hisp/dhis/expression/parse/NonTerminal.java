@@ -114,21 +114,6 @@ public interface NonTerminal
         return new Named( name, this instanceof Named ? ((Named) this).to : this );
     }
 
-    default NonTerminal in(char open, char close )
-    {
-        return in( open, this, close );
-    }
-
-    default NonTerminal inRound()
-    {
-        return in( '(', ')' );
-    }
-
-    default NonTerminal inCurly()
-    {
-        return in( '{', '}' );
-    }
-
     default NonTerminal quoted()
     {
         return ( expr, ctx ) -> {
@@ -139,15 +124,6 @@ public interface NonTerminal
             parse( expr, ctx );
             if (isQuoted)
                 expr.expect( c );
-        };
-    }
-
-    static NonTerminal in(char open, NonTerminal body, char close )
-    {
-        return ( expr, ctx ) -> {
-            expr.expect( open );
-            body.parse( expr, ctx );
-            expr.expect( close );
         };
     }
 

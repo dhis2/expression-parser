@@ -35,7 +35,7 @@ public final class Expr implements Serializable
             String section = new String(expr.expr);
             return start == expr.pos
                 ? "\nat: "+ section + "\n"+" ".repeat(expr.pos+4)+"^"
-                : "\nat: "+ section + "\n"+" ".repeat(start+4)+"^".repeat(expr.pos-start);
+                : "\nat: "+ section + "\n"+" ".repeat(start+4)+"^"+"-".repeat(expr.pos-start-2)+"^";
         }
     }
 
