@@ -40,6 +40,16 @@ public interface Node<T> {
         visit(visitor, node -> true);
     }
 
+    /**
+     * Walking the AST is navigated by the walker.
+     * Nodes will not implicitly walk their children.
+     *
+     * @param walker controls the walking
+     */
+    default void walk(Consumer<Node<?>> walker) {
+        walker.accept(this);
+    }
+
     default int size() {
         return 0;
     }
@@ -58,6 +68,12 @@ public interface Node<T> {
 
     default void addChild(Node<?> child) {
         throw new UnsupportedOperationException("Node of type "+getType()+" cannot have children.");
+    }
+
+    default void forEachChild(Consumer<Node<?>> run) {
+        for (int i = 0; i < size(); i++) {
+            run.accept(child(i));
+        }
     }
 
     default void transform(java.util.function.UnaryOperator<List<Node<?>>> transformer)

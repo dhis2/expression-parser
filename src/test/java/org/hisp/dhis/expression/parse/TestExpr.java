@@ -1,7 +1,11 @@
 package org.hisp.dhis.expression.parse;
 
+import org.hisp.dhis.expression.DescriptionTreeWalker;
 import org.hisp.dhis.expression.Node;
+import org.hisp.dhis.expression.NodeType;
 import org.junit.jupiter.api.Test;
+
+import java.util.EnumSet;
 
 class TestExpr {
 
@@ -100,7 +104,7 @@ class TestExpr {
     }
 
     private void eval(String expr) {
-        ParseContext ctx = new DebugParseContext(NAMED_CONTEXT, System.out);
+        ParseContext ctx = new DebugParseContext(NAMED_CONTEXT, System.out, EnumSet.noneOf(NodeType.class));
         //Expr.expr(new Expr(expr), ctx);
 
         Parser ctx2 = Parser.withDefaults(NAMED_CONTEXT);
@@ -108,6 +112,10 @@ class TestExpr {
         Node<?> root = ctx2.getRoot();
         Node.groupOperators(root);
         //System.out.println(root);
+        DescriptionTreeWalker walker = new DescriptionTreeWalker();
+        root.walk(walker);
+        System.out.println(expr);
+        System.out.println(walker);
     }
 
 }

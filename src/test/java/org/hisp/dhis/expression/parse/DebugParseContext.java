@@ -35,7 +35,7 @@ public class DebugParseContext implements ParseContext {
     public void beginNode(NodeType type, String value, Node.Factory create) {
         if (!filter.contains(type)) {
             try {
-                out.append(indent).append(type.name()).append("=").append(value);
+                out.append(indent).append(type.name()).append("=").append(value).append('\n');
             } catch (IOException ex) {
                 throw new UncheckedIOException(ex);
             }

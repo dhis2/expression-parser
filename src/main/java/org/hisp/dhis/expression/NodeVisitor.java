@@ -21,7 +21,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
             case PAR: visitParentheses((Node<Void>) node); break;
             case FUNCTION: visitFunction((Node<NamedFunction>) node); break;
             case METHOD: visitMethod((Node<NamedMethod>) node); break;
-            case DATA_VALUE: visitDataValue(node); break;
+            case DATA_VALUE: visitDataValue((Node<DataValue>) node); break;
 
             // simple nodes
             case BOOLEAN: visitBoolean((Node<Boolean>) node); break;
@@ -60,7 +60,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
 
     }
 
-    default void visitDataValue(Node<?> data) {
+    default void visitDataValue(Node<DataValue> data) {
 
     }
 

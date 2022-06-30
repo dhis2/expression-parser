@@ -27,6 +27,9 @@ public interface NonTerminal
         return false;
     }
 
+
+    default boolean isVarargs() { return false; }
+
     /**
      * @see #named(String)
      *
@@ -36,7 +39,6 @@ public interface NonTerminal
     {
         return null;
     }
-
 
     /**
      * This PEG parser is free of back-tracking.
@@ -49,18 +51,10 @@ public interface NonTerminal
      */
     default NonTerminal maybe()
     {
-        class Maybe implements NonTerminal {
+        class Maybe extends Delegate {
 
-            private final NonTerminal body;
-
-            public Maybe(NonTerminal body) {
-                this.body = body;
-            }
-
-            @Override
-            public void parse(Expr expr, ParseContext ctx )
-            {
-                body.parse( expr, ctx );
+            Maybe(NonTerminal body) {
+                super(body);
             }
 
             @Override
@@ -68,13 +62,27 @@ public interface NonTerminal
             {
                 return true;
             }
-
-            @Override
-            public String name() {
-                return body.name();
-            }
         }
         return this instanceof Maybe ? this : new Maybe(this);
+    }
+
+    default NonTerminal plus() {
+        class Plus extends Delegate {
+
+            Plus(NonTerminal body) {
+                super(body);
+            }
+
+            @Override
+            public boolean isVarargs() {
+                return true;
+            }
+        }
+        return this instanceof Plus ? this : new Plus(this);
+    }
+
+    default NonTerminal star() {
+        return plus().maybe();
     }
 
     /**
@@ -87,22 +95,14 @@ public interface NonTerminal
      */
     default NonTerminal named(String name )
     {
-        class Named implements NonTerminal
+        class Named extends Delegate
         {
             final String name;
 
-            private final NonTerminal body;
-
             Named( String name, NonTerminal body )
             {
+                super(body);
                 this.name = name;
-                this.body = body;
-            }
-
-            @Override
-            public void parse( Expr expr, ParseContext ctx )
-            {
-                body.parse( expr, ctx );
             }
 
             @Override
@@ -110,13 +110,8 @@ public interface NonTerminal
             {
                 return name;
             }
-
-            @Override
-            public boolean isMaybe() {
-                return body.isMaybe();
-            }
         }
-        return new Named( name, this instanceof Named ? ((Named) this).body : this );
+        return new Named( name, this instanceof Named ? ((Named) this).to : this );
     }
 
     default NonTerminal in(char open, char close )
@@ -138,13 +133,12 @@ public interface NonTerminal
     {
         return ( expr, ctx ) -> {
             char c = expr.peek();
-            if ( c != '\'' && c != '"' )
-            {
-                expr.error( "Expected single or double quotes" );
-            }
-            expr.gobble();
+            boolean isQuoted =  c == '\'' || c == '"';
+            if (isQuoted)
+                expr.gobble();
             parse( expr, ctx );
-            expr.expect( c );
+            if (isQuoted)
+                expr.expect( c );
         };
     }
 
@@ -157,31 +151,39 @@ public interface NonTerminal
         };
     }
 
-    static NonTerminal oneOrMore(NonTerminal of )
-    {
-        return oneOrMore(of, ',');
-    }
-
-    static NonTerminal oneOrMore(NonTerminal of, char separator )
-    {
-        return (expr, ctx ) -> {
-            of.parse( expr, ctx );
-            // now there might be more
-            expr.skipWS();
-            char c = expr.peek();
-            while ( c == separator )
-            {
-                expr.gobble(); // separator
-                expr.skipWS();
-                of.parse( expr, ctx );
-                expr.skipWS();
-                c = expr.peek();
-            }
-        };
-    }
-
     static NonTerminal constant(NodeType type, String literal) {
         NonTerminal token = (expr, ctx) -> ctx.addNode(type, literal);
         return token.named(literal);
+    }
+
+    abstract class Delegate implements NonTerminal {
+
+        protected final NonTerminal to;
+
+        protected Delegate(NonTerminal to) {
+            this.to = to;
+        }
+
+        @Override
+        public final void parse(Expr expr, ParseContext ctx )
+        {
+            to.parse( expr, ctx );
+        }
+
+        @Override
+        public boolean isMaybe()
+        {
+            return to.isMaybe();
+        }
+
+        @Override
+        public boolean isVarargs() {
+            return to.isVarargs();
+        }
+
+        @Override
+        public String name() {
+            return to.name();
+        }
     }
 }

@@ -18,14 +18,14 @@ public final class Expr implements Serializable
 
     public void error( int start, String desc )
     {
-        throw new BadExpressionException( start, this, desc );
+        throw new ParseException( start, this, desc );
     }
 
-    public static class BadExpressionException extends IllegalArgumentException
+    public static class ParseException extends IllegalArgumentException
     {
         final Expr expr;
 
-        BadExpressionException( int start, Expr expr, String msg )
+        ParseException(int start, Expr expr, String msg )
         {
             super( msg + pointer(start, expr));
             this.expr = expr;
@@ -50,13 +50,7 @@ public final class Expr implements Serializable
             while (expr.peek() == '.' && expr.peek(1, Chars::isAlpha))
             { // dot function call:
                 expr.gobble(); // .
-                String name = Literals.parseName(expr);
-                NonTerminal method = ctx.named().lookupMethod(name);
-                if (method == null)
-                {
-                    expr.error("unknown dot-function: "+name);
-                }
-                method.parse(expr, ctx);
+                NamedContext.lookup(expr, Literals::parseName, ctx.named()::lookupMethod).parse(expr, ctx);
                 expr.skipWS();
             }
             char c = expr.peek();
@@ -131,25 +125,14 @@ public final class Expr implements Serializable
             expr.skipWS();
             return;
         }
-        // should be a top level function then...
-        String name = Literals.parseName(expr);
-        NonTerminal nt = expr.peek() != '(' && expr.peek() != '{'
+        // should be a top level function or constant then...
+        NamedContext.lookup(expr, Literals::parseName, name -> expr.peek() != '(' && expr.peek() != '{'
                 ? ctx.named().lookupConstant(name)
-                : ctx.named().lookupFunction( name );
-        if ( nt == null )
-        {
-            expr.error( "function or constant not available in context: " + name );
-        }
-        nt.parse( expr, ctx );
+                : ctx.named().lookupFunction( name )).parse( expr, ctx );
         expr.skipWS();
     }
 
     static void data(Expr expr, ParseContext ctx) {
-        if (expr.peek() == '\\')
-        {
-            ctx.addNode(NodeType.STRING, expr, Literals::parseString);
-            return;
-        }
         String raw = expr.rawMatch("data item", ce -> ce != '}');
         String[] parts = raw.split("\\.");
         if (Stream.of(parts).allMatch(Expr::isTaggedUidGroup)) {
@@ -175,7 +158,7 @@ public final class Expr implements Serializable
         }
     }
 
-    static void dataItem(Expr expr, ParseContext ctx) {
+    static void dataArgument(Expr expr, ParseContext ctx) {
         char c = expr.peek();
         if (c == '#' || c == 'A') {
             expr.gobble();
@@ -184,14 +167,16 @@ public final class Expr implements Serializable
             data(expr, ctx);
             expr.expect('}');
         } else if (c == '"' || c == '\'') {
-            ctx.beginNode(NodeType.DATA_VALUE, "V");
+            ctx.beginNode(NodeType.DATA_VALUE, "#");
             ctx.addNode(NodeType.STRING, expr, Literals::parseString);
         } else if (c == 'P' && expr.peek("PS_EVENTDATE:")) {
             expr.gobble(13);
             ctx.beginNode(NodeType.DATA_VALUE, "#");
+            ctx.beginNode(NodeType.ARGUMENT,  "0");
             ctx.addNode(NodeType.IDENTIFIER, "PS_EVENTDATE", Nodes.TagNode::new);
             expr.skipWS();
             ctx.addNode(NodeType.UID, expr, Literals::parseUid);
+            ctx.endNode(NodeType.ARGUMENT);
         } else {
             expr.error("expected data item");
         }

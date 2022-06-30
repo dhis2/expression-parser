@@ -1,15 +1,12 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.NamedMethod;
-import org.hisp.dhis.expression.NodeType;
-import org.hisp.dhis.expression.Nodes;
+import org.hisp.dhis.expression.*;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
-import static org.hisp.dhis.expression.parse.NonTerminal.oneOrMore;
 
 public interface ExprGrammar
 {
@@ -31,7 +28,7 @@ public interface ExprGrammar
     NonTerminal
             expr = Expr::expr,
             data = Expr::data,
-            dataItem = Expr::dataItem;
+            dataArgument = Expr::dataArgument;
 
     /*
     Production Rules
@@ -45,84 +42,84 @@ public interface ExprGrammar
             method( NamedMethod.stageOffset, INTEGER));
 
     List<NonTerminal> BaseFunctions = List.of( // (alphabetical)
-            fn( "firstNonNull", oneOrMore( expr ) ),
-            fn( "greatest", oneOrMore( expr ) ),
-            fn( "if", expr, expr, expr ),
-            fn( "isNotNull", expr ),
-            fn( "isNull", expr ),
-            fn( "least", oneOrMore( expr ) ),
-            fn( "log", expr, expr.maybe() ),
-            fn( "log10", expr ),
-            fn( "orgUnit.ancestor", oneOrMore( UID ) ),
-            fn( "orgUnit.dataSet", oneOrMore( UID ) ),
-            fn( "orgUnit.group", oneOrMore( UID ) ),
-            fn( "orgUnit.program", oneOrMore( UID ) ),
-            fn( "subExpression", expr )
+            fn( NamedFunction.firstNonNull , expr.plus() ),
+            fn( NamedFunction.greatest , expr.plus() ),
+            fn( NamedFunction.ifThenElse , expr, expr, expr ),
+            fn( NamedFunction.isNotNull , expr ),
+            fn( NamedFunction.isNull , expr ),
+            fn( NamedFunction.least , expr.plus() ),
+            fn( NamedFunction.log , expr, expr.maybe() ),
+            fn( NamedFunction.log10 , expr ),
+            fn( NamedFunction.orgUnit_ancestor , UID.plus() ),
+            fn( NamedFunction.orgUnit_dataSet , UID.plus() ),
+            fn( NamedFunction.orgUnit_group , UID.plus() ),
+            fn( NamedFunction.orgUnit_program , UID.plus() ),
+            fn( NamedFunction.subExpression , expr )
     );
 
     List<NonTerminal> AggregationFunctions = List.of( // (alphabetical)
-            fn( "avg", expr ),
-            fn( "count", expr),
-            fn( "max", expr ),
-            fn( "median", expr ),
-            fn( "min", expr ),
-            fn( "percentileCont", expr, expr ),
-            fn( "stddev", expr ),
-            fn( "stddevPop", expr ),
-            fn( "stddevSamp", expr ),
-            fn( "sum", expr ),
-            fn( "variance", expr )
+            fn( NamedFunction.avg , expr ),
+            fn( NamedFunction.count , expr),
+            fn( NamedFunction.max , expr ),
+            fn( NamedFunction.median , expr ),
+            fn( NamedFunction.min , expr ),
+            fn( NamedFunction.percentileCont , expr, expr ),
+            fn( NamedFunction.stddev , expr ),
+            fn( NamedFunction.stddevPop , expr ),
+            fn( NamedFunction.stddevSamp , expr ),
+            fn( NamedFunction.sum , expr ),
+            fn( NamedFunction.variance , expr )
     );
 
     List<NonTerminal> ProgramFunctions = List.of( // (alphabetical)
-            fn( "d2:addDays", expr, expr ),
-            fn( "d2:ceil", expr ),
-            fn( "d2:concatenate", oneOrMore( expr ) ),
-            fn( "d2:condition", STRING, expr, expr ),
-            fn( "d2:count", dataItem),
-            fn( "d2:countIfCondition", expr, STRING),
-            fn( "d2:countIfValue", dataItem, expr ),
-            fn( "d2:countIfZeroPos", dataItem),
-            fn( "d2:daysBetween", expr, expr ),
-            fn( "d2:extractDataMatrixValue", expr, expr ),
-            fn( "d2:floor", expr ),
-            fn( "d2:hasUserRole", expr ),
-            fn( "d2:hasValue", data ),
-            fn( "d2:inOrgUnitGroup", expr ),
-            fn( "d2:lastEventDate", expr ),
-            fn( "d2:left", expr, expr ),
-            fn( "d2:length", expr ),
-            fn( "d2:maxValue", dataItem),
-            fn( "d2:minutesBetween", expr, expr ),
-            fn( "d2:minValue", dataItem),
-            fn( "d2:modulus", expr, expr ),
-            fn( "d2:monthsBetween", expr, expr ),
-            fn( "d2:oizp", expr ),
-            fn( "d2:relationshipCount", UID.quoted() ),
-            fn( "d2:right", expr, expr ),
-            fn( "d2:round", expr ),
-            fn( "d2:split", expr, expr, expr ),
-            fn( "d2:substring", expr, expr, expr ),
-            fn( "d2:validatePattern", expr, expr ),
-            fn( "d2:weeksBetween", expr, expr ),
-            fn( "d2:yearsBetween", expr, expr ),
-            fn( "d2:zing", expr ),
-            fn( "d2:zpvc", oneOrMore( expr ) ),
-            fn( "d2:zScoreHFA", expr, expr, expr ),
-            fn( "d2:zScoreWFA", expr, expr, expr ),
-            fn( "d2:zScoreWFH", expr, expr, expr )
+            fn( NamedFunction.d2_addDays , expr, expr ),
+            fn( NamedFunction.d2_ceil , expr ),
+            fn( NamedFunction.d2_concatenate , expr.plus() ),
+            fn( NamedFunction.d2_condition , STRING, expr, expr ),
+            fn( NamedFunction.d2_count , dataArgument),
+            fn( NamedFunction.d2_countIfCondition , expr, STRING),
+            fn( NamedFunction.d2_countIfValue , dataArgument, expr ),
+            fn( NamedFunction.d2_countIfZeroPos , dataArgument),
+            fn( NamedFunction.d2_daysBetween , expr, expr ),
+            fn( NamedFunction.d2_extractDataMatrixValue , expr, expr ),
+            fn( NamedFunction.d2_floor , expr ),
+            fn( NamedFunction.d2_hasUserRole , expr ),
+            fn( NamedFunction.d2_hasValue , dataArgument),
+            fn( NamedFunction.d2_inOrgUnitGroup , expr ),
+            fn( NamedFunction.d2_lastEventDate , expr ),
+            fn( NamedFunction.d2_left , expr, expr ),
+            fn( NamedFunction.d2_length , expr ),
+            fn( NamedFunction.d2_maxValue , dataArgument),
+            fn( NamedFunction.d2_minutesBetween , expr, expr ),
+            fn( NamedFunction.d2_minValue , dataArgument),
+            fn( NamedFunction.d2_modulus , expr, expr ),
+            fn( NamedFunction.d2_monthsBetween , expr, expr ),
+            fn( NamedFunction.d2_oizp , expr ),
+            fn( NamedFunction.d2_relationshipCount , UID.quoted().maybe() ),
+            fn( NamedFunction.d2_right , expr, expr ),
+            fn( NamedFunction.d2_round , expr ),
+            fn( NamedFunction.d2_split , expr, expr, expr ),
+            fn( NamedFunction.d2_substring , expr, expr, expr ),
+            fn( NamedFunction.d2_validatePattern , expr, expr ),
+            fn( NamedFunction.d2_weeksBetween , expr, expr ),
+            fn( NamedFunction.d2_yearsBetween , expr, expr ),
+            fn( NamedFunction.d2_zing , expr ),
+            fn( NamedFunction.d2_zpvc , expr.plus() ),
+            fn( NamedFunction.d2_zScoreHFA , expr, expr, expr ),
+            fn( NamedFunction.d2_zScoreWFA , expr, expr, expr ),
+            fn( NamedFunction.d2_zScoreWFH , expr, expr, expr )
     );
 
     List<NonTerminal> DataValues = List.of( // (alphabetical)
-            data("#", data),
-            data("A", data),
-            data("C", UID),
-            data("D", UID, UID),
-            data("I", UID),
-            data("N", UID),
-            data("R", UID, IDENTIFIER.as(Nodes.ReportingRateTypeNode::new)),
-            data("V", IDENTIFIER.as(Nodes.ProgramVariableNode::new)),
-            data("OUG", UID)
+            data(DataValue.DATA_ELEMENT, data),
+            data(DataValue.ATTRIBUTE, data),
+            data(DataValue.CONSTANT, UID),
+            data(DataValue.PROGRAM_DATA_ELEMENT, UID, UID),
+            data(DataValue.PROGRAM_INDICATOR, UID),
+            data(DataValue.INDICATOR, UID),
+            data(DataValue.REPORTING_RATE, UID, IDENTIFIER.as(Nodes.ReportingRateTypeNode::new)),
+            data(DataValue.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new)),
+            data(DataValue.ORG_UNIT_GROUP, UID)
     );
 
     List<NonTerminal> Functions = Stream.of(BaseFunctions, AggregationFunctions, ProgramFunctions, DataValues)
@@ -147,30 +144,32 @@ public interface ExprGrammar
         return call( NodeType.METHOD, name, ',', args ).inRound().named(name);
     }
 
-    static NonTerminal fn(String name, NonTerminal... args )
+    static NonTerminal fn(NamedFunction function, NonTerminal... args )
     {
-        return call( NodeType.FUNCTION, name, ',', args ).inRound().named( name );
+        String name = function.getName();
+        return call( NodeType.FUNCTION, name, ',', args ).inRound().named(name);
     }
 
-    static NonTerminal data(String name, NonTerminal... args)
+    static NonTerminal data(DataValue value, NonTerminal... args)
     {
-        return call(NodeType.DATA_VALUE, name, '.', args).inCurly().named(name);
+        String symbol = value.getSymbol();
+        return call(NodeType.DATA_VALUE, symbol, '.', args).inCurly().named(symbol);
     }
 
     static NonTerminal call(NodeType type, String name, char argsSeparator, NonTerminal... args )
     {
         return ( expr, ctx ) -> {
             ctx.beginNode( type, name );
-            for ( int i = 0; i < args.length; i++ )
+            for ( int i = 0; i < args.length || args[args.length-1].isVarargs(); i++ )
             {
                 expr.skipWS();
-                NonTerminal arg = args[i];
+                NonTerminal arg = args[Math.min(i, args.length-1)];
                 if ( i > 0 )
                 {
                     char c = expr.peek();
                     if ( c != argsSeparator )
                     {
-                        if ( arg.isMaybe() )
+                        if ( arg.isMaybe() || args[args.length-1].isVarargs() )
                         {
                             ctx.endNode(type);
                             return;
@@ -180,9 +179,11 @@ public interface ExprGrammar
                     expr.gobble(); // separator
                     expr.skipWS();
                 }
-                ctx.beginNode( NodeType.ARGUMENT, "" + i );
+                if (type != NodeType.DATA_VALUE)
+                    ctx.beginNode( NodeType.ARGUMENT, "" + i );
                 arg.parse( expr, ctx );
-                ctx.endNode(NodeType.ARGUMENT);
+                if (type != NodeType.DATA_VALUE)
+                    ctx.endNode(NodeType.ARGUMENT);
             }
             ctx.endNode(type);
         };
