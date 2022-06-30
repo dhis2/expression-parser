@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 class TestExpr {
 
+    private static final NamedContext NAMED_CONTEXT = new DefaultNamedContext(ExprGrammar.Constants, ExprGrammar.Functions, ExprGrammar.Methods);
+
     @Test
     void test() {
         String expr = "not !#{deabcdefghA.W3Ba8wgjgFK}" +
@@ -98,10 +100,10 @@ class TestExpr {
     }
 
     private void eval(String expr) {
-        ParseContext ctx = new PrintParseContext(ExprGrammar.Constants, ExprGrammar.Functions, ExprGrammar.Methods);
+        ParseContext ctx = new DebugParseContext(NAMED_CONTEXT, System.out);
         //Expr.expr(new Expr(expr), ctx);
 
-        TreeParseContext ctx2 = TreeParseContext.withDefaults(ExprGrammar.Constants, ExprGrammar.Functions, ExprGrammar.Methods);
+        Parser ctx2 = Parser.withDefaults(NAMED_CONTEXT);
         Expr.expr(new Expr(expr), ctx2);
         Node<?> root = ctx2.getRoot();
         Node.groupOperators(root);

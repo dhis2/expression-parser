@@ -51,7 +51,7 @@ public final class Expr implements Serializable
             { // dot function call:
                 expr.gobble(); // .
                 String name = Literals.parseName(expr);
-                NonTerminal method = ctx.lookupMethod(name);
+                NonTerminal method = ctx.named().lookupMethod(name);
                 if (method == null)
                 {
                     expr.error("unknown dot-function: "+name);
@@ -134,8 +134,8 @@ public final class Expr implements Serializable
         // should be a top level function then...
         String name = Literals.parseName(expr);
         NonTerminal nt = expr.peek() != '(' && expr.peek() != '{'
-                ? ctx.lookupConstant(name)
-                : ctx.lookupFunction( name );
+                ? ctx.named().lookupConstant(name)
+                : ctx.named().lookupFunction( name );
         if ( nt == null )
         {
             expr.error( "function or constant not available in context: " + name );

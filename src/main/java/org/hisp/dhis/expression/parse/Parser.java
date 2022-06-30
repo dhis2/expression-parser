@@ -6,7 +6,6 @@ import org.hisp.dhis.expression.Nodes;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Map;
  *
  * @author Jan Bernitt
  */
-public class TreeParseContext extends AbstractParseContext {
+public final class Parser implements ParseContext {
 
     private static final Map<NodeType, Node.Factory> DEFAULT_FACTORIES = new EnumMap<>(NodeType.class);
 
@@ -40,30 +39,34 @@ public class TreeParseContext extends AbstractParseContext {
         DEFAULT_FACTORIES.put(NodeType.WILDCARD, Nodes.ConstantNode::new);
     }
 
-    public static TreeParseContext withDefaults(List<NonTerminal> constants, List<NonTerminal> functions, List<NonTerminal> methods) {
-        return new TreeParseContext(constants, functions, methods, DEFAULT_FACTORIES);
+    public static Parser withDefaults(NamedContext named) {
+        return new Parser(named, new EnumMap<>(DEFAULT_FACTORIES));
     }
 
-    public static TreeParseContext withDefaultsExcept(List<NonTerminal> constants, List<NonTerminal> functions, List<NonTerminal> methods, Map<NodeType, Node.Factory> factories) {
-        EnumMap<NodeType, Node.Factory> merged = new EnumMap<>(NodeType.class);
-        merged.putAll(DEFAULT_FACTORIES);
-        merged.putAll(factories);
-        return new TreeParseContext(constants, functions, methods, merged);
-    }
-
+    private final NamedContext named;
     private final Map<NodeType, Node.Factory> factoryByType;
 
     private final LinkedList<Node<?>> stack = new LinkedList<>();
 
     private Node<?> root;
 
-    private TreeParseContext(List<NonTerminal> constants, List<NonTerminal> functions, List<NonTerminal> methods, Map<NodeType, Node.Factory> factoryByType) {
-        super(constants, functions, methods);
+    private Parser(NamedContext named, Map<NodeType, Node.Factory> factoryByType) {
+        this.named = named;
         this.factoryByType = factoryByType;
+    }
+
+    public Parser withFactory(NodeType type, Node.Factory factory) {
+        factoryByType.put(type, factory);
+        return this;
     }
 
     public Node<?> getRoot() {
         return root;
+    }
+
+    @Override
+    public NamedContext named() {
+        return named;
     }
 
     @Override

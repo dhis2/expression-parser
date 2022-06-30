@@ -15,16 +15,15 @@ import java.util.function.Function;
  */
 public interface ParseContext
 {
-
     /*
-    Building the AST
+        Building the AST
      */
 
     void beginNode(NodeType type, String value, Node.Factory create );
     void endNode(NodeType type);
 
     /*
-    Building the AST convenience methods
+        Building the AST convenience methods
      */
 
     default void beginNode(NodeType type, String value ) {
@@ -38,8 +37,8 @@ public interface ParseContext
 
     default void addNode(NodeType type, String value, Node.Factory create )
     {
-            beginNode( type, value, create );
-            endNode(type);
+        beginNode( type, value, create );
+        endNode(type);
     }
     default void addNode(NodeType type, Expr expr, Function<Expr, String> parse)
     {
@@ -57,13 +56,8 @@ public interface ParseContext
     }
 
     /*
-    Lookup named building blocks (non-terminals)
-     */
+        Lookup named building blocks (non-terminals)
+    */
 
-    NonTerminal lookupFunction(String name );
-
-    NonTerminal lookupMethod(String name );
-
-    NonTerminal lookupConstant(String name);
-
+    NamedContext named();
 }
