@@ -1,6 +1,5 @@
 package org.hisp.dhis.expression;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class DescriptionTreeWalker implements NodeVisitor {

@@ -4,7 +4,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
 
-import static java.lang.Double.*;
+import static java.lang.Double.isInfinite;
+import static java.lang.Double.isNaN;
 import static java.lang.String.format;
 import static org.hisp.dhis.expression.ValueType.*;
 

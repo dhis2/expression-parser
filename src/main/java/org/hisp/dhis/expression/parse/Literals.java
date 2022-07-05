@@ -2,8 +2,6 @@ package org.hisp.dhis.expression.parse;
 
 import org.hisp.dhis.expression.NodeType;
 
-import static java.lang.Integer.parseInt;
-
 public interface Literals {
 
     static String parse(Expr expr, NodeType type )

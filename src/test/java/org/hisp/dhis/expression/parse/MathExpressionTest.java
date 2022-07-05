@@ -5,10 +5,6 @@ import org.hisp.dhis.expression.Node;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
-
-import java.util.Optional;
-import java.util.function.BiPredicate;
 
 class MathExpressionTest {
     @Test
