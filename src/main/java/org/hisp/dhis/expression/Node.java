@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.stream;
@@ -12,7 +13,7 @@ import static java.util.Arrays.stream;
 /**
  * A node in the AST of the expression language.
  */
-public interface Node<T> {
+public interface Node<T> extends Typed {
 
     interface Factory {
 
@@ -49,6 +50,10 @@ public interface Node<T> {
      */
     default void walk(Consumer<Node<?>> walker) {
         walker.accept(this);
+    }
+
+    default <R> R eval(Function<Node<?>, R> transform) {
+        return transform.apply(this);
     }
 
     default void walkChildren(Consumer<Node<?>> walker, BiConsumer<Node<?>, Node<?>> separator) {

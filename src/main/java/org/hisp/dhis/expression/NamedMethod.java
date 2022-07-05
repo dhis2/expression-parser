@@ -6,28 +6,26 @@ package org.hisp.dhis.expression;
  * @author Jan Bernitt
  */
 @SuppressWarnings("java:S115")
-public enum NamedMethod
+public enum NamedMethod implements Typed
 {
-    aggregationType(ValueType.UNKNOWN, ValueType.STRING),
-    maxDate(ValueType.DATE, ValueType.DATE),
-    minDate(ValueType.DATE, ValueType.DATE),
-    periodOffset(ValueType.UNKNOWN, ValueType.NUMBER),
-    stageOffset(ValueType.UNKNOWN, ValueType.NUMBER);
+    aggregationType(ValueType.STRING),
+    maxDate(ValueType.DATE),
+    minDate( ValueType.DATE),
+    periodOffset(ValueType.NUMBER),
+    stageOffset(ValueType.NUMBER);
 
-    private final ValueType returnType;
-    private final ValueType argumentType;
+    private final ValueType parameterType;
 
-    NamedMethod(ValueType returnType, ValueType argumentType) {
-
-        this.returnType = returnType;
-        this.argumentType = argumentType;
+    NamedMethod(ValueType parameterType) {
+        this.parameterType = parameterType;
     }
 
-    public ValueType returnType() {
-        return returnType;
+    @Override
+    public ValueType getValueType() {
+        return ValueType.SAME;
     }
 
-    public ValueType argumentType() {
-        return argumentType;
+    public ValueType getParameterType() {
+        return parameterType;
     }
 }

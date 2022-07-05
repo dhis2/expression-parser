@@ -3,6 +3,7 @@ package org.hisp.dhis.expression.parse;
 import org.hisp.dhis.expression.DescriptionTreeWalker;
 import org.hisp.dhis.expression.Node;
 import org.hisp.dhis.expression.NodeType;
+import org.hisp.dhis.expression.TypeCheckingNodeVisitor;
 import org.junit.jupiter.api.Test;
 
 import java.util.EnumSet;
@@ -13,7 +14,7 @@ class TestExpr {
 
     @Test
     void test() {
-        String expr = "not !#{deabcdefghA.W3Ba8wgjgFK}" +
+        String expr = "#{deabcdefghA.W3Ba8wgjgFK}" +
                 "+#{deabcdefghB.W3Ba8wgjgFK}" +
                 "+avg(#{deabcdefghA.W3Ba8wgjgFK}" +
                 "+#{deabcdefghB.W3Ba8wgjgFK})" +
@@ -108,6 +109,11 @@ class TestExpr {
         eval("d2:relationshipCount() + d2:relationshipCount(FsaFnYgYYiE)");
     }
 
+    @Test
+    void test20() {
+        eval("if(true,'hello', firstNonNull(21))");
+    }
+
     private void eval(String expr) {
         ParseContext ctx = new DebugParseContext(NAMED_CONTEXT, System.out, EnumSet.noneOf(NodeType.class));
         //Expr.expr(new Expr(expr), ctx);
@@ -121,6 +127,10 @@ class TestExpr {
         root.walk(walker);
         System.out.println(expr);
         System.out.println(walker);
+
+        TypeCheckingNodeVisitor typeCheck = new TypeCheckingNodeVisitor();
+        root.visit(typeCheck);
+        System.out.println(typeCheck.getViolations());
     }
 
 }

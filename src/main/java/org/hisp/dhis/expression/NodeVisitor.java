@@ -1,5 +1,6 @@
 package org.hisp.dhis.expression;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.function.Consumer;
 
@@ -34,6 +35,8 @@ public interface NodeVisitor extends Consumer<Node<?>>
             case INTEGER: visitInteger((Node<Integer>) node); break;
             case IDENTIFIER: visitIdentifier(node); break;
             case NAMED_VALUE: visitNamedValue((Node<NamedValue>) node); break;
+
+            default: throw new UnsupportedOperationException("Not type not supported yet: "+node.getType());
         }
     }
 

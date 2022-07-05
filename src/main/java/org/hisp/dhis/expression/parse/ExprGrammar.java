@@ -59,8 +59,8 @@ public interface ExprGrammar
     );
 
     List<NonTerminal> AggregationFunctions = List.of( // (alphabetical)
-            fn( NamedFunction.avg , expr ),
-            fn( NamedFunction.count , expr),
+            fn( NamedFunction.avg, expr ),
+            fn( NamedFunction.count, expr),
             fn( NamedFunction.max , expr ),
             fn( NamedFunction.median , expr ),
             fn( NamedFunction.min , expr ),

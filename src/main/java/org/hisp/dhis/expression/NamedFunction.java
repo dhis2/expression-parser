@@ -1,87 +1,109 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.parse.NonTerminal;
-
 import java.util.List;
 
+import static org.hisp.dhis.expression.ValueType.*;
+
 @SuppressWarnings("java:S115")
-public enum NamedFunction
+public enum NamedFunction implements Typed
 {
     // Base Functions
-    firstNonNull("firstNonNull"),
-    greatest("greatest"),
-    ifThenElse("if"),
-    isNotNull("isNotNull"),
-    isNull("isNull"),
-    least("least"),
-    log("log"),
-    log10("log10"),
-    orgUnit_ancestor("orgUnit.ancestor"),
-    orgUnit_dataSet("orgUnit.dataSet"),
-    orgUnit_group("orgUnit.group"),
-    orgUnit_program("orgUnit.program"),
-    subExpression("subExpression"),
+    firstNonNull("firstNonNull", SAME, true, SAME),
+    greatest("greatest", NUMBER, true, NUMBER),
+    ifThenElse("if", SAME, BOOLEAN, SAME, SAME),
+    isNotNull("isNotNull", BOOLEAN, SAME),
+    isNull("isNull", BOOLEAN, SAME),
+    least("least", NUMBER, true, NUMBER),
+    log("log", NUMBER, NUMBER, NUMBER),
+    log10("log10", NUMBER, NUMBER),
+    orgUnit_ancestor("orgUnit.ancestor", BOOLEAN, true, STRING),
+    orgUnit_dataSet("orgUnit.dataSet", BOOLEAN, true, STRING),
+    orgUnit_group("orgUnit.group", BOOLEAN, true, STRING),
+    orgUnit_program("orgUnit.program", BOOLEAN, true, STRING),
+    subExpression("subExpression", SAME, SAME),
 
     // Aggregation Functions
-    avg("avg"),
-    count("count"),
-    max("max"),
-    median("median"),
-    min("min"),
-    percentileCont("percentileCont"),
-    stddev("stddev"),
-    stddevPop("stddevPop"),
-    stddevSamp("stddevSamp"),
-    sum("sum"),
-    variance("variance"),
+    avg("avg", NUMBER, NUMBER),
+    count("count", NUMBER, NUMBER),
+    max("max", NUMBER, NUMBER),
+    median("median", NUMBER, NUMBER),
+    min("min", NUMBER, NUMBER),
+    percentileCont("percentileCont", NUMBER, NUMBER, NUMBER),
+    stddev("stddev", NUMBER, NUMBER),
+    stddevPop("stddevPop", NUMBER, NUMBER),
+    stddevSamp("stddevSamp", NUMBER, NUMBER),
+    sum("sum", NUMBER, NUMBER),
+    variance("variance", NUMBER, NUMBER),
 
     // Program Functions
-    d2_addDays("d2:addDays"),
-    d2_ceil("d2:ceil"),
-    d2_concatenate("d2:concatenate"),
-    d2_condition("d2:condition"),
-    d2_count("d2:count"),
-    d2_countIfCondition("d2:countIfCondition"),
-    d2_countIfValue("d2:countIfValue"),
-    d2_countIfZeroPos("d2:countIfZeroPos"),
-    d2_daysBetween("d2:daysBetween"),
-    d2_extractDataMatrixValue("d2:extractDataMatrixValue"),
-    d2_floor("d2:floor"),
-    d2_hasUserRole("d2:hasUserRole"),
-    d2_hasValue("d2:hasValue"),
-    d2_inOrgUnitGroup("d2:inOrgUnitGroup"),
-    d2_lastEventDate("d2:lastEventDate"),
-    d2_left("d2:left"),
-    d2_length("d2:length"),
-    d2_maxValue("d2:maxValue"),
-    d2_minutesBetween("d2:minutesBetween"),
-    d2_minValue("d2:minValue"),
-    d2_modulus("d2:modulus"),
-    d2_monthsBetween("d2:monthsBetween"),
-    d2_oizp("d2:oizp"),
-    d2_relationshipCount("d2:relationshipCount"),
-    d2_right("d2:right"),
-    d2_round("d2:round"),
-    d2_split("d2:split"),
-    d2_substring("d2:substring"),
-    d2_validatePattern("d2:validatePattern"),
-    d2_weeksBetween("d2:weeksBetween"),
-    d2_yearsBetween("d2:yearsBetween"),
-    d2_zing("d2:zing"),
-    d2_zpvc("d2:zpvc"),
-    d2_zScoreHFA("d2:zScoreHFA"),
-    d2_zScoreWFA("d2:zScoreWFA"),
-    d2_zScoreWFH("d2:zScoreWFH");
+    d2_addDays("d2:addDays", DATE, DATE, NUMBER),
+    d2_ceil("d2:ceil", NUMBER, NUMBER),
+    d2_concatenate("d2:concatenate", STRING, true, STRING),
+    d2_condition("d2:condition", SAME, BOOLEAN, SAME, SAME),
+    d2_count("d2:count", NUMBER, UNKNOWN),
+    d2_countIfCondition("d2:countIfCondition", NUMBER, BOOLEAN, UNKNOWN),
+    d2_countIfValue("d2:countIfValue", NUMBER, UNKNOWN, UNKNOWN),
+    d2_countIfZeroPos("d2:countIfZeroPos", NUMBER, NUMBER),
+    d2_daysBetween("d2:daysBetween", NUMBER, DATE, DATE),
+    d2_extractDataMatrixValue("d2:extractDataMatrixValue", STRING, STRING, STRING),
+    d2_floor("d2:floor", NUMBER, NUMBER),
+    d2_hasUserRole("d2:hasUserRole", BOOLEAN, STRING),
+    d2_hasValue("d2:hasValue", BOOLEAN, STRING),
+    d2_inOrgUnitGroup("d2:inOrgUnitGroup", BOOLEAN, STRING),
+    d2_lastEventDate("d2:lastEventDate", DATE, STRING),
+    d2_left("d2:left", STRING, STRING, NUMBER),
+    d2_length("d2:length", NUMBER, STRING),
+    d2_maxValue("d2:maxValue", NUMBER, STRING),
+    d2_minutesBetween("d2:minutesBetween", NUMBER, DATE, DATE),
+    d2_minValue("d2:minValue", NUMBER, STRING),
+    d2_modulus("d2:modulus", NUMBER, NUMBER, NUMBER),
+    d2_monthsBetween("d2:monthsBetween", NUMBER, DATE, DATE),
+    d2_oizp("d2:oizp", NUMBER, NUMBER),
+    d2_relationshipCount("d2:relationshipCount", NUMBER, STRING),
+    d2_right("d2:right", STRING, STRING, NUMBER),
+    d2_round("d2:round", NUMBER, NUMBER),
+    d2_split("d2:split", STRING, STRING, STRING, NUMBER),
+    d2_substring("d2:substring", STRING, STRING, NUMBER, NUMBER),
+    d2_validatePattern("d2:validatePattern", BOOLEAN, STRING, STRING),
+    d2_weeksBetween("d2:weeksBetween", NUMBER, DATE, DATE),
+    d2_yearsBetween("d2:yearsBetween", NUMBER, DATE, DATE),
+    d2_zing("d2:zing", NUMBER, NUMBER),
+    d2_zpvc("d2:zpvc", NUMBER, true, NUMBER),
+    d2_zScoreHFA("d2:zScoreHFA", NUMBER, NUMBER, NUMBER, STRING),
+    d2_zScoreWFA("d2:zScoreWFA", NUMBER, NUMBER, NUMBER, STRING),
+    d2_zScoreWFH("d2:zScoreWFH", NUMBER, NUMBER, NUMBER, STRING);
 
     private final String name;
+    private final ValueType returnType;
+    private final boolean isVarargs;
+    private final List<ValueType> parameterTypes;
 
-    NamedFunction(String name) {
-
+    NamedFunction(String name, ValueType returnType, boolean isVarargs, ValueType...parameterTypes) {
         this.name = name;
+        this.returnType = returnType;
+        this.isVarargs = isVarargs;
+        this.parameterTypes = List.of(parameterTypes);
+    }
+
+    NamedFunction(String name, ValueType returnType, ValueType...parameterTypes) {
+        this(name, returnType, false, parameterTypes);
     }
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public ValueType getValueType() {
+        return returnType;
+    }
+
+    public boolean isVarargs() {
+        return isVarargs;
+    }
+
+    public List<ValueType> getParameterTypes() {
+        return parameterTypes;
     }
 
     /**

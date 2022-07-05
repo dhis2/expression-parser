@@ -18,7 +18,7 @@ public final class Parser implements ParseContext {
     private static final Map<NodeType, Node.Factory> DEFAULT_FACTORIES = new EnumMap<>(NodeType.class);
 
     static {
-        DEFAULT_FACTORIES.put(NodeType.PAR, Nodes.ComplexTextNode::new);
+        DEFAULT_FACTORIES.put(NodeType.PAR, Nodes.ParenthesesNode::new);
         DEFAULT_FACTORIES.put(NodeType.ARGUMENT, Nodes.ArgumentNode::new);
         DEFAULT_FACTORIES.put(NodeType.FUNCTION, Nodes.FunctionNode::new);
         DEFAULT_FACTORIES.put(NodeType.METHOD, Nodes.MethodNode::new);
@@ -41,6 +41,14 @@ public final class Parser implements ParseContext {
 
     public static Parser withDefaults(NamedContext named) {
         return new Parser(named, new EnumMap<>(DEFAULT_FACTORIES));
+    }
+
+    public static Node<?> parse(String expr, NamedContext context) {
+        Parser parser = Parser.withDefaults(context);
+        Expr.expr(new Expr(expr), parser);
+        Node<?> root = parser.getRoot();
+        Node.groupOperators(root);
+        return root;
     }
 
     private final NamedContext named;
@@ -78,7 +86,7 @@ public final class Parser implements ParseContext {
         }
         Node<?> node = f.create(type, value);
         if (stack.isEmpty()) {
-            root = new Nodes.ComplexTextNode(NodeType.PAR, "");
+            root = new Nodes.ParenthesesNode(NodeType.PAR, "");
             root.addChild(node);
             stack.addLast(root);
         } else {

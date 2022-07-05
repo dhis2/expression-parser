@@ -1,7 +1,5 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.parse.Chars;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -136,10 +134,15 @@ public interface Nodes {
         }
     }
 
-    final class ComplexTextNode extends ComplexNode<String> {
+    final class ParenthesesNode extends ComplexNode<String> {
 
-        public ComplexTextNode(NodeType type, String rawValue) {
+        public ParenthesesNode(NodeType type, String rawValue) {
             super(type, rawValue, Function.identity());
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return child(0).getValueType();
         }
     }
 
@@ -148,12 +151,23 @@ public interface Nodes {
         public ArgumentNode(NodeType type, String rawValue) {
             super(type, rawValue, Integer::valueOf);
         }
+
+        @Override
+        public ValueType getValueType() {
+            return size() == 1 ? child(0).getValueType() : ValueType.UNKNOWN;
+        }
     }
 
     final class FunctionNode extends ComplexNode<NamedFunction> {
 
         public FunctionNode(NodeType type, String rawValue) {
             super(type, rawValue, NamedFunction::fromName, rethrowAs(NamedFunction.class, NamedFunction::getName));
+        }
+
+        @Override
+        public ValueType getValueType() {
+            ValueType type = getValue().getValueType();
+            return !type.isSame() ? type : child(getValue().getParameterTypes().indexOf(ValueType.SAME)).getValueType();
         }
     }
 
@@ -162,12 +176,22 @@ public interface Nodes {
         public MethodNode(NodeType type, String rawValue) {
             super(type, rawValue, NamedMethod::valueOf);
         }
+
+        @Override
+        public ValueType getValueType() {
+            return getValue().getValueType();
+        }
     }
 
     final class DataValueNode extends ComplexNode<DataValue> {
 
         public DataValueNode(NodeType type, String rawValue) {
             super(type, rawValue, DataValue::fromSymbol, rethrowAs(DataValue.class, DataValue::getSymbol));
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.UNKNOWN;
         }
     }
 
@@ -181,6 +205,10 @@ public interface Nodes {
             super(type, rawValue, converter, rethrowAs);
         }
 
+        @Override
+        public ValueType getValueType() {
+            return ValueType.STRING;
+        }
     }
 
     class SimpleTextNode extends SimpleNode<String> {
@@ -188,6 +216,7 @@ public interface Nodes {
         public SimpleTextNode(NodeType type, String rawValue) {
             super(type, rawValue, Function.identity());
         }
+
     }
 
     final class StringNode extends SimpleNode<String> {
@@ -233,12 +262,23 @@ public interface Nodes {
         public UnaryOperatorNode(NodeType type, String rawValue) {
             super(type, rawValue, UnaryOperator::fromSymbol, rethrowAs(UnaryOperator.class, UnaryOperator::getSymbol));
         }
+
+        @Override
+        public ValueType getValueType() {
+            ValueType type = getValue().getValueType();
+            return type.isSame() ? child(0).getValueType() : type;
+        }
     }
 
     final class BinaryOperatorNode extends ComplexNode<BinaryOperator> {
 
         public BinaryOperatorNode(NodeType type, String rawValue) {
             super(type, rawValue, BinaryOperator::fromSymbol, rethrowAs(BinaryOperator.class, BinaryOperator::getSymbol));
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return getValue().getValueType();
         }
     }
 
@@ -247,12 +287,22 @@ public interface Nodes {
         public  BooleanNode(NodeType type, String rawValue) {
             super(type, rawValue, Boolean::valueOf);
         }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.BOOLEAN;
+        }
     }
 
     final class NumberNode extends SimpleNode<Double> {
 
         public  NumberNode(NodeType type, String rawValue) {
             super(type, rawValue, Double::valueOf);
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.NUMBER;
         }
     }
 
@@ -261,6 +311,11 @@ public interface Nodes {
         public IntegerNode(NodeType type, String rawValue) {
             super(type, rawValue, Integer::valueOf);
         }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.NUMBER;
+        }
     }
 
     final class DateNode extends SimpleNode<LocalDateTime> {
@@ -268,12 +323,22 @@ public interface Nodes {
         public DateNode(NodeType type, String rawValue) {
             super(type, rawValue, LocalDateTime::parse);
         }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.DATE;
+        }
     }
 
     final class ConstantNode extends SimpleNode<Void> {
 
         public ConstantNode(NodeType type, String rawValue) {
             super(type, rawValue, str -> null);
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return ValueType.SAME;
         }
     }
 
