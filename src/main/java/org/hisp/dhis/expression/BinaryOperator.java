@@ -34,7 +34,6 @@ public enum BinaryOperator implements Typed
     private final String symbol;
     private final ValueType returnType;
     private final ValueType operandsType;
-    //TODO Set<ValueType> typeCoercionFrom; // set of types that are still allowed as operands because we can do type coercion
 
     BinaryOperator(String symbol, ValueType returnType, ValueType operandsType) {
         this.symbol = symbol;

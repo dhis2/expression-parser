@@ -26,6 +26,8 @@ public enum ValueType {
 
     STRING;
 
+    //TODO Set<ValueType> typeCoercionFrom; // set of types that can be made into the type
+
     public boolean isSame() {
         return this == SAME;
     }
