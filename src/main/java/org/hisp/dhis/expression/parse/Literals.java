@@ -1,6 +1,6 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.NodeType;
+import org.hisp.dhis.expression.ast.NodeType;
 
 public interface Literals {
 
@@ -158,7 +158,7 @@ public interface Literals {
     static String parseUid(Expr expr)
     {
         Chars.CharPredicate alphaNumeric = Chars::isAlphaNumeric;
-        return expr.rawMatch( "uid", Chars::isAlpha,
+        return expr.rawMatch( "uid", Chars::isLetter,
                 alphaNumeric, alphaNumeric, alphaNumeric, alphaNumeric, alphaNumeric,
                 alphaNumeric, alphaNumeric, alphaNumeric, alphaNumeric, alphaNumeric);
     }
@@ -190,7 +190,7 @@ public interface Literals {
 
     static boolean isUid(String s)
     {
-        return s.length() == 11 && Chars.isAlpha(s.charAt(0)) && s.chars().allMatch(Chars::isAlphaNumeric);
+        return s.length() == 11 && Chars.isLetter(s.charAt(0)) && s.chars().allMatch(Chars::isAlphaNumeric);
     }
 
     static boolean isVarName(String s)

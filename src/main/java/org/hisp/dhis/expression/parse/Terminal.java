@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.Node;
-import org.hisp.dhis.expression.NodeType;
+import org.hisp.dhis.expression.ast.Node;
+import org.hisp.dhis.expression.ast.NodeType;
 
 /**
  * A {@link Terminal} is a building block of a grammar that does not consist and any smaller parts. They represent a simple value or leaf in the AST.

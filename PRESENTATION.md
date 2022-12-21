@@ -1,3 +1,22 @@
+## DHIS2 Expression Language
+
+What is DHIS2 expression language?
+
+```js
+    // math
+    1 + 1
+
+    // functions
+    log(100)
+
+    // logic
+    true && 2 > 1
+
+    // dataResolver
+    #{abcdefghijk}
+```
+
+
 ## Parsing - Grammars - Basics
 
 Butchered (but useful) terminology:
@@ -43,7 +62,7 @@ More (usually):
 
 ## Parser Jargon
 
-* _consume_ : moving current position forward in the input
+* _consume_: moving current position forward in the input
 * _gobble_: consume and discard input (ignore, like WS)
 
 
@@ -98,7 +117,7 @@ a + ((b * c) + d)
 
 Parsing is a left to right process...
 ```
-((a + b) * c)
+((a + b) * c) + d
 ```
 😩 that isn't right... lets go back and try again, this time trying something different
 ```
@@ -121,8 +140,9 @@ better 😌
 
 https://en.wikipedia.org/wiki/Parsing_expression_grammar
 
-* Unlike CFGs, PEGs cannot be ambiguous
-* if a string parses, it has exactly one valid parse tree 
+* PEGs cannot be ambiguous (unlike CFGs)
+* if a string parses, it has exactly one valid parse tree
+* (presumably: OR not allowed in production rules) 
 
 The toy example again, defined slightly different
 ```
@@ -176,7 +196,7 @@ What if operators are leaves? We get:
 ```
 a, +, b, *, c, +, d 
 ```
-Everything is in a "flat" sequence.
+Everything is in a "flat" sequence of typed nodes.
 
 Now we walk the "tree" and merge only the operator with the highest precedence 
 into a structured operator with children:
@@ -192,36 +212,38 @@ The time is still linear as there is a fixed number of operators to do.
 
 ## CFG vs PEG
 
-CFGs
+CFGs (ANTLR)
 
 * bad syntax choices ("collisions") are first recognised much later (solver hides them)
 * solver means a framework is used, which means limitations
 * multiple transformations because of the layers of abstraction
 * whitespace is hard to control as it is implicitly assumed 
-
+* worst case complexity is factorial  
+* => bend your problem to suit the parser
 
 PEGs
 
-* decidability problem forces to recognise and solve collisions are right away
-* "special" handling is not different
+* decidability problem forces to recognise and solve collisions right away
+* language methods are the "framework"
 * direct translation (as complicated as needed but not more)
-* just methods calling each other with convenience layer on top
+* just methods calling each other (possibly with a convenience layer on top)
 * whitespace is no different but needs explicit consideration and modelling
-
-
+* generally: "special" handling is not different
+* worst case complexity is linear*
+* => write the parser to suit the problem
 
 ## How do PEGs work?
 
-
+Key idea:
 ```java
 void what(Input in, Context ctx);
 ```
-* _what_ is the name of the non-terminal or terminal processed
+* _what_ is the name of the token/block processed
 * `Input` 
-  * is whatever is processed and "consumed"
+  * is whatever is processed and "consumed" while parsing
 * `Context` 
-  * is whatever is build, 
-  * usually emitting the base data for creating nodes in an AST
+  * is whatever is build, the "output"
+  * usually emitting the base dataResolver for creating nodes in an AST
   * also might hold state like lookup by name
 
 Example Grammar:
@@ -233,24 +255,27 @@ op   = '+' | '*'
 PEG parser:
 ```java
 void expr(Input in, Context ctx) {
+    term(in, ctx);
+    char c = in.lookahead();
+    while (c == '+' || c == '*') { // isOperator(c)
+        op(in, ctx);
         term(in, ctx);
-    char c = in.peek();
-    while (c == '+' || c == '*') {
-        operator(in, ctx);
-        term(in, ctx);
+        c = in.lookahead();
     }
 }
 void term(Input in, Context ctx) {
-    in.skipWhitespace();
-    char c = in.peek();
+    in.consumeWhitespace();
+    char c = in.lookahead();
     if (isDigit(c)) {
         number(in, ctx);
-    } else {
+    } else if (isLetter(c)){
         constant(in, ctx);
+    } else {
+        throw in.error();    
     }
-    in.skipWhitespace();
+    in.consumeWhitespace();
 }
-void operator(Input in, Context ctx) {
+void op(Input in, Context ctx) {
     char op = in.consume();
     ctx.emitOperator(op);
 }

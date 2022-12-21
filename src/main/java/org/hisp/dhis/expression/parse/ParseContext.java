@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.Node;
-import org.hisp.dhis.expression.NodeType;
+import org.hisp.dhis.expression.ast.Node;
+import org.hisp.dhis.expression.ast.NodeType;
 
 import java.util.function.Function;
 
@@ -59,5 +59,5 @@ public interface ParseContext
         Lookup named building blocks (non-terminals)
     */
 
-    NamedContext named();
+    NamedFragments fragments();
 }

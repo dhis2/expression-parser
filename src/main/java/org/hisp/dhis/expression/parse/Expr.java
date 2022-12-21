@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.NodeType;
-import org.hisp.dhis.expression.Nodes;
+import org.hisp.dhis.expression.ast.NodeType;
+import org.hisp.dhis.expression.ast.Nodes;
 import org.hisp.dhis.expression.parse.Chars.CharPredicate;
 
 import java.io.Serializable;
@@ -9,6 +9,14 @@ import java.util.stream.Stream;
 
 import static org.hisp.dhis.expression.parse.Chars.isUnaryOperator;
 
+/**
+ * An {@link Expr} is the fundamental building block of the expression grammar.
+ *
+ * Aside from the actual {@code expr} block this class also implements the data item parsing
+ * as it is too irregular to express it using composition.
+ *
+ * @author Jan Bernitt
+ */
 public final class Expr implements Serializable
 {
     public void error( String desc )
@@ -47,10 +55,10 @@ public final class Expr implements Serializable
     {
         while (true) {
             expr1(expr, ctx);
-            while (expr.peek() == '.' && expr.peek(1, Chars::isAlpha))
-            { // dot function call:
+            while (expr.peek() == '.' && expr.peek(1, Chars::isLetter))
+            { // dot function modifier:
                 expr.gobble(); // .
-                NamedContext.lookup(expr, Literals::parseName, ctx.named()::lookupMethod).parse(expr, ctx);
+                NamedFragments.lookup(expr, Literals::parseName, ctx.fragments()::lookupModifier).parse(expr, ctx);
                 expr.skipWS();
             }
             char c = expr.peek();
@@ -126,9 +134,9 @@ public final class Expr implements Serializable
             return;
         }
         // should be a top level function or constant then...
-        NamedContext.lookup(expr, Literals::parseName, name -> expr.peek() != '(' && expr.peek() != '{'
-                ? ctx.named().lookupConstant(name)
-                : ctx.named().lookupFunction( name )).parse( expr, ctx );
+        NamedFragments.lookup(expr, Literals::parseName, name -> expr.peek() != '(' && expr.peek() != '{'
+                ? ctx.fragments().lookupConstant(name)
+                : ctx.fragments().lookupFunction( name )).parse( expr, ctx );
         expr.skipWS();
     }
 
@@ -162,16 +170,16 @@ public final class Expr implements Serializable
         char c = expr.peek();
         if (c == '#' || c == 'A') {
             expr.gobble();
-            ctx.beginNode(NodeType.DATA_VALUE, ""+c);
+            ctx.beginNode(NodeType.DATA_ITEM, ""+c);
             expr.expect('{');
             data(expr, ctx);
             expr.expect('}');
         } else if (c == '"' || c == '\'') {
-            ctx.beginNode(NodeType.DATA_VALUE, "#");
+            ctx.beginNode(NodeType.DATA_ITEM, "#");
             ctx.addNode(NodeType.STRING, expr, Literals::parseString);
         } else if (c == 'P' && expr.peek("PS_EVENTDATE:")) {
             expr.gobble(13);
-            ctx.beginNode(NodeType.DATA_VALUE, "#");
+            ctx.beginNode(NodeType.DATA_ITEM, "#");
             ctx.beginNode(NodeType.ARGUMENT,  "0");
             ctx.addNode(NodeType.IDENTIFIER, "PS_EVENTDATE", Nodes.TagNode::new);
             expr.skipWS();
@@ -180,7 +188,7 @@ public final class Expr implements Serializable
         } else {
             expr.error("expected data item");
         }
-        ctx.endNode(NodeType.DATA_VALUE);
+        ctx.endNode(NodeType.DATA_ITEM);
     }
 
     private static boolean isTaggedUidGroup(String str) {

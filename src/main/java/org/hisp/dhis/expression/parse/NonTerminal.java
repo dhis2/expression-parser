@@ -1,6 +1,6 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.NodeType;
+import org.hisp.dhis.expression.ast.NodeType;
 
 /**
  * A {@link NonTerminal} is a building block of a grammar that consists of further blocks that either are {@link NonTerminal}s themselves or are {@link Terminal}s.

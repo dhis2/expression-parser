@@ -1,8 +1,8 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.Node;
-import org.hisp.dhis.expression.NodeType;
-import org.hisp.dhis.expression.Nodes;
+import org.hisp.dhis.expression.ast.Node;
+import org.hisp.dhis.expression.ast.NodeType;
+import org.hisp.dhis.expression.ast.Nodes;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -21,8 +21,8 @@ public final class Parser implements ParseContext {
         DEFAULT_FACTORIES.put(NodeType.PAR, Nodes.ParenthesesNode::new);
         DEFAULT_FACTORIES.put(NodeType.ARGUMENT, Nodes.ArgumentNode::new);
         DEFAULT_FACTORIES.put(NodeType.FUNCTION, Nodes.FunctionNode::new);
-        DEFAULT_FACTORIES.put(NodeType.METHOD, Nodes.MethodNode::new);
-        DEFAULT_FACTORIES.put(NodeType.DATA_VALUE, Nodes.DataValueNode::new);
+        DEFAULT_FACTORIES.put(NodeType.MODIFIER, Nodes.ModifierNode::new);
+        DEFAULT_FACTORIES.put(NodeType.DATA_ITEM, Nodes.DataItemNode::new);
 
         DEFAULT_FACTORIES.put(NodeType.UNARY_OPERATOR, Nodes.UnaryOperatorNode::new);
         DEFAULT_FACTORIES.put(NodeType.BINARY_OPERATOR, Nodes.BinaryOperatorNode::new);
@@ -39,27 +39,27 @@ public final class Parser implements ParseContext {
         DEFAULT_FACTORIES.put(NodeType.WILDCARD, Nodes.ConstantNode::new);
     }
 
-    public static Parser withDefaults(NamedContext named) {
-        return new Parser(named, new EnumMap<>(DEFAULT_FACTORIES));
+    public static Parser withFragments(NamedFragments fragments) {
+        return new Parser(fragments, new EnumMap<>(DEFAULT_FACTORIES));
     }
 
-    public static Node<?> parse(String expr, NamedContext context) {
-        Parser parser = Parser.withDefaults(context);
+    public static Node<?> parse(String expr, NamedFragments fragments) {
+        Parser parser = Parser.withFragments(fragments);
         Expr.expr(new Expr(expr), parser);
         Node<?> root = parser.getRoot();
         Node.groupOperators(root);
         return root;
     }
 
-    private final NamedContext named;
+    private final NamedFragments fragments;
     private final Map<NodeType, Node.Factory> factoryByType;
 
     private final LinkedList<Node<?>> stack = new LinkedList<>();
 
     private Node<?> root;
 
-    private Parser(NamedContext named, Map<NodeType, Node.Factory> factoryByType) {
-        this.named = named;
+    private Parser(NamedFragments fragments, Map<NodeType, Node.Factory> factoryByType) {
+        this.fragments = fragments;
         this.factoryByType = factoryByType;
     }
 
@@ -73,8 +73,8 @@ public final class Parser implements ParseContext {
     }
 
     @Override
-    public NamedContext named() {
-        return named;
+    public NamedFragments fragments() {
+        return fragments;
     }
 
     @Override

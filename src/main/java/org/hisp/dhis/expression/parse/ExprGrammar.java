@@ -1,6 +1,10 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.*;
+import org.hisp.dhis.expression.ast.DataItemType;
+import org.hisp.dhis.expression.ast.NamedFunction;
+import org.hisp.dhis.expression.ast.DataItemModifier;
+import org.hisp.dhis.expression.ast.NodeType;
+import org.hisp.dhis.expression.ast.Nodes;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,12 +39,12 @@ public interface ExprGrammar
     Production Rules
      */
 
-    List<NonTerminal> Methods = List.of( // (alphabetical)
-            method( NamedMethod.aggregationType, IDENTIFIER ),
-            method( NamedMethod.maxDate, DATE),
-            method( NamedMethod.minDate, DATE),
-            method( NamedMethod.periodOffset, INTEGER),
-            method( NamedMethod.stageOffset, INTEGER));
+    List<NonTerminal> Modifiers = List.of( // (alphabetical)
+            mod( DataItemModifier.aggregationType, IDENTIFIER ),
+            mod( DataItemModifier.maxDate, DATE),
+            mod( DataItemModifier.minDate, DATE),
+            mod( DataItemModifier.periodOffset, INTEGER),
+            mod( DataItemModifier.stageOffset, INTEGER));
 
     List<NonTerminal> BaseFunctions = List.of( // (alphabetical)
             fn( NamedFunction.firstNonNull , expr.plus() ),
@@ -112,15 +116,15 @@ public interface ExprGrammar
     );
 
     List<NonTerminal> DataValues = List.of( // (alphabetical)
-            data(DataValue.DATA_ELEMENT, data),
-            data(DataValue.ATTRIBUTE, data),
-            data(DataValue.CONSTANT, UID),
-            data(DataValue.PROGRAM_DATA_ELEMENT, UID, UID),
-            data(DataValue.PROGRAM_INDICATOR, UID),
-            data(DataValue.INDICATOR, UID),
-            data(DataValue.REPORTING_RATE, UID, IDENTIFIER.as(Nodes.ReportingRateTypeNode::new)),
-            data(DataValue.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new)),
-            data(DataValue.ORG_UNIT_GROUP, UID)
+            item(DataItemType.DATA_ELEMENT, data),
+            item(DataItemType.ATTRIBUTE, data),
+            item(DataItemType.CONSTANT, UID),
+            item(DataItemType.PROGRAM_DATA_ELEMENT, UID, UID),
+            item(DataItemType.PROGRAM_INDICATOR, UID),
+            item(DataItemType.INDICATOR, UID),
+            item(DataItemType.REPORTING_RATE, UID, IDENTIFIER.as(Nodes.ReportingRateTypeNode::new)),
+            item(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new)),
+            item(DataItemType.ORG_UNIT_GROUP, UID)
     );
 
     List<NonTerminal> Functions = Stream.of(BaseFunctions, AggregationFunctions, ProgramFunctions, DataValues)
@@ -139,25 +143,25 @@ public interface ExprGrammar
     // 3. evaluate the expression value (plug in 2.)
     // 4. Translate to SQL
 
-    static NonTerminal method(NamedMethod method, NonTerminal... args )
+    static NonTerminal mod(DataItemModifier modifier, NonTerminal... args )
     {
-        String name = method.name();
-        return call( NodeType.METHOD, name, '(',',', ')', args ).named(name);
+        String name = modifier.name();
+        return block( NodeType.MODIFIER, name, '(',',', ')', args ).named(name);
     }
 
     static NonTerminal fn(NamedFunction function, NonTerminal... args )
     {
         String name = function.getName();
-        return call( NodeType.FUNCTION, name, '(',',', ')', args ).named(name);
+        return block( NodeType.FUNCTION, name, '(',',', ')', args ).named(name);
     }
 
-    static NonTerminal data(DataValue value, NonTerminal... args)
+    static NonTerminal item(DataItemType value, NonTerminal... args)
     {
         String symbol = value.getSymbol();
-        return call(NodeType.DATA_VALUE, symbol, '{', '.','}', args).named(symbol);
+        return block(NodeType.DATA_ITEM, symbol, '{', '.','}', args).named(symbol);
     }
 
-    static NonTerminal call(NodeType type, String name, char start, char argsSeparator, char end, NonTerminal... args )
+    static NonTerminal block(NodeType type, String name, char start, char argsSeparator, char end, NonTerminal... args )
     {
         return ( expr, ctx ) -> {
             expr.expect(start);
@@ -183,10 +187,10 @@ public interface ExprGrammar
                     expr.gobble(); // separator
                     expr.skipWS();
                 }
-                if (type != NodeType.DATA_VALUE)
+                if (type != NodeType.DATA_ITEM)
                     ctx.beginNode( NodeType.ARGUMENT, "" + i );
                 arg.parse( expr, ctx );
-                if (type != NodeType.DATA_VALUE)
+                if (type != NodeType.DATA_ITEM)
                     ctx.endNode(NodeType.ARGUMENT);
             }
             ctx.endNode(type);

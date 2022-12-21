@@ -27,7 +27,7 @@ public interface Chars {
 
     static boolean isIdentifier(char c )
     {
-        return c == '_' || isAlpha( c );
+        return c == '_' || isLetter( c );
     }
 
     static boolean isBinaryOperator(char c )
@@ -64,7 +64,7 @@ public interface Chars {
         return c == ' ' || c == '\t' || c == '\n' || c == '\r';
     }
 
-    static boolean isAlpha(char c )
+    static boolean isLetter(char c )
     {
         return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
     }
@@ -76,7 +76,7 @@ public interface Chars {
 
     static boolean isAlphaNumeric( char c )
     {
-        return isAlpha( c ) || isDigit( c );
+        return isLetter( c ) || isDigit( c );
     }
 
     static boolean isDigit(char c )
