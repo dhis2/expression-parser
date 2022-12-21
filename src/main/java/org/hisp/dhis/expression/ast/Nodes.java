@@ -383,4 +383,10 @@ public interface Nodes {
             super(type, rawValue, Tag::valueOf, rethrowAs(Tag.class, Tag::name));
         }
     }
+
+    final class AggregationTypeNode extends SimpleNode<AggregationType> {
+        public AggregationTypeNode(NodeType type, String rawValue) {
+            super(type, rawValue, AggregationType::valueOf, rethrowAs(AggregationType.class, AggregationType::name));
+        }
+    }
 }

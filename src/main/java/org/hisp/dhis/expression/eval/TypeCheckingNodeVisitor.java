@@ -71,7 +71,7 @@ public class TypeCheckingNodeVisitor implements NodeVisitor {
 
     @Override
     public void visitFunction(Node<NamedFunction> function) {
-        if (checkArgumentTypesAreAssignable(function))
+        if (checkArgumentTypesAreAssignable(function, function.getValue().getParameterTypes()))
         {
             checkSameArgumentTypes(function);
         }
@@ -100,29 +100,27 @@ public class TypeCheckingNodeVisitor implements NodeVisitor {
             }
         }
         if (f.isVarargs() && expectedTypes.get(expectedTypes.size()-1).isSame()) {
-
+            //TODO ???
         }
     }
 
-    private boolean checkArgumentTypesAreAssignable(Node<NamedFunction> function) {
+    private boolean checkArgumentTypesAreAssignable(Node<?> node, List<ValueType> expectedTypes) {
         boolean allAssignable = true;
-        List<ValueType> expectedTypes = function.getValue().getParameterTypes();
-        for (int i = 0; i < function.size(); i++)
+        for (int i = 0; i < node.size(); i++)
         {
-            Node<?> argument = function.child(i);
+            Node<?> argument = node.child(i);
             ValueType actual = argument.getValueType();
             ValueType expected = i >= expectedTypes.size()
                     ? expectedTypes.get(expectedTypes.size()-1)
                     : expectedTypes.get(i);
-            allAssignable &= checkArgumentTypeIsAssignable(function, argument, expected, actual);
+            allAssignable &= checkArgumentTypeIsAssignable(node, argument, expected, actual);
         }
         return allAssignable;
     }
 
     @Override
     public void visitModifier(Node<DataItemModifier> modifier) {
-        Node<?> argument = modifier.child(0);
-        checkArgumentTypeIsAssignable(modifier, argument, modifier.getValue().getParameterType(), argument.getValueType());
+        checkArgumentTypesAreAssignable(modifier, modifier.getValue().getParameterTypes());
     }
 
     private boolean checkArgumentTypeIsAssignable(Node<?> called, Node<?> argument, ValueType expected, ValueType actual) {

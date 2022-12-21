@@ -24,8 +24,6 @@ public interface Literals {
                 return parseDate(expr);
             case UID:
                 return parseUid(expr);
-            case WILDCARD:
-                return parseWildcard(expr);
             case NAMED_VALUE:
             case IDENTIFIER:
                 return parseIdentifier(expr);
@@ -46,11 +44,6 @@ public interface Literals {
 
     static String parseIdentifier(Expr expr) {
         return expr.rawMatch("identifier", Chars::isIdentifier);
-    }
-
-    static String parseWildcard(Expr expr) {
-        expr.expect('*');
-        return "*";
     }
 
     static String parseString(Expr expr) {
@@ -157,6 +150,11 @@ public interface Literals {
 
     static String parseUid(Expr expr)
     {
+        char c = expr.peek();
+        if (c == '*') {
+            expr.expect('*');
+            return "*";
+        }
         Chars.CharPredicate alphaNumeric = Chars::isAlphaNumeric;
         return expr.rawMatch( "uid", Chars::isLetter,
                 alphaNumeric, alphaNumeric, alphaNumeric, alphaNumeric, alphaNumeric,

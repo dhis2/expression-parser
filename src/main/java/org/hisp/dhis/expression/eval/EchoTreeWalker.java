@@ -120,11 +120,6 @@ public class EchoTreeWalker implements NodeVisitor {
     }
 
     @Override
-    public void visitWildcard(Node<Void> value) {
-        out.append("*");
-    }
-
-    @Override
     public void visitString(Node<String> value) {
         out.append("'").append(value.getRawValue()).append("'");
     }

@@ -34,7 +34,6 @@ public interface NodeVisitor extends Consumer<Node<?>>
 
             // simple nodes
             case BOOLEAN: visitBoolean((Node<Boolean>) node); break;
-            case WILDCARD: visitWildcard((Node<Void>) node); break;
             case UID: visitUid((Node<String>) node); break;
             case DATE: visitDate((Node<LocalDateTime>) node); break;
             case NULL: visitNull((Node<Void>) node); break;
@@ -98,11 +97,6 @@ public interface NodeVisitor extends Consumer<Node<?>>
     }
 
     default void visitNull(Node<Void> value)
-    {
-
-    }
-
-    default void visitWildcard(Node<Void> value)
     {
 
     }

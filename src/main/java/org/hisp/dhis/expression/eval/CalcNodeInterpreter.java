@@ -152,11 +152,6 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
     }
 
     @Override
-    public Object evalWildcard(Node<Void> value) {
-        return "*"; // basically just a special UID value
-    }
-
-    @Override
     public String evalString(Node<String> value) {
         return value.getValue();
     }

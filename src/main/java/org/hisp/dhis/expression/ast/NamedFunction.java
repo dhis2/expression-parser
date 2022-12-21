@@ -20,6 +20,7 @@ public enum NamedFunction implements Typed
     orgUnit_dataSet("orgUnit.dataSet", BOOLEAN, true, STRING),
     orgUnit_group("orgUnit.group", BOOLEAN, true, STRING),
     orgUnit_program("orgUnit.program", BOOLEAN, true, STRING),
+    removeZeros("removeZeros", SAME, SAME),
     subExpression("subExpression", SAME, SAME),
 
     // Aggregation Functions

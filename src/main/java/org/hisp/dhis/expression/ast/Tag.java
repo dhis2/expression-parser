@@ -14,13 +14,13 @@ public enum Tag
     co(UID.Type.CategoryOption),
     PS_EVENTDATE(null);
 
-    private final UID.Type parameterType;
+    private final UID.Type type;
 
-    Tag(UID.Type parameterType) {
-        this.parameterType = parameterType;
+    Tag(UID.Type type) {
+        this.type = type;
     }
 
-    public UID.Type getParameterType() {
-        return parameterType;
+    public UID.Type getIdType() {
+        return type;
     }
 }

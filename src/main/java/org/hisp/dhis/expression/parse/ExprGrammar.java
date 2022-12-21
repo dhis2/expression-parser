@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 public interface ExprGrammar
@@ -32,15 +33,15 @@ public interface ExprGrammar
 
     NonTerminal
             expr = Expr::expr,
-            data = Expr::data,
-            dataArgument = Expr::dataArgument;
+            dataItem = Expr::dataItem,
+            dataItemArg = Expr::dataItemInArgumentPosition;
 
     /*
     Production Rules
      */
 
     List<NonTerminal> Modifiers = List.of( // (alphabetical)
-            mod( DataItemModifier.aggregationType, IDENTIFIER ),
+            mod( DataItemModifier.aggregationType, IDENTIFIER.as(Nodes.AggregationTypeNode::new) ),
             mod( DataItemModifier.maxDate, DATE),
             mod( DataItemModifier.minDate, DATE),
             mod( DataItemModifier.periodOffset, INTEGER),
@@ -59,6 +60,7 @@ public interface ExprGrammar
             fn( NamedFunction.orgUnit_dataSet , UID.plus() ),
             fn( NamedFunction.orgUnit_group , UID.plus() ),
             fn( NamedFunction.orgUnit_program , UID.plus() ),
+            fn( NamedFunction.removeZeros , expr ),
             fn( NamedFunction.subExpression , expr )
     );
 
@@ -81,28 +83,28 @@ public interface ExprGrammar
             fn( NamedFunction.d2_ceil , expr ),
             fn( NamedFunction.d2_concatenate , expr.plus() ),
             fn( NamedFunction.d2_condition , STRING, expr, expr ),
-            fn( NamedFunction.d2_count , dataArgument),
+            fn( NamedFunction.d2_count , dataItemArg),
             fn( NamedFunction.d2_countIfCondition , expr, STRING),
-            fn( NamedFunction.d2_countIfValue , dataArgument, expr ),
-            fn( NamedFunction.d2_countIfZeroPos , dataArgument),
+            fn( NamedFunction.d2_countIfValue , dataItemArg, expr ),
+            fn( NamedFunction.d2_countIfZeroPos , dataItemArg),
             fn( NamedFunction.d2_daysBetween , expr, expr ),
             fn( NamedFunction.d2_extractDataMatrixValue , expr, expr ),
             fn( NamedFunction.d2_floor , expr ),
             fn( NamedFunction.d2_hasUserRole , expr ),
-            fn( NamedFunction.d2_hasValue , dataArgument),
+            fn( NamedFunction.d2_hasValue , dataItemArg),
             fn( NamedFunction.d2_inOrgUnitGroup , expr ),
             fn( NamedFunction.d2_lastEventDate , expr ),
             fn( NamedFunction.d2_left , expr, expr ),
             fn( NamedFunction.d2_length , expr ),
-            fn( NamedFunction.d2_maxValue , dataArgument),
+            fn( NamedFunction.d2_maxValue , dataItemArg),
             fn( NamedFunction.d2_minutesBetween , expr, expr ),
-            fn( NamedFunction.d2_minValue , dataArgument),
+            fn( NamedFunction.d2_minValue , dataItemArg),
             fn( NamedFunction.d2_modulus , expr, expr ),
             fn( NamedFunction.d2_monthsBetween , expr, expr ),
             fn( NamedFunction.d2_oizp , expr ),
             fn( NamedFunction.d2_relationshipCount , UID.quoted().maybe() ),
             fn( NamedFunction.d2_right , expr, expr ),
-            fn( NamedFunction.d2_round , expr ),
+            fn( NamedFunction.d2_round , expr, INTEGER.maybe() ),
             fn( NamedFunction.d2_split , expr, expr, expr ),
             fn( NamedFunction.d2_substring , expr, expr, expr ),
             fn( NamedFunction.d2_validatePattern , expr, expr ),
@@ -116,8 +118,8 @@ public interface ExprGrammar
     );
 
     List<NonTerminal> DataValues = List.of( // (alphabetical)
-            item(DataItemType.DATA_ELEMENT, data),
-            item(DataItemType.ATTRIBUTE, data),
+            item(DataItemType.DATA_ELEMENT, dataItem),
+            item(DataItemType.ATTRIBUTE, dataItem),
             item(DataItemType.CONSTANT, UID),
             item(DataItemType.PROGRAM_DATA_ELEMENT, UID, UID),
             item(DataItemType.PROGRAM_INDICATOR, UID),
@@ -179,7 +181,8 @@ public interface ExprGrammar
                         expr.expect(end);
                         return;
                     }
-                    expr.error( "Expected more arguments" );
+                    expr.error( "Expected more arguments: "
+                            + Stream.of(args).skip(i).map(a -> a.name() == null ? "?" : a.name()).collect(joining(",")) );
                 }
                 if (i > 0) {
                     if (c != argsSeparator)

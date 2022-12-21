@@ -36,7 +36,6 @@ public final class Parser implements ParseContext {
         DEFAULT_FACTORIES.put(NodeType.DATE, Nodes.DateNode::new);
         DEFAULT_FACTORIES.put(NodeType.BOOLEAN, Nodes.BooleanNode::new);
         DEFAULT_FACTORIES.put(NodeType.NULL, Nodes.ConstantNode::new);
-        DEFAULT_FACTORIES.put(NodeType.WILDCARD, Nodes.ConstantNode::new);
     }
 
     public static Parser withFragments(NamedFragments fragments) {

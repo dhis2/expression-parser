@@ -140,7 +140,12 @@ public final class Expr implements Serializable
         expr.skipWS();
     }
 
-    static void data(Expr expr, ParseContext ctx) {
+    /**
+     * Data item as it can occur on top level.
+     *
+     * This method only parses the inner expression between the curly braces.
+     */
+    static void dataItem(Expr expr, ParseContext ctx) {
         String raw = expr.rawMatch("data item", ce -> ce != '}');
         String[] parts = raw.split("\\.");
         if (Stream.of(parts).allMatch(Expr::isTaggedUidGroup)) {
@@ -154,11 +159,12 @@ public final class Expr implements Serializable
                     ctx.addNode(NodeType.IDENTIFIER, Nodes.TagNode::new, expr, e -> part.substring(0, nameEndPos));
                 }
                 Stream.of(part.substring(nameEndPos+1).split("&"))
-                        .forEachOrdered(uid -> ctx.addNode(uid.equals("*") ? NodeType.WILDCARD : NodeType.UID, uid));
+                        .forEachOrdered(uid -> ctx.addNode(NodeType.UID, uid));
                 ctx.endNode(NodeType.ARGUMENT);
             }
         } else if (Literals.isVarName(raw) )
         {
+            // programRuleVariableName
             ctx.addNode(NodeType.IDENTIFIER, raw);
         } else
         {
@@ -166,15 +172,16 @@ public final class Expr implements Serializable
         }
     }
 
-    static void dataArgument(Expr expr, ParseContext ctx) {
+    static void dataItemInArgumentPosition(Expr expr, ParseContext ctx) {
         char c = expr.peek();
         if (c == '#' || c == 'A') {
             expr.gobble();
             ctx.beginNode(NodeType.DATA_ITEM, ""+c);
             expr.expect('{');
-            data(expr, ctx);
+            dataItem(expr, ctx);
             expr.expect('}');
         } else if (c == '"' || c == '\'') {
+            // programRuleStringVariableName
             ctx.beginNode(NodeType.DATA_ITEM, "#");
             ctx.addNode(NodeType.STRING, expr, Literals::parseString);
         } else if (c == 'P' && expr.peek("PS_EVENTDATE:")) {

@@ -176,7 +176,7 @@ public interface Node<T> extends Typed {
 
     /**
      * Iterate this node's modifiers.
-     * 
+     *
      * @return all modifier nodes attached to this node, empty if there are none or a node cannot have modifiers
      */
     default Iterable<Node<?>> modifiers() {

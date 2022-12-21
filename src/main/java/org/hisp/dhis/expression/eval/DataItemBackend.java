@@ -30,6 +30,7 @@ public interface DataItemBackend {
     final class DataItem {
 
         public final DataItemType type;
+        //TODO sometimes uid1 can have multiple values combined with & - this is not reflected here
         public final List<UID> uids;
 
         public DataItem(DataItemType type, List<UID> uids) {

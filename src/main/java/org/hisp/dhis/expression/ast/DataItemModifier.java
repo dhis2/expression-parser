@@ -1,5 +1,7 @@
 package org.hisp.dhis.expression.ast;
 
+import java.util.List;
+
 /**
  * A.K.A "dot functions"
  *
@@ -12,12 +14,13 @@ public enum DataItemModifier implements Typed
     maxDate(ValueType.DATE),
     minDate( ValueType.DATE),
     periodOffset(ValueType.NUMBER),
-    stageOffset(ValueType.NUMBER);
+    stageOffset(ValueType.NUMBER),
+    yearToDate();
 
-    private final ValueType parameterType;
+    private final List<ValueType> parameterTypes;
 
-    DataItemModifier(ValueType parameterType) {
-        this.parameterType = parameterType;
+    DataItemModifier(ValueType... parameterTypes) {
+        this.parameterTypes = List.of(parameterTypes);
     }
 
     @Override
@@ -25,7 +28,7 @@ public enum DataItemModifier implements Typed
         return ValueType.SAME;
     }
 
-    public ValueType getParameterType() {
-        return parameterType;
+    public List<ValueType> getParameterTypes() {
+        return parameterTypes;
     }
 }

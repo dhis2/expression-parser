@@ -26,7 +26,6 @@ public enum NodeType
     // constants
     NULL,
     BOOLEAN,
-    WILDCARD
     ;
 
     public boolean isOperator() {

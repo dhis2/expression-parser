@@ -35,7 +35,6 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
 
             // simple nodes
             case BOOLEAN: return evalBoolean((Node<Boolean>) node);
-            case WILDCARD: return evalWildcard((Node<Void>) node);
             case UID: return evalUid((Node<String>) node);
             case DATE: return evalDate((Node<LocalDateTime>) node);
             case NULL: return evalNull((Node<Void>) node);
@@ -80,8 +79,6 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
     T evalBoolean(Node<Boolean> value);
 
     T evalNull(Node<Void> value);
-
-    T evalWildcard(Node<Void> value);
 
     T evalString(Node<String> value);
 
