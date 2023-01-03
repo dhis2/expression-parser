@@ -1,8 +1,12 @@
-package org.hisp.dhis.expression.ast;
+package org.hisp.dhis.expression.spi;
 
+import lombok.Value;
+
+@Value
 public class UID {
 
-    enum Type {
+    @SuppressWarnings("java:S115")
+    public enum Type {
         Attribute,
         AttributeOptionCombo,
         CategoryOption,
@@ -17,22 +21,16 @@ public class UID {
         Program,
         ProgramIndicator,
         ProgramVariable,
-        ProgramStage
+        ProgramStage,
+        // not a UID but an Identifier
+        ReportingRateType
     }
 
-    private final Type type;
-    private final String value;
+    Type type;
+    String value;
 
-    public UID(Type type, String value) {
-        this.type = type;
-        this.value = value;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public String getValue() {
+    @Override
+    public String toString() {
         return value;
     }
 }

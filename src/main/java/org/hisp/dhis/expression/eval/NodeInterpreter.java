@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression.eval;
 
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.ast.DataItemType;
+import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
 import org.hisp.dhis.expression.ast.NamedValue;

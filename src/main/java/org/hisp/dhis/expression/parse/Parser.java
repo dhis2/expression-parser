@@ -27,10 +27,10 @@ public final class Parser implements ParseContext {
         DEFAULT_FACTORIES.put(NodeType.UNARY_OPERATOR, Nodes.UnaryOperatorNode::new);
         DEFAULT_FACTORIES.put(NodeType.BINARY_OPERATOR, Nodes.BinaryOperatorNode::new);
 
-        DEFAULT_FACTORIES.put(NodeType.STRING, Nodes.StringNode::new);
-        DEFAULT_FACTORIES.put(NodeType.NAMED_VALUE, Nodes.SimpleTextNode::new);
-        DEFAULT_FACTORIES.put(NodeType.UID, Nodes.SimpleTextNode::new);
-        DEFAULT_FACTORIES.put(NodeType.IDENTIFIER, Nodes.SimpleTextNode::new);
+        DEFAULT_FACTORIES.put(NodeType.STRING, Nodes.Utf8StringNode::new);
+        DEFAULT_FACTORIES.put(NodeType.NAMED_VALUE, Nodes.TextNode::new);
+        DEFAULT_FACTORIES.put(NodeType.UID, Nodes.TextNode::new);
+        DEFAULT_FACTORIES.put(NodeType.IDENTIFIER, Nodes.TextNode::new);
         DEFAULT_FACTORIES.put(NodeType.NUMBER, Nodes.NumberNode::new);
         DEFAULT_FACTORIES.put(NodeType.INTEGER, Nodes.IntegerNode::new);
         DEFAULT_FACTORIES.put(NodeType.DATE, Nodes.DateNode::new);

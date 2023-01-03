@@ -1,4 +1,4 @@
-package org.hisp.dhis.expression.eval;
+package org.hisp.dhis.expression.spi;
 
 import org.hisp.dhis.expression.ast.NamedValue;
 

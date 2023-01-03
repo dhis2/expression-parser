@@ -1,5 +1,10 @@
 package org.hisp.dhis.expression.ast;
 
+import org.hisp.dhis.expression.spi.DataItem;
+import org.hisp.dhis.expression.spi.DataItemModifiers;
+import org.hisp.dhis.expression.spi.DataItemType;
+import org.hisp.dhis.expression.spi.UID;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,8 +119,8 @@ public interface Nodes {
         }
 
         @Override
-        public final void transform(java.util.function.UnaryOperator<List<Node<?>>> transformer) {
-            children = transformer.apply(children);
+        public final void transform(BiFunction<Node<?>,List<Node<?>>,List<Node<?>>> transformer) {
+            children = transformer.apply(this, children);
             children.forEach(c -> c.transform(transformer));
         }
 
@@ -208,6 +213,44 @@ public interface Nodes {
         public ValueType getValueType() {
             return ValueType.UNKNOWN;
         }
+
+        @Override
+        public DataItem toDataItem() {
+            return child(0).getType() == NodeType.ARGUMENT ? toDataItemInternal() : null;
+        }
+
+        private DataItem toDataItemInternal() {
+            List<List<UID>> idGroups = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
+            DataItemType itemType = getValue();
+            for (int i = 0; i < size(); i++) {
+                Node<?> arg = child(i);
+                Node<?> argC0 = arg.child(0);
+                UID.Type type = argC0.getType() == NodeType.IDENTIFIER
+                        ? ((Tag)argC0.getValue()).getIdType()
+                        : itemType.getType(size(), i);
+                idGroups.set(i, arg.children()
+                        .filter(n -> n.getType() == NodeType.UID)
+                        .map(n -> new UID(type, n.getRawValue()))
+                        .collect(toList()));
+            }
+            return new DataItem(itemType, idGroups.get(0).get(0), idGroups.get(1), idGroups.get(2), dataItemModifiersOf(modifiers));
+        }
+
+        static DataItemModifiers dataItemModifiersOf(List<Node<?>> modifiers) {
+            DataItemModifiers.DataItemModifiersBuilder mods = DataItemModifiers.builder();
+            modifiers.forEach(mod -> {
+                    switch ((DataItemModifier)mod.getValue()) {
+                        case aggregationType: mods.aggregationType( (AggregationType) mod.child(0).getValue()); break;
+                        case maxDate: mods.maxDate((LocalDateTime) mod.child(0).getValue()); break;
+                        case minDate: mods.minDate( (LocalDateTime) mod.child(0).getValue()); break;
+                        case periodOffset: mods.periodOffset( (Integer) mod.child(0).getValue()); break;
+                        case stageOffset: mods.stageOffset((Integer) mod.child(0).getValue()); break;
+                        case yearToDate: mods.yearToDate( true); break;
+                        case periodAggregation: mods.periodAggregation(true); break;
+                    }
+                });
+            return mods.build();
+        }
     }
 
     abstract class SimpleNode<T> extends AbstractNode<T> {
@@ -226,18 +269,18 @@ public interface Nodes {
         }
     }
 
-    class SimpleTextNode extends SimpleNode<String> {
+    class TextNode extends SimpleNode<String> {
 
-        public SimpleTextNode(NodeType type, String rawValue) {
+        public TextNode(NodeType type, String rawValue) {
             super(type, rawValue, Function.identity());
         }
 
     }
 
-    final class StringNode extends SimpleNode<String> {
+    final class Utf8StringNode extends SimpleNode<String> {
 
-        public StringNode(NodeType type, String rawValue) {
-            super(type, rawValue, StringNode::decode);
+        public Utf8StringNode(NodeType type, String rawValue) {
+            super(type, rawValue, Utf8StringNode::decode);
         }
 
         static String decode(String rawValue) {

@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression.eval;
 
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.ast.DataItemType;
+import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
 import org.hisp.dhis.expression.ast.NamedValue;
@@ -30,7 +30,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
             case PAR: visitParentheses((Node<Void>) node); break;
             case FUNCTION: visitFunction((Node<NamedFunction>) node); break;
             case MODIFIER: visitModifier((Node<DataItemModifier>) node); break;
-            case DATA_ITEM: visitDataValue((Node<DataItemType>) node); break;
+            case DATA_ITEM: visitDataItem((Node<DataItemType>) node); break;
 
             // simple nodes
             case BOOLEAN: visitBoolean((Node<Boolean>) node); break;
@@ -70,7 +70,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
 
     }
 
-    default void visitDataValue(Node<DataItemType> data) {
+    default void visitDataItem(Node<DataItemType> data) {
 
     }
 

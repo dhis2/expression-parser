@@ -1,5 +1,7 @@
 package org.hisp.dhis.expression.ast;
 
+import org.hisp.dhis.expression.spi.UID;
+
 /**
  * Tags allowed to use in data item positions before a UID.
  * <pre>
@@ -12,7 +14,7 @@ public enum Tag
     deGroup(UID.Type.DateElementGroup),
     coGroup(UID.Type.CategoryOptionGroup),
     co(UID.Type.CategoryOption),
-    PS_EVENTDATE(null);
+    PS_EVENTDATE(UID.Type.ProgramStage);
 
     private final UID.Type type;
 

@@ -1,19 +1,20 @@
 package org.hisp.dhis.expression.eval;
 
+import lombok.RequiredArgsConstructor;
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.ast.DataItemType;
+import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
 import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
-import org.hisp.dhis.expression.ast.UID;
 import org.hisp.dhis.expression.ast.UnaryOperator;
-import org.hisp.dhis.expression.eval.DataItemBackend.DataItemModifiers;
+import org.hisp.dhis.expression.spi.DataItem;
+import org.hisp.dhis.expression.spi.ExpressionBackend;
 
+import java.lang.reflect.Array;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
@@ -24,17 +25,16 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Jan Bernitt
  */
+@RequiredArgsConstructor
 public class CalcNodeInterpreter implements NodeInterpreter<Object> {
 
     private final ExpressionBackend backend;
-
-    private DataItemModifiers modifiers = new DataItemModifiers();
+    private final Map<String, Object> programRuleVariableValues;
+    private final Map<DataItem, Object> dataItemValues;
+    private int dataItemIndex = 0;
 
     public CalcNodeInterpreter() {
-        this((item, mods) -> item.toString());
-    }
-    public CalcNodeInterpreter(ExpressionBackend backend) {
-        this.backend = backend;
+        this(items -> Map.of(), Map.of(), Map.of());
     }
 
     @Override
@@ -74,11 +74,18 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
 
     @Override
     public Object evalFunction(Node<NamedFunction> function) {
+        if (function.getValue().isAggregating()) {
+            return evalAggFunction(function);
+        }
         switch (function.getValue()) {
             case firstNonNull: return backend.firstNonNull(function.children()
                     .map(node -> node.eval(this)).collect(toList()));
+            // "not implemented yet" => null
+            default: return null;
         }
+    }
 
+    private Object evalAggFunction(Node<NamedFunction> function) {
         //TODO for aggregate functions
         // - find all data items in the subtree
         // - fetch each of their values array (period as extra dimension) and store in map
@@ -87,43 +94,27 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
         //   from a map => this object needs a map from DataItemId to values and an "current index"
         //   and the evalDataItem needs to first check that map before it loads via backend
         // - clear the map (because the values would only be valid when used with the same modifiers)
+
         return null;
     }
 
     @Override
     public Void evalModifier(Node<DataItemModifier> modifier) {
-        Node<?> arg = modifier.child(0);
-        switch (modifier.getValue()) {
-            case aggregationType: modifiers.aggregationType = evalToString(arg); break;
-            case maxDate: modifiers.maxDate = evalToDate(arg); break;
-            case minDate: modifiers.minDate = evalToDate(arg); break;
-            case periodOffset: modifiers.periodOffset = evalToNumber(arg).intValue(); break;
-            case stageOffset: modifiers.stageOffset = evalToNumber(arg).intValue(); break;
-        }
         // modifiers do not have a return value
-        // they only modify the backend context
+        // they only modify the evaluation context
         return null;
     }
 
     @Override
     public Object evalDataItem(Node<DataItemType> item) {
-        modifiers = new DataItemModifiers(); // reset
-        // update modifiers for this item
-        item.modifiers().forEach(mod -> mod.eval(this));
-        //TODO subtree to List<UID>
-
-
-        List<UID> ids = new ArrayList<>();
-        for (int i = 0; i < item.size(); i++) {
-            Node<?> arg = item.child(i);
-            Node<?> param = arg.child(0);
-            if (param.getType() == NodeType.IDENTIFIER) {
-
-            } else {
-
-            }
+        Node<?> c0 = item.child(0);
+        if (item.size() == 1 && (c0.getType() == NodeType.STRING || c0.getType() == NodeType.IDENTIFIER)) {
+            return programRuleVariableValues.get(evalToString(c0));
         }
-        return this.backend.dataValue(null, modifiers);
+        Object value = dataItemValues.get(item.toDataItem());
+        return value != null && value.getClass().isArray()
+                ? Array.get(value, dataItemIndex)
+                : value;
     }
 
     @Override
@@ -180,35 +171,15 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
     }
 
     private String evalToString(Node<?> node) {
-        return eval(node, CalcNodeInterpreter::castToString);
+        return eval(node, String.class::cast);
     }
 
     private Boolean evalToBoolean(Node<?> node) {
-        return eval(node, CalcNodeInterpreter::castToBoolean);
+        return eval(node, Boolean.class::cast);
     }
 
     private Number evalToNumber(Node<?> node) {
-        return eval(node, CalcNodeInterpreter::castToNumber);
-    }
-
-    private LocalDateTime evalToDate(Node<?> node) {
-        return eval(node, CalcNodeInterpreter::castToDate);
-    }
-
-    static String castToString(Object value) {
-        return (String) value;
-    }
-
-    static Boolean castToBoolean(Object value) {
-        return (Boolean) value;
-    }
-
-    static Number castToNumber(Object value) {
-        return (Number) value;
-    }
-
-    static LocalDateTime castToDate(Object value) {
-        return (LocalDateTime) value;
+        return eval(node, Number.class::cast);
     }
 
 }

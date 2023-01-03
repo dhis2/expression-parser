@@ -7,7 +7,11 @@ import org.hisp.dhis.expression.parse.ExprGrammar;
 import org.hisp.dhis.expression.parse.FragmentContext;
 import org.hisp.dhis.expression.parse.NamedFragments;
 import org.hisp.dhis.expression.parse.Parser;
+import org.hisp.dhis.expression.spi.DataItem;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

@@ -1,9 +1,14 @@
 package org.hisp.dhis.expression.ast;
 
+import org.hisp.dhis.expression.spi.DataItem;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -96,17 +101,6 @@ public interface Node<T> extends Typed {
         walker.accept(this);
     }
 
-    /**
-     * Interpretation of this node (subtree) using dynamic dispatch pattern.
-     *
-     * @param interpreter a interpreter function that converts this the subtree starting from this node to a value
-     * @return result of the node interpretation
-     * @param <R> type of the result value
-     */
-    default <R> R eval(Function<Node<?>, R> interpreter) {
-        return interpreter.apply(this);
-    }
-
     default void walkChildren(Consumer<Node<?>> walker, BiConsumer<Node<?>, Node<?>> separator) {
         Node<?> last = null;
         for (int i = 0; i < size(); i++)
@@ -118,6 +112,49 @@ public interface Node<T> extends Typed {
             child.walk(walker);
             last = child;
         }
+    }
+
+    /**
+     * Interpretation of this node (subtree) using dynamic dispatch pattern.
+     *
+     * @param interpreter a interpreter function that converts this the subtree starting from this node to a value
+     * @return result of the node interpretation
+     * @param <R> type of the result value
+     */
+    default <R> R eval(Function<Node<?>, R> interpreter) {
+        return interpreter.apply(this);
+    }
+
+    /**
+     * Unfiltered aggregation.
+     *
+     * @see #aggregate(Object, Function, BiConsumer, Predicate)
+     */
+    default <A, E> A aggregate(A init, Function<Node<?>, E> eval, BiConsumer<A, E> agg) {
+        return aggregate(init, eval, agg, node -> true);
+    }
+
+    /**
+     * Filtered aggregation.
+     *
+     * In place aggregation of values from the subtree of this node.
+     *
+     * @param init the initial aggregation value
+     * @param eval evaluates each node of the subtree to a value for aggregation
+     * @param agg the function to add a non-null value to the aggregation state
+     * @param filter filter to restrict visitation to subset of nodes, filtered nodes are not evaluated nor aggregated
+     * @return the initial aggregation value after the aggregation, this is the same instance that probably changed internally
+     * @param <A> type of aggregation state (result)
+     * @param <E> type of the elements added to the aggregation state
+     */
+    default <A, E> A aggregate(A init, Function<Node<?>, E> eval, BiConsumer<A, E> agg, Predicate<Node<?>> filter) {
+        visit(node -> {
+            E value = eval.apply(node);
+            if (value != null) {
+                agg.accept(init, value);
+            }
+        }, filter);
+        return init;
     }
 
     /**
@@ -175,6 +212,13 @@ public interface Node<T> extends Typed {
     }
 
     /**
+     * @return The {@link DataItem} equivalent of this node in case it is a data item node or null otherwise.
+     */
+    default DataItem toDataItem() {
+        return null;
+    }
+
+    /**
      * Iterate this node's modifiers.
      *
      * @return all modifier nodes attached to this node, empty if there are none or a node cannot have modifiers
@@ -193,7 +237,7 @@ public interface Node<T> extends Typed {
      *
      * @param transformer the children update function applied to all nodes with children
      */
-    default void transform(java.util.function.UnaryOperator<List<Node<?>>> transformer)
+    default void transform(BiFunction<Node<?>,List<Node<?>>,List<Node<?>>> transformer)
     {
         // by default: nothing to do assuming no children exist
     }
@@ -223,7 +267,7 @@ public interface Node<T> extends Typed {
      */
     static void groupUnaryOperators(Node<?> root, UnaryOperator op)
     {
-        root.transform(children -> {
+        root.transform((node, children) -> {
             Predicate<Node<?>> isUnary = child -> child.getValue() == op && child.isEmpty();
             if (children.stream().noneMatch(isUnary)) {
                 return children;
@@ -254,7 +298,7 @@ public interface Node<T> extends Typed {
      * @param op the operator to transform
      */
     static void groupBinaryOperators(Node<?> root, BinaryOperator op) {
-        root.transform(children -> {
+        root.transform((node, children) -> {
             Predicate<Node<?>> isBinary = child -> child.getValue() == op && child.isEmpty();
             if (children.stream().noneMatch(isBinary))
             {
@@ -288,7 +332,7 @@ public interface Node<T> extends Typed {
      * @param root the node to start the transformation from.
      */
     static void attachModifiers(Node<?> root) {
-        root.transform(children -> {
+        root.transform((node, children) -> {
             Predicate<Node<?>> isModifier = child -> child.getType() == NodeType.MODIFIER;
             if (children.stream().noneMatch(isModifier)) {
                 return children;
@@ -306,7 +350,20 @@ public interface Node<T> extends Typed {
                     }
                 }
             }
+            if (node.getValue() instanceof NamedFunction && ((NamedFunction) node.getValue()).isAggregating()) {
+                children.forEach(child -> child.visit(NodeType.DATA_ITEM,
+                        modified -> modified.addModifier(new Nodes.ModifierNode(NodeType.MODIFIER, DataItemModifier.periodAggregation.name()))));
+            }
             return children.stream().filter(not(isModifier)).collect(toList());
         });
+    }
+
+    static Set<DataItem> collectDataItems(Node<?> root) {
+        return root.aggregate(new HashSet<>(), Node::toDataItem, Set::add, node -> node.getType() == NodeType.DATA_ITEM);
+    }
+
+    static Set<String> collectProgramRuleVariables(Node<?> root) {
+        return root.aggregate(new HashSet<>(), node -> node.child(0).getRawValue(), Set::add,
+                node -> node.getType() == NodeType.DATA_ITEM && node.size() == 1 && node.child(0).getType() != NodeType.ARGUMENT);
     }
 }

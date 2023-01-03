@@ -1,4 +1,4 @@
-package org.hisp.dhis.expression.ast;
+package org.hisp.dhis.expression.spi;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public enum DataItemType
     // ('I' was already taken for program indicator)
     INDICATOR("N", UID.Type.Indicator),
     ORG_UNIT_GROUP("OUG", UID.Type.OrganisationUnitGroup),
-    REPORTING_RATE("R", UID.Type.DataSet),
+    REPORTING_RATE("R", UID.Type.DataSet, UID.Type.ReportingRateType),
     PROGRAM_VARIABLE("V", UID.Type.ProgramVariable);
 
     private final String symbol;
@@ -56,7 +56,7 @@ public enum DataItemType
      */
     private static final List<DataItemType> VALUES = List.of(values());
 
-    static DataItemType fromSymbol(String symbol) {
+    public static DataItemType fromSymbol(String symbol) {
         return VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
     }
 }

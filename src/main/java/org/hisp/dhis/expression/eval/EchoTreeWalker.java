@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression.eval;
 
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.ast.DataItemType;
+import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
 import org.hisp.dhis.expression.ast.NamedValue;
@@ -72,14 +72,14 @@ public class EchoTreeWalker implements NodeVisitor {
     }
 
     @Override
-    public void visitDataValue(Node<DataItemType> data) {
+    public void visitDataItem(Node<DataItemType> data) {
         Node<?> c0 = data.child(0);
-        if (c0.getType() == NodeType.STRING && data.size() == 1) {
+        if (data.size() == 1 && (c0.getType() == NodeType.STRING || c0.getType() == NodeType.IDENTIFIER)) {
             // programRuleStringVariableName
             c0.walk(this);
             return;
         }
-        boolean isPS_EVENTDATE = data.getValue() == DataItemType.DATA_ELEMENT && c0.child(0).getValue() == Tag.PS_EVENTDATE;
+        boolean isPS_EVENTDATE = c0.child(0).getValue() == Tag.PS_EVENTDATE;
         if (!isPS_EVENTDATE) {
             out.append(data.getValue().getSymbol());
             out.append('{');

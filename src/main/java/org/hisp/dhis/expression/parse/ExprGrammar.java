@@ -1,6 +1,6 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.ast.DataItemType;
+import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
 import org.hisp.dhis.expression.ast.NodeType;
@@ -190,10 +190,11 @@ public interface ExprGrammar
                     expr.gobble(); // separator
                     expr.skipWS();
                 }
-                if (type != NodeType.DATA_ITEM)
+                boolean wrapInArgument = arg != dataItem;
+                if (wrapInArgument)
                     ctx.beginNode( NodeType.ARGUMENT, "" + i );
                 arg.parse( expr, ctx );
-                if (type != NodeType.DATA_ITEM)
+                if (wrapInArgument)
                     ctx.endNode(NodeType.ARGUMENT);
             }
             ctx.endNode(type);

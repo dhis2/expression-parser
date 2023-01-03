@@ -15,7 +15,8 @@ public enum DataItemModifier implements Typed
     minDate( ValueType.DATE),
     periodOffset(ValueType.NUMBER),
     stageOffset(ValueType.NUMBER),
-    yearToDate();
+    yearToDate(),
+    periodAggregation();
 
     private final List<ValueType> parameterTypes;
 
