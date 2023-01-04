@@ -1,16 +1,16 @@
 package org.hisp.dhis.expression.eval;
 
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.spi.DataItemType;
-import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
+import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Tag;
 import org.hisp.dhis.expression.ast.UnaryOperator;
+import org.hisp.dhis.expression.spi.DataItemType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class EchoTreeWalker implements NodeVisitor {
 
@@ -137,7 +137,7 @@ public class EchoTreeWalker implements NodeVisitor {
     }
 
     @Override
-    public void visitDate(Node<LocalDateTime> value) {
+    public void visitDate(Node<LocalDate> value) {
         out.append(value.getValue());
     }
 }

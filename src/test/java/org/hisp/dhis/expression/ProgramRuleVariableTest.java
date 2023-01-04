@@ -1,9 +1,7 @@
 package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.parse.ExprGrammar;
-import org.hisp.dhis.expression.parse.FragmentContext;
-import org.hisp.dhis.expression.parse.NamedFragments;
+import org.hisp.dhis.expression.parse.ExpressionGrammar;
 import org.hisp.dhis.expression.parse.Parser;
 import org.junit.jupiter.api.Test;
 
@@ -23,10 +21,8 @@ class ProgramRuleVariableTest {
         assertEquals(Set.of("var1"), evaluate("#{var1}"));
     }
 
-    private static final NamedFragments FRAGMENTS = new FragmentContext(ExprGrammar.Constants, ExprGrammar.Functions, ExprGrammar.Modifiers);
-
-    private Set<String> evaluate(String expression) {
-        Node<?> root = Parser.parse(expression, FRAGMENTS);
+    private static Set<String> evaluate(String expression) {
+        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
         Node.groupOperators(root);
         return Node.collectProgramRuleVariables(root);
     }

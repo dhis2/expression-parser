@@ -56,9 +56,9 @@ public final class Expr implements Serializable
         while (true) {
             expr1(expr, ctx);
             while (expr.peek() == '.' && expr.peek(1, Chars::isLetter))
-            { // dot function modifier:
+            { // a dot modifier:
                 expr.gobble(); // .
-                NamedFragments.lookup(expr, Literals::parseName, ctx.fragments()::lookupModifier).parse(expr, ctx);
+                FragmentContext.lookup(expr, Literals::parseName, ctx::fragment).parse(expr, ctx);
                 expr.skipWS();
             }
             char c = expr.peek();
@@ -134,9 +134,7 @@ public final class Expr implements Serializable
             return;
         }
         // should be a top level function or constant then...
-        NamedFragments.lookup(expr, Literals::parseName, name -> expr.peek() != '(' && expr.peek() != '{'
-                ? ctx.fragments().lookupConstant(name)
-                : ctx.fragments().lookupFunction( name )).parse( expr, ctx );
+        FragmentContext.lookup(expr, Literals::parseName, ctx::fragment).parse( expr, ctx );
         expr.skipWS();
     }
 

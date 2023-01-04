@@ -2,22 +2,25 @@ package org.hisp.dhis.expression.eval;
 
 import lombok.RequiredArgsConstructor;
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.spi.DataItemType;
-import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
+import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.UnaryOperator;
 import org.hisp.dhis.expression.spi.DataItem;
+import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.spi.ExpressionBackend;
 
 import java.lang.reflect.Array;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
+import static org.hisp.dhis.expression.ast.NamedFunction.avg;
 
 /**
  * A {@link NodeInterpreter} that calculates the expression result value
@@ -32,32 +35,38 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
     private final Map<String, Object> programRuleVariableValues;
     private final Map<DataItem, Object> dataItemValues;
     private int dataItemIndex = 0;
-
     public CalcNodeInterpreter() {
-        this(items -> Map.of(), Map.of(), Map.of());
+        this(items -> null, Map.of(), Map.of());
     }
 
     @Override
     public Object evalBinaryOperator(Node<BinaryOperator> operator) {
-        Node<?> left = operator.child(0);
-        Node<?> right = operator.child(1);
+
         switch (operator.getValue()) {
-            case EQ: return BinaryOperator.equal(left.eval(this), right.eval(this));
-            case NEQ: return BinaryOperator.notEqual(left.eval(this), right.eval(this));
-            case AND: return BinaryOperator.and(left.eval(this), right.eval(this));
-            case OR: return BinaryOperator.or(left.eval(this), right.eval(this));
-            case LT: return BinaryOperator.lessThan(left.eval(this), right.eval(this));
-            case LE: return BinaryOperator.lessThanOrEqual(left.eval(this), right.eval(this));
-            case GT: return BinaryOperator.greaterThan(left.eval(this), right.eval(this));
-            case GE: return BinaryOperator.greaterThanOrEqual(left.eval(this), right.eval(this));
-            case ADD: return BinaryOperator.add(evalToNumber(left), evalToNumber(right));
-            case SUB: return BinaryOperator.subtract(evalToNumber(left), evalToNumber(right));
-            case MUL: return BinaryOperator.multiply(evalToNumber(left), evalToNumber(right));
-            case DIV: return BinaryOperator.divide(evalToNumber(left), evalToNumber(right));
-            case MOD: return BinaryOperator.modulo(evalToNumber(left), evalToNumber(right));
-            case EXP: return BinaryOperator.exp(evalToNumber(left), evalToNumber(right));
+            case EQ: return evalBinaryOperator(BinaryOperator::equal, operator, this::eval);
+            case NEQ: return evalBinaryOperator(BinaryOperator::notEqual, operator, this::eval);
+            case AND: return evalBinaryOperator(BinaryOperator::and, operator, this::eval);
+            case OR: return evalBinaryOperator(BinaryOperator::or, operator, this::eval);
+            case LT: return evalBinaryOperator(BinaryOperator::lessThan, operator, this::eval);
+            case LE: return evalBinaryOperator(BinaryOperator::lessThanOrEqual, operator, this::eval);
+            case GT: return evalBinaryOperator(BinaryOperator::greaterThan, operator, this::eval);
+            case GE: return evalBinaryOperator(BinaryOperator::greaterThanOrEqual, operator, this::eval);
+            case ADD: return evalBinaryOperator(BinaryOperator::add, operator, this::evalToNumber);
+            case SUB: return evalBinaryOperator(BinaryOperator::subtract, operator, this::evalToNumber);
+            case MUL: return evalBinaryOperator(BinaryOperator::multiply, operator, this::evalToNumber);
+            case DIV: return evalBinaryOperator(BinaryOperator::divide, operator, this::evalToNumber);
+            case MOD: return evalBinaryOperator(BinaryOperator::modulo, operator, this::evalToNumber);
+            case EXP: return evalBinaryOperator(BinaryOperator::exp, operator, this::evalToNumber);
             default: throw new UnsupportedOperationException();
         }
+    }
+
+    private static <T> Object evalBinaryOperator(java.util.function.BinaryOperator<T> op, Node<?> operator, Function<Node<?>, T> eval) {
+        Node<?> left = operator.child(0);
+        Node<?> right = operator.child(1);
+        T lVal = eval.apply(left);
+        T rVal = eval.apply(right);
+        return op.apply(lVal, rVal);
     }
 
     @Override
@@ -67,8 +76,7 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
             case NOT: return !evalToBoolean(operand);
             case PLUS: return evalToNumber(operand);
             case MINUS: return UnaryOperator.negate(evalToNumber(operand));
-            case DISTINCT: return operand.eval(this); //TODO? distinct? only in SQL?
-            default: throw new UnsupportedOperationException();
+            default: throw new UnsupportedOperationException("Unary operator not supported for direct evaluation: "+operator.getValue());
         }
     }
 
@@ -78,24 +86,36 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
             return evalAggFunction(function);
         }
         switch (function.getValue()) {
-            case firstNonNull: return backend.firstNonNull(function.children()
-                    .map(node -> node.eval(this)).collect(toList()));
+            case firstNonNull: return backend.firstNonNull(function.children().map(node -> node.eval(this)).collect(toList()));
             // "not implemented yet" => null
             default: return null;
         }
     }
 
-    private Object evalAggFunction(Node<NamedFunction> function) {
-        //TODO for aggregate functions
-        // - find all data items in the subtree
-        // - fetch each of their values array (period as extra dimension) and store in map
-        // - evaluate the subtree for each index of the resulting value array
-        //   instead of loading the data items the function passed here needs to pick the value
-        //   from a map => this object needs a map from DataItemId to values and an "current index"
-        //   and the evalDataItem needs to first check that map before it loads via backend
-        // - clear the map (because the values would only be valid when used with the same modifiers)
-
-        return null;
+    private Double evalAggFunction(Node<NamedFunction> function) {
+        List<DataItem> items = function.aggregate(new ArrayList<>(), Node::toDataItem, List::add, node -> node.getType() == NodeType.DATA_ITEM);
+        if (items.isEmpty()) throw new IllegalExpressionException("Aggregate function used without data item");
+        double[] val0 = (double[]) dataItemValues.get(items.get(0));
+        double[] values = new double[val0.length];
+        for (dataItemIndex = 0; dataItemIndex < values.length; dataItemIndex++) {
+            Number value = evalToNumber(function.child(0));
+            values[dataItemIndex] = value == null ? Double.NaN : value.doubleValue();
+        }
+        dataItemIndex = 0;
+        switch (function.getValue()) {
+            case avg: return backend.avg(values);
+            case count: return backend.count(values);
+            case max: return backend.max(values);
+            case median: return backend.median(values);
+            case min: return backend.min(values);
+            case percentileCont: return backend.percentileCont(values, evalToNumber(function.child(1)));
+            case stddev: return backend.stddev(values);
+            case stddevPop: return backend.stddevPop(values);
+            case stddevSamp: return backend.stddevSamp(values);
+            case sum: return backend.sum(values);
+            case variance: return backend.variance(values);
+            default: throw new UnsupportedOperationException();
+        }
     }
 
     @Override
@@ -158,7 +178,7 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
     }
 
     @Override
-    public LocalDateTime evalDate(Node<LocalDateTime> value) {
+    public LocalDate evalDate(Node<LocalDate> value) {
         return value.getValue();
     }
 
@@ -182,4 +202,7 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
         return eval(node, Number.class::cast);
     }
 
+    private Object eval(Node<?> node) {
+        return node.eval(this);
+    }
 }

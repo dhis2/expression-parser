@@ -4,20 +4,16 @@ import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.eval.EchoTreeWalker;
 import org.hisp.dhis.expression.eval.TypeCheckingNodeVisitor;
-import org.hisp.dhis.expression.util.DebugParseContext;
 import org.hisp.dhis.expression.parse.Expr;
-import org.hisp.dhis.expression.parse.ExprGrammar;
-import org.hisp.dhis.expression.parse.FragmentContext;
-import org.hisp.dhis.expression.parse.NamedFragments;
+import org.hisp.dhis.expression.parse.ExpressionGrammar;
 import org.hisp.dhis.expression.parse.ParseContext;
 import org.hisp.dhis.expression.parse.Parser;
+import org.hisp.dhis.expression.util.DebugParseContext;
 import org.junit.jupiter.api.Test;
 
 import java.util.EnumSet;
 
 class TestExpr {
-
-    private static final NamedFragments FRAGMENTS = new FragmentContext(ExprGrammar.Constants, ExprGrammar.Functions, ExprGrammar.Modifiers);
 
     @Test
     void test() {
@@ -121,11 +117,11 @@ class TestExpr {
         eval("if(true,'hello', firstNonNull(21))");
     }
 
-    private void eval(String expr) {
-        ParseContext ctx = new DebugParseContext(FRAGMENTS, System.out, EnumSet.noneOf(NodeType.class));
+    private static void eval(String expr) {
+        ParseContext ctx = new DebugParseContext(ExpressionGrammar.Fragments, System.out, EnumSet.noneOf(NodeType.class));
         //Expr.expr(new Expr(expr), ctx);
 
-        Parser ctx2 = Parser.withFragments(FRAGMENTS);
+        Parser ctx2 = Parser.withFragments(ExpressionGrammar.Fragments);
         Expr.expr(new Expr(expr), ctx2);
         Node<?> root = ctx2.getRoot();
         Node.attachModifiers(root);

@@ -6,7 +6,11 @@ import org.hisp.dhis.expression.ast.Nodes;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toUnmodifiableMap;
 
 /**
  * A {@link ParseContext} that builds a {@link Node}-tree using {@link Node.Factory}.
@@ -38,28 +42,38 @@ public final class Parser implements ParseContext {
         DEFAULT_FACTORIES.put(NodeType.NULL, Nodes.ConstantNode::new);
     }
 
-    public static Parser withFragments(NamedFragments fragments) {
+    public static Parser withFragments(List<NonTerminal> fragments) {
         return new Parser(fragments, new EnumMap<>(DEFAULT_FACTORIES));
     }
 
-    public static Node<?> parse(String expr, NamedFragments fragments) {
+    public static Node<?> parse(String expr, List<NonTerminal> fragments) {
         Parser parser = Parser.withFragments(fragments);
         Expr.expr(new Expr(expr), parser);
         Node<?> root = parser.getRoot();
+        Node.attachModifiers(root);
         Node.groupOperators(root);
         return root;
     }
 
-    private final NamedFragments fragments;
+    private final Map<String, NonTerminal> fragmentsByName;
     private final Map<NodeType, Node.Factory> factoryByType;
 
     private final LinkedList<Node<?>> stack = new LinkedList<>();
 
     private Node<?> root;
 
-    private Parser(NamedFragments fragments, Map<NodeType, Node.Factory> factoryByType) {
-        this.fragments = fragments;
+    private Parser(List<NonTerminal> fragments, Map<NodeType, Node.Factory> factoryByType) {
+        this.fragmentsByName = mapByName(fragments);
         this.factoryByType = factoryByType;
+    }
+
+    private static Map<String, NonTerminal> mapByName(List<NonTerminal> functions) {
+        return functions.stream().collect(toUnmodifiableMap(NonTerminal::name, Function.identity()));
+    }
+
+    public Parser withFragments(NonTerminal... fragments) {
+        this.fragmentsByName.putAll(mapByName(List.of(fragments)));
+        return this;
     }
 
     public Parser withFactory(NodeType type, Node.Factory factory) {
@@ -72,8 +86,8 @@ public final class Parser implements ParseContext {
     }
 
     @Override
-    public NamedFragments fragments() {
-        return fragments;
+    public NonTerminal fragment(String name) {
+        return fragmentsByName.get(name);
     }
 
     @Override

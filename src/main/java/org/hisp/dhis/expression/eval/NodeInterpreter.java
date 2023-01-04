@@ -1,14 +1,14 @@
 package org.hisp.dhis.expression.eval;
 
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.spi.DataItemType;
-import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
+import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.UnaryOperator;
+import org.hisp.dhis.expression.spi.DataItemType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.function.Function;
 
 /**
@@ -36,7 +36,7 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
             // simple nodes
             case BOOLEAN: return evalBoolean((Node<Boolean>) node);
             case UID: return evalUid((Node<String>) node);
-            case DATE: return evalDate((Node<LocalDateTime>) node);
+            case DATE: return evalDate((Node<LocalDate>) node);
             case NULL: return evalNull((Node<Void>) node);
             case NUMBER: return evalNumber((Node<Double>) node);
             case STRING: return evalString((Node<String>) node);
@@ -86,5 +86,5 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
 
     T evalUid(Node<String> value) ;
 
-    T evalDate(Node<LocalDateTime> value);
+    T evalDate(Node<LocalDate> value);
 }

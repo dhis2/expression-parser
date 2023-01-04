@@ -13,7 +13,7 @@ import java.util.function.Function;
  *
  * @author Jan Bernitt
  */
-public interface ParseContext
+public interface ParseContext extends FragmentContext
 {
     /*
         Building the AST
@@ -55,9 +55,4 @@ public interface ParseContext
         }
     }
 
-    /*
-        Lookup named building blocks (non-terminals)
-    */
-
-    NamedFragments fragments();
 }

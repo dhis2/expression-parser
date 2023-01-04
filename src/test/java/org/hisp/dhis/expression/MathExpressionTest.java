@@ -2,14 +2,15 @@ package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.eval.CalcNodeInterpreter;
-import org.hisp.dhis.expression.parse.ExprGrammar;
-import org.hisp.dhis.expression.parse.FragmentContext;
-import org.hisp.dhis.expression.parse.NamedFragments;
+import org.hisp.dhis.expression.parse.ExpressionGrammar;
 import org.hisp.dhis.expression.parse.Parser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Port of the ANTLR {@code MathExpressionTest}.
+ */
 class MathExpressionTest {
     @Test
     void testSum() {
@@ -82,10 +83,8 @@ class MathExpressionTest {
         Assertions.assertEquals(expected, actual.doubleValue());
     }
 
-    private static final NamedFragments FRAGMENTS = new FragmentContext(ExprGrammar.Constants, ExprGrammar.Functions, ExprGrammar.Modifiers);
-
-    private Number evaluate(String expression) {
-        Node<?> root = Parser.parse(expression, FRAGMENTS);
+    private static Number evaluate(String expression) {
+        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
         return (Number) root.eval(new CalcNodeInterpreter());
     }
 }

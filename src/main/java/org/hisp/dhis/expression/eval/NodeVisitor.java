@@ -1,15 +1,15 @@
 package org.hisp.dhis.expression.eval;
 
 import org.hisp.dhis.expression.ast.BinaryOperator;
-import org.hisp.dhis.expression.spi.DataItemType;
-import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
+import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.UnaryOperator;
+import org.hisp.dhis.expression.spi.DataItemType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.function.Consumer;
 
 /**
@@ -35,7 +35,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
             // simple nodes
             case BOOLEAN: visitBoolean((Node<Boolean>) node); break;
             case UID: visitUid((Node<String>) node); break;
-            case DATE: visitDate((Node<LocalDateTime>) node); break;
+            case DATE: visitDate((Node<LocalDate>) node); break;
             case NULL: visitNull((Node<Void>) node); break;
             case NUMBER: visitNumber((Node<Double>) node); break;
             case STRING: visitString((Node<String>) node); break;
@@ -115,7 +115,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
 
     }
 
-    default void visitDate(Node<LocalDateTime> value)
+    default void visitDate(Node<LocalDate> value)
     {
 
     }

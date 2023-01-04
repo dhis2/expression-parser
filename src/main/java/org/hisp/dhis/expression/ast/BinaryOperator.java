@@ -7,7 +7,9 @@ import java.util.List;
 import static java.lang.Double.isInfinite;
 import static java.lang.Double.isNaN;
 import static java.lang.String.format;
-import static org.hisp.dhis.expression.ast.ValueType.*;
+import static org.hisp.dhis.expression.ast.ValueType.BOOLEAN;
+import static org.hisp.dhis.expression.ast.ValueType.NUMBER;
+import static org.hisp.dhis.expression.ast.ValueType.SAME;
 
 /**
  *

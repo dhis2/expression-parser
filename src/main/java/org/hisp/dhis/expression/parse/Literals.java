@@ -139,10 +139,7 @@ public interface Literals {
         {
             expr.expect( "digit", Chars::isDigit);
         }
-        else
-        {
-            expr.expect( '-' );
-        }
+        expr.expect( '-' );
         expr.expect( "digit", Chars::isDigit);
         expr.gobbleIf(Chars::isDigit);
         return expr.raw( s );

@@ -334,6 +334,10 @@ public interface Node<T> extends Typed {
     static void attachModifiers(Node<?> root) {
         root.transform((node, children) -> {
             Predicate<Node<?>> isModifier = child -> child.getType() == NodeType.MODIFIER;
+            if (node.getValue() instanceof NamedFunction && ((NamedFunction) node.getValue()).isAggregating()) {
+                children.forEach(child -> child.visit(NodeType.DATA_ITEM,
+                        modified -> modified.addModifier(new Nodes.ModifierNode(NodeType.MODIFIER, DataItemModifier.periodAggregation.name()))));
+            }
             if (children.stream().noneMatch(isModifier)) {
                 return children;
             }
@@ -349,10 +353,6 @@ public interface Node<T> extends Typed {
                                 modified.addModifier(maybeModifier));
                     }
                 }
-            }
-            if (node.getValue() instanceof NamedFunction && ((NamedFunction) node.getValue()).isAggregating()) {
-                children.forEach(child -> child.visit(NodeType.DATA_ITEM,
-                        modified -> modified.addModifier(new Nodes.ModifierNode(NodeType.MODIFIER, DataItemModifier.periodAggregation.name()))));
             }
             return children.stream().filter(not(isModifier)).collect(toList());
         });

@@ -3,15 +3,16 @@ package org.hisp.dhis.expression.ast;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemModifiers;
 import org.hisp.dhis.expression.spi.DataItemType;
-import org.hisp.dhis.expression.spi.UID;
+import org.hisp.dhis.expression.spi.ID;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
@@ -220,17 +221,17 @@ public interface Nodes {
         }
 
         private DataItem toDataItemInternal() {
-            List<List<UID>> idGroups = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
+            List<List<ID>> idGroups = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
             DataItemType itemType = getValue();
             for (int i = 0; i < size(); i++) {
                 Node<?> arg = child(i);
                 Node<?> argC0 = arg.child(0);
-                UID.Type type = argC0.getType() == NodeType.IDENTIFIER
+                ID.Type type = argC0.getType() == NodeType.IDENTIFIER
                         ? ((Tag)argC0.getValue()).getIdType()
                         : itemType.getType(size(), i);
                 idGroups.set(i, arg.children()
                         .filter(n -> n.getType() == NodeType.UID)
-                        .map(n -> new UID(type, n.getRawValue()))
+                        .map(n -> new ID(type, n.getRawValue()))
                         .collect(toList()));
             }
             return new DataItem(itemType, idGroups.get(0).get(0), idGroups.get(1), idGroups.get(2), dataItemModifiersOf(modifiers));
@@ -239,12 +240,13 @@ public interface Nodes {
         static DataItemModifiers dataItemModifiersOf(List<Node<?>> modifiers) {
             DataItemModifiers.DataItemModifiersBuilder mods = DataItemModifiers.builder();
             modifiers.forEach(mod -> {
-                    switch ((DataItemModifier)mod.getValue()) {
-                        case aggregationType: mods.aggregationType( (AggregationType) mod.child(0).getValue()); break;
-                        case maxDate: mods.maxDate((LocalDateTime) mod.child(0).getValue()); break;
-                        case minDate: mods.minDate( (LocalDateTime) mod.child(0).getValue()); break;
-                        case periodOffset: mods.periodOffset( (Integer) mod.child(0).getValue()); break;
-                        case stageOffset: mods.stageOffset((Integer) mod.child(0).getValue()); break;
+                Supplier<Object> value = () -> mod.child(0).child(0).getValue();
+                switch ((DataItemModifier)mod.getValue()) {
+                        case aggregationType: mods.aggregationType( (AggregationType) value.get()); break;
+                        case maxDate: mods.maxDate((LocalDate) value.get()); break;
+                        case minDate: mods.minDate( (LocalDate) value.get()); break;
+                        case periodOffset: mods.periodOffset( (Integer) value.get()); break;
+                        case stageOffset: mods.stageOffset((Integer) value.get()); break;
                         case yearToDate: mods.yearToDate( true); break;
                         case periodAggregation: mods.periodAggregation(true); break;
                     }
@@ -376,10 +378,10 @@ public interface Nodes {
         }
     }
 
-    final class DateNode extends SimpleNode<LocalDateTime> {
+    final class DateNode extends SimpleNode<LocalDate> {
 
         public DateNode(NodeType type, String rawValue) {
-            super(type, rawValue, LocalDateTime::parse);
+            super(type, rawValue, LocalDate::parse);
         }
 
         @Override

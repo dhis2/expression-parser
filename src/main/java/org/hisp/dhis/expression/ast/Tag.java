@@ -1,6 +1,6 @@
 package org.hisp.dhis.expression.ast;
 
-import org.hisp.dhis.expression.spi.UID;
+import org.hisp.dhis.expression.spi.ID;
 
 /**
  * Tags allowed to use in data item positions before a UID.
@@ -11,18 +11,18 @@ import org.hisp.dhis.expression.spi.UID;
 @SuppressWarnings("java:S115")
 public enum Tag
 {
-    deGroup(UID.Type.DateElementGroup),
-    coGroup(UID.Type.CategoryOptionGroup),
-    co(UID.Type.CategoryOption),
-    PS_EVENTDATE(UID.Type.ProgramStage);
+    deGroup(ID.Type.DateElementGroupUID),
+    coGroup(ID.Type.CategoryOptionGroupUID),
+    co(ID.Type.CategoryOptionUID),
+    PS_EVENTDATE(ID.Type.ProgramStageUID);
 
-    private final UID.Type type;
+    private final ID.Type type;
 
-    Tag(UID.Type type) {
+    Tag(ID.Type type) {
         this.type = type;
     }
 
-    public UID.Type getIdType() {
+    public ID.Type getIdType() {
         return type;
     }
 }

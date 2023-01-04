@@ -2,35 +2,36 @@ package org.hisp.dhis.expression.util;
 
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
-import org.hisp.dhis.expression.parse.NamedFragments;
+import org.hisp.dhis.expression.parse.NonTerminal;
 import org.hisp.dhis.expression.parse.ParseContext;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.EnumSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 public class DebugParseContext implements ParseContext {
 
-    private final NamedFragments named;
+    private final List<NonTerminal> fragments;
     private final Appendable out;
     private final Set<NodeType> filter;
     private final LinkedList<NodeType> stack = new LinkedList<>();
     private String indent = "";
 
-    public DebugParseContext(NamedFragments named, Appendable out) {
-        this(named, out, EnumSet.of(NodeType.ARGUMENT));
+    public DebugParseContext(List<NonTerminal> fragments, Appendable out) {
+        this(fragments, out, EnumSet.of(NodeType.ARGUMENT));
     }
-    public DebugParseContext(NamedFragments named, Appendable out, Set<NodeType> filter ) {
-        this.named = named;
+    public DebugParseContext(List<NonTerminal> fragments, Appendable out, Set<NodeType> filter ) {
+        this.fragments = fragments;
         this.out = out;
         this.filter = filter;
     }
 
     @Override
-    public NamedFragments fragments() {
-        return named;
+    public NonTerminal fragment(String name) {
+        return fragments.stream().filter(f -> f.name().equals(name)).findFirst().orElse(null);
     }
 
     @Override

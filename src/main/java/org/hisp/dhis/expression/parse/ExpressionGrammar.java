@@ -1,10 +1,10 @@
 package org.hisp.dhis.expression.parse;
 
-import org.hisp.dhis.expression.spi.DataItemType;
-import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.DataItemModifier;
+import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Nodes;
+import org.hisp.dhis.expression.spi.DataItemType;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +14,7 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
-public interface ExprGrammar
+public interface ExpressionGrammar
 {
     /*
     Terminals (basic building blocks)
@@ -45,7 +45,8 @@ public interface ExprGrammar
             mod( DataItemModifier.maxDate, DATE),
             mod( DataItemModifier.minDate, DATE),
             mod( DataItemModifier.periodOffset, INTEGER),
-            mod( DataItemModifier.stageOffset, INTEGER));
+            mod( DataItemModifier.stageOffset, INTEGER),
+            mod( DataItemModifier.yearToDate));
 
     List<NonTerminal> BaseFunctions = List.of( // (alphabetical)
             fn( NamedFunction.firstNonNull , expr.plus() ),
@@ -139,6 +140,10 @@ public interface ExprGrammar
             NonTerminal.constant(NodeType.BOOLEAN, "false")
     );
 
+    List<NonTerminal> Fragments = Stream.of(Modifiers, Functions, Constants)
+            .flatMap(Collection::stream)
+            .collect(toUnmodifiableList());
+
     // Parse MOdes
     // 1. Description ( subst. UID with name of items)
     // 2. Find data items to load from database (indicators, validation rules, predictors)
@@ -168,7 +173,7 @@ public interface ExprGrammar
         return ( expr, ctx ) -> {
             expr.expect(start);
             ctx.beginNode( type, name );
-            for ( int i = 0; i < args.length || args[args.length-1].isVarargs(); i++ )
+            for ( int i = 0; i < args.length || args.length > 0 && args[args.length-1].isVarargs(); i++ )
             {
                 expr.skipWS();
                 NonTerminal arg = args[Math.min(i, args.length-1)];

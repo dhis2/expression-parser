@@ -2,7 +2,12 @@ package org.hisp.dhis.expression.ast;
 
 import java.util.List;
 
-import static org.hisp.dhis.expression.ast.ValueType.*;
+import static org.hisp.dhis.expression.ast.ValueType.BOOLEAN;
+import static org.hisp.dhis.expression.ast.ValueType.DATE;
+import static org.hisp.dhis.expression.ast.ValueType.NUMBER;
+import static org.hisp.dhis.expression.ast.ValueType.SAME;
+import static org.hisp.dhis.expression.ast.ValueType.STRING;
+import static org.hisp.dhis.expression.ast.ValueType.UNKNOWN;
 
 @SuppressWarnings("java:S115")
 public enum NamedFunction implements Typed

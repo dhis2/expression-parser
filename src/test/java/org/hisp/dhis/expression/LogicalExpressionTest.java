@@ -2,15 +2,16 @@ package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.eval.CalcNodeInterpreter;
-import org.hisp.dhis.expression.parse.ExprGrammar;
-import org.hisp.dhis.expression.parse.FragmentContext;
-import org.hisp.dhis.expression.parse.NamedFragments;
+import org.hisp.dhis.expression.parse.ExpressionGrammar;
 import org.hisp.dhis.expression.parse.Parser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * Port of the ANTLR {@code LogicalExpressionTest}.
+ */
 class LogicalExpressionTest {
 
     @Test
@@ -56,10 +57,8 @@ class LogicalExpressionTest {
         assertEquals( false, evaluate( "not true" ) );
     }
 
-    private static final NamedFragments FRAGMENTS = new FragmentContext(ExprGrammar.Constants, ExprGrammar.Functions, ExprGrammar.Modifiers);
-
-    private Boolean evaluate(String expression) {
-        Node<?> root = Parser.parse(expression, FRAGMENTS);
+    private static Boolean evaluate(String expression) {
+        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
         return (Boolean) root.eval(new CalcNodeInterpreter());
     }
 }
