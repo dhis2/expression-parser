@@ -1,4 +1,4 @@
-package org.hisp.dhis.expression.parse;
+package org.hisp.dhis.expression.syntax;
 
 /**
  * Named character sets.

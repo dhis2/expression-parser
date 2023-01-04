@@ -4,10 +4,10 @@ import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.eval.EchoTreeWalker;
 import org.hisp.dhis.expression.eval.TypeCheckingNodeVisitor;
-import org.hisp.dhis.expression.parse.Expr;
-import org.hisp.dhis.expression.parse.ExpressionGrammar;
-import org.hisp.dhis.expression.parse.ParseContext;
-import org.hisp.dhis.expression.parse.Parser;
+import org.hisp.dhis.expression.syntax.Expr;
+import org.hisp.dhis.expression.syntax.ExpressionGrammar;
+import org.hisp.dhis.expression.syntax.ParseContext;
+import org.hisp.dhis.expression.syntax.Parser;
 import org.hisp.dhis.expression.util.DebugParseContext;
 import org.junit.jupiter.api.Test;
 

@@ -1,4 +1,4 @@
-package org.hisp.dhis.expression.parse;
+package org.hisp.dhis.expression.syntax;
 
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;

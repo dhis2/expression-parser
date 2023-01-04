@@ -1,13 +1,13 @@
-package org.hisp.dhis.expression.parse;
+package org.hisp.dhis.expression.syntax;
 
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Nodes;
-import org.hisp.dhis.expression.parse.Chars.CharPredicate;
+import org.hisp.dhis.expression.syntax.Chars.CharPredicate;
 
 import java.io.Serializable;
 import java.util.stream.Stream;
 
-import static org.hisp.dhis.expression.parse.Chars.isUnaryOperator;
+import static org.hisp.dhis.expression.syntax.Chars.isUnaryOperator;
 
 /**
  * An {@link Expr} is the fundamental building block of the expression grammar.

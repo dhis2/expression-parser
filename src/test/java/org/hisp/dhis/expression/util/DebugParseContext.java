@@ -2,8 +2,8 @@ package org.hisp.dhis.expression.util;
 
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
-import org.hisp.dhis.expression.parse.NonTerminal;
-import org.hisp.dhis.expression.parse.ParseContext;
+import org.hisp.dhis.expression.syntax.NonTerminal;
+import org.hisp.dhis.expression.syntax.ParseContext;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;

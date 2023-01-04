@@ -2,8 +2,8 @@ package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.eval.CalcNodeInterpreter;
-import org.hisp.dhis.expression.parse.ExpressionGrammar;
-import org.hisp.dhis.expression.parse.Parser;
+import org.hisp.dhis.expression.syntax.ExpressionGrammar;
+import org.hisp.dhis.expression.syntax.Parser;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.ID;
 import org.junit.jupiter.api.Test;
