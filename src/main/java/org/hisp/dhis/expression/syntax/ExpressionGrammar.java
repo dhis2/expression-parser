@@ -14,6 +14,13 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
+/**
+ * Declaration of the DHIS2 expression language.
+ *
+ * The language is composed out of {@link Terminal}s and named {@link NonTerminal}s.
+ *
+ * @author Jan Bernitt
+ */
 public interface ExpressionGrammar
 {
     /*
@@ -34,7 +41,8 @@ public interface ExpressionGrammar
     NonTerminal
             expr = Expr::expr,
             dataItem = Expr::dataItem,
-            dataItemArg = Expr::dataItemInArgumentPosition;
+            dataItemHash = Expr::dataItemHash,
+            dataItemA = Expr::dataItemA;
 
     /*
     Production Rules
@@ -62,6 +70,7 @@ public interface ExpressionGrammar
             fn( NamedFunction.orgUnit_group , UID.plus() ),
             fn( NamedFunction.orgUnit_program , UID.plus() ),
             fn( NamedFunction.removeZeros , expr ),
+            //TODO make mod?
             fn( NamedFunction.subExpression , expr )
     );
 
@@ -84,22 +93,22 @@ public interface ExpressionGrammar
             fn( NamedFunction.d2_ceil , expr ),
             fn( NamedFunction.d2_concatenate , expr.plus() ),
             fn( NamedFunction.d2_condition , STRING, expr, expr ),
-            fn( NamedFunction.d2_count , dataItemArg),
+            fn( NamedFunction.d2_count , dataItem),
             fn( NamedFunction.d2_countIfCondition , expr, STRING),
-            fn( NamedFunction.d2_countIfValue , dataItemArg, expr ),
-            fn( NamedFunction.d2_countIfZeroPos , dataItemArg),
+            fn( NamedFunction.d2_countIfValue , dataItem, expr ),
+            fn( NamedFunction.d2_countIfZeroPos , dataItem),
             fn( NamedFunction.d2_daysBetween , expr, expr ),
             fn( NamedFunction.d2_extractDataMatrixValue , expr, expr ),
             fn( NamedFunction.d2_floor , expr ),
             fn( NamedFunction.d2_hasUserRole , expr ),
-            fn( NamedFunction.d2_hasValue , dataItemArg),
+            fn( NamedFunction.d2_hasValue , dataItem),
             fn( NamedFunction.d2_inOrgUnitGroup , expr ),
             fn( NamedFunction.d2_lastEventDate , expr ),
             fn( NamedFunction.d2_left , expr, expr ),
             fn( NamedFunction.d2_length , expr ),
-            fn( NamedFunction.d2_maxValue , dataItemArg),
+            fn( NamedFunction.d2_maxValue , dataItem),
             fn( NamedFunction.d2_minutesBetween , expr, expr ),
-            fn( NamedFunction.d2_minValue , dataItemArg),
+            fn( NamedFunction.d2_minValue , dataItem),
             fn( NamedFunction.d2_modulus , expr, expr ),
             fn( NamedFunction.d2_monthsBetween , expr, expr ),
             fn( NamedFunction.d2_oizp , expr ),
@@ -118,19 +127,22 @@ public interface ExpressionGrammar
             fn( NamedFunction.d2_zScoreWFH , expr, expr, expr )
     );
 
-    List<NonTerminal> DataValues = List.of( // (alphabetical)
-            item(DataItemType.DATA_ELEMENT, dataItem),
-            item(DataItemType.ATTRIBUTE, dataItem),
+    List<NonTerminal> DataItems = List.of( // (alphabetical)
+            dataItemHash.named(DataItemType.DATA_ELEMENT.getSymbol()),
+            dataItemA.named(DataItemType.ATTRIBUTE.getSymbol()),
             item(DataItemType.CONSTANT, UID),
             item(DataItemType.PROGRAM_DATA_ELEMENT, UID, UID),
             item(DataItemType.PROGRAM_INDICATOR, UID),
             item(DataItemType.INDICATOR, UID),
             item(DataItemType.REPORTING_RATE, UID, IDENTIFIER.as(Nodes.ReportingRateTypeNode::new)),
-            item(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new)),
             item(DataItemType.ORG_UNIT_GROUP, UID)
     );
 
-    List<NonTerminal> Functions = Stream.of(BaseFunctions, AggregationFunctions, ProgramFunctions, DataValues)
+    List<NonTerminal> Variables = List.of(
+            var(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new))
+    );
+
+    List<NonTerminal> Functions = Stream.of(BaseFunctions, AggregationFunctions, ProgramFunctions)
             .flatMap(Collection::stream)
             .collect(toUnmodifiableList());
 
@@ -140,7 +152,7 @@ public interface ExpressionGrammar
             NonTerminal.constant(NodeType.BOOLEAN, "false")
     );
 
-    List<NonTerminal> Fragments = Stream.of(Modifiers, Functions, Constants)
+    List<NonTerminal> Fragments = Stream.of(Modifiers, Functions, Constants, DataItems, Variables)
             .flatMap(Collection::stream)
             .collect(toUnmodifiableList());
 
@@ -166,6 +178,12 @@ public interface ExpressionGrammar
     {
         String symbol = value.getSymbol();
         return block(NodeType.DATA_ITEM, symbol, '{', '.','}', args).named(symbol);
+    }
+
+    static NonTerminal var(DataItemType value, NonTerminal... args)
+    {
+        String symbol = value.getSymbol();
+        return block(NodeType.VARIABLE, symbol, '{', '.','}', args).named(symbol);
     }
 
     static NonTerminal block(NodeType type, String name, char start, char argsSeparator, char end, NonTerminal... args )
@@ -195,7 +213,7 @@ public interface ExpressionGrammar
                     expr.gobble(); // separator
                     expr.skipWS();
                 }
-                boolean wrapInArgument = arg != dataItem;
+                boolean wrapInArgument = type != NodeType.VARIABLE;
                 if (wrapInArgument)
                     ctx.beginNode( NodeType.ARGUMENT, "" + i );
                 arg.parse( expr, ctx );

@@ -24,35 +24,60 @@ public final class Expr implements Serializable
         error(position(), desc);
     }
 
-    public void error( int start, String desc )
+    public void error( int pos0, String desc )
     {
-        throw new ParseException( start, this, desc );
+        throw new ParseException( pos0, this, desc );
     }
 
     public static class ParseException extends IllegalArgumentException
     {
         final Expr expr;
 
-        ParseException(int start, Expr expr, String msg )
+        ParseException(int pos0, Expr expr, String msg )
         {
-            super( msg + pointer(start, expr));
+            super( msg + pointer(pos0, expr));
             this.expr = expr;
         }
 
-        static String pointer(int start, Expr expr) {
-            String section = new String(expr.expr);
-            return start == expr.pos
-                ? "\nat: "+ section + "\n"+" ".repeat(expr.pos+4)+"^"
-                : "\nat: "+ section + "\n"+" ".repeat(start+4)+"^"+"-".repeat(Math.max(0, expr.pos-start-2))+"^";
+        static String pointer(int pos0, Expr expr) {
+            int line = 1;
+            int posLine0 = 0;
+            for (int p = 0; p < pos0; p++)
+                if (expr.expr[p] == '\n') {
+                    line++;
+                    posLine0 = p;
+                }
+            int offset0 = pos0 - posLine0;
+            int posLineEnd = posLine0;
+            while (posLineEnd < expr.expr.length && expr.expr[posLineEnd] != '\n') posLineEnd++;
+            int cutoutLength = Math.min(20, posLineEnd - posLine0);
+            String exprCutout = new String(expr.expr, posLine0, cutoutLength  );
+            String pointer = expr.pos - pos0 <= 1
+                    ? " ".repeat(offset0)+"^"
+                    : " ".repeat(offset0)+"^"+"-".repeat(Math.max(0, expr.pos-pos0-2))+"^";
+            return String.format("%n\tat line:%d character:%d%n\t%s%n\t%s", line, offset0, exprCutout, pointer);
         }
+    }
+
+    /**
+     * The root entry point to parse an expression.
+     *
+     * @param expr the expression to parse
+     * @param ctx the parsing context to use to lookup fragments and build the AST
+     */
+    public static void parse(String expr, ParseContext ctx) {
+        expr(new Expr(expr), ctx, true);
     }
 
     /*
     Non-Terminals
      */
 
-    public static void expr(Expr expr, ParseContext ctx)
-    {
+    public static void expr(Expr expr, ParseContext ctx) {
+        expr(expr, ctx, false);
+    }
+
+    private static void expr(Expr expr, ParseContext ctx, boolean root) {
         while (true) {
             expr1(expr, ctx);
             while (expr.peek() == '.' && expr.peek(1, Chars::isLetter))
@@ -77,6 +102,8 @@ public final class Expr implements Serializable
                 ctx.addNode(NodeType.BINARY_OPERATOR, expr, Literals::parseBinaryOp);
             } else
             {
+                if (root && expr.pos < expr.expr.length)
+                    expr.error("Unexpected input character: '"+expr.peek()+"'");
                 return; // no more binary operators => exit loop
             }
         }
@@ -133,20 +160,77 @@ public final class Expr implements Serializable
             expr.skipWS();
             return;
         }
-        // should be a top level function or constant then...
+        // should be a named fragment then...
         FragmentContext.lookup(expr, Literals::parseName, ctx::fragment).parse( expr, ctx );
         expr.skipWS();
     }
 
     /**
-     * Data item as it can occur on top level.
+     * Entry when data items are arguments to a function
      *
-     * This method only parses the inner expression between the curly braces.
+     * One of these:
+     * <pre>
+     *     #{...}
+     *     A{...}
+     *     "..."
+     *     '...'
+     *     PS_EVENTDATE: UID
+     * </pre>
      */
     static void dataItem(Expr expr, ParseContext ctx) {
+        char c = expr.peek();
+        if (c == '#' || c == 'A') {
+            expr.gobble(); // #/A
+            dataItem(expr, ctx, c);
+        } else if (c == '"' || c == '\'') {
+            // programRuleStringVariableName
+            ctx.beginNode(NodeType.VARIABLE, "");
+            ctx.addNode(NodeType.STRING, expr, Literals::parseString);
+            ctx.endNode(NodeType.VARIABLE);
+        } else if (c == 'P' && expr.peek("PS_EVENTDATE:")) {
+            expr.gobble(13);
+            ctx.beginNode(NodeType.DATA_ITEM, "#");
+            ctx.beginNode(NodeType.ARGUMENT,  "0");
+            ctx.addNode(NodeType.IDENTIFIER, "PS_EVENTDATE", Nodes.TagNode::new);
+            expr.skipWS();
+            ctx.addNode(NodeType.UID, expr, Literals::parseUid);
+            ctx.endNode(NodeType.ARGUMENT);
+            ctx.endNode(NodeType.DATA_ITEM);
+        } else {
+            expr.error("Incomplete or malformed value");
+        }
+    }
+
+    /**
+     * Direct entry point when data items are found by name in/via {@code expr}.
+     *
+     * The name has already been consumed but through the method bound it can be recovered.
+     */
+    static void dataItemHash(Expr expr, ParseContext ctx) {
+        dataItem(expr, ctx, '#');
+    }
+
+    /**
+     * Direct entry point when data items are found by name in/via {@code expr}.
+     *
+     * The name has already been consumed but through the method bound it can be recovered.
+     */
+    static void dataItemA(Expr expr, ParseContext ctx) {
+        dataItem(expr, ctx, 'A');
+    }
+
+    /**
+     * Indirect entry either from data items used top level or as function arguments.
+     *
+     * At this point the name has been consumed, but it is available from the extra parameter.
+     */
+    private static void dataItem(Expr expr, ParseContext ctx, char name) {
+        expr.expect('{');
         String raw = expr.rawMatch("data item", ce -> ce != '}');
         String[] parts = raw.split("\\.");
         if (Stream.of(parts).allMatch(Expr::isTaggedUidGroup)) {
+            ctx.beginNode(NodeType.DATA_ITEM, ""+name);
+            // a data item with 1-3 possibly tagged UID groups
             for (int i = 0; i < parts.length; i++)
             {
                 String part = parts[i];
@@ -160,40 +244,18 @@ public final class Expr implements Serializable
                         .forEachOrdered(uid -> ctx.addNode(NodeType.UID, uid));
                 ctx.endNode(NodeType.ARGUMENT);
             }
+            ctx.endNode(NodeType.DATA_ITEM);
         } else if (Literals.isVarName(raw) )
         {
-            // programRuleVariableName
+            // a programRuleVariableName
+            ctx.beginNode(NodeType.VARIABLE, ""+name);
             ctx.addNode(NodeType.IDENTIFIER, raw);
+            ctx.endNode(NodeType.VARIABLE);
         } else
         {
-            expr.error("not a valid data item: "+raw);
+            expr.error("Invalid value: '"+raw+"'");
         }
-    }
-
-    static void dataItemInArgumentPosition(Expr expr, ParseContext ctx) {
-        char c = expr.peek();
-        if (c == '#' || c == 'A') {
-            expr.gobble();
-            ctx.beginNode(NodeType.DATA_ITEM, ""+c);
-            expr.expect('{');
-            dataItem(expr, ctx);
-            expr.expect('}');
-        } else if (c == '"' || c == '\'') {
-            // programRuleStringVariableName
-            ctx.beginNode(NodeType.DATA_ITEM, "#");
-            ctx.addNode(NodeType.STRING, expr, Literals::parseString);
-        } else if (c == 'P' && expr.peek("PS_EVENTDATE:")) {
-            expr.gobble(13);
-            ctx.beginNode(NodeType.DATA_ITEM, "#");
-            ctx.beginNode(NodeType.ARGUMENT,  "0");
-            ctx.addNode(NodeType.IDENTIFIER, "PS_EVENTDATE", Nodes.TagNode::new);
-            expr.skipWS();
-            ctx.addNode(NodeType.UID, expr, Literals::parseUid);
-            ctx.endNode(NodeType.ARGUMENT);
-        } else {
-            expr.error("expected data item");
-        }
-        ctx.endNode(NodeType.DATA_ITEM);
+        expr.expect('}');
     }
 
     private static boolean isTaggedUidGroup(String str) {

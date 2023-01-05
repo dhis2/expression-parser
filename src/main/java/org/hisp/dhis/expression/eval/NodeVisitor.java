@@ -7,6 +7,7 @@ import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.UnaryOperator;
+import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItemType;
 
 import java.time.LocalDate;
@@ -31,6 +32,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
             case FUNCTION: visitFunction((Node<NamedFunction>) node); break;
             case MODIFIER: visitModifier((Node<DataItemModifier>) node); break;
             case DATA_ITEM: visitDataItem((Node<DataItemType>) node); break;
+            case VARIABLE: visitVariable((Node<VariableType>) node); break;
 
             // simple nodes
             case BOOLEAN: visitBoolean((Node<Boolean>) node); break;
@@ -71,6 +73,10 @@ public interface NodeVisitor extends Consumer<Node<?>>
     }
 
     default void visitDataItem(Node<DataItemType> data) {
+
+    }
+
+    default void visitVariable(Node<VariableType> variable) {
 
     }
 

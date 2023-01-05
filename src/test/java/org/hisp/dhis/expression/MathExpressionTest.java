@@ -45,7 +45,6 @@ class MathExpressionTest {
     }
 
     @Test
-    @Disabled("log not implemented yet")
     void testLog() {
         assertEquals( 4.605170, evaluate( "log(100)" ) );
         assertEquals( -0.693147, evaluate( "log( .5 )" ) );
@@ -55,7 +54,6 @@ class MathExpressionTest {
     }
 
     @Test
-    @Disabled("log10 not implemented yet")
     void testLog10() {
         assertEquals( 2, evaluate( "log10(100)" ) );
         assertEquals( -0.301030, evaluate( "log10( .5 )" ) );
@@ -80,7 +78,7 @@ class MathExpressionTest {
     }
 
     private static void assertEquals(double expected, Number actual) {
-        Assertions.assertEquals(expected, actual.doubleValue());
+        Assertions.assertEquals(expected, actual.doubleValue(), 0.000001d);
     }
 
     private static Number evaluate(String expression) {

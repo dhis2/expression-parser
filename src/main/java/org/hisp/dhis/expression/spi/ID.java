@@ -20,7 +20,7 @@ public class ID {
         OrganisationUnitGroupUID,
         ProgramUID,
         ProgramIndicatorUID,
-        ProgramVariableUID,
+        ProgramVariableName,
         ProgramStageUID,
         // not a UID but an Identifier
         ReportingRateType

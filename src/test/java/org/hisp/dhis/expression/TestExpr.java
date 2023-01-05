@@ -122,7 +122,7 @@ class TestExpr {
         //Expr.expr(new Expr(expr), ctx);
 
         Parser ctx2 = Parser.withFragments(ExpressionGrammar.Fragments);
-        Expr.expr(new Expr(expr), ctx2);
+        Expr.parse(expr, ctx2);
         Node<?> root = ctx2.getRoot();
         Node.attachModifiers(root);
         Node.groupOperators(root);

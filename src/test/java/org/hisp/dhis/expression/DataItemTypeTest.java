@@ -33,7 +33,8 @@ import static org.hisp.dhis.expression.spi.ID.Type.OrganisationUnitGroupUID;
 import static org.hisp.dhis.expression.spi.ID.Type.ProgramUID;
 import static org.hisp.dhis.expression.spi.ID.Type.ProgramIndicatorUID;
 import static org.hisp.dhis.expression.spi.ID.Type.ProgramStageUID;
-import static org.hisp.dhis.expression.spi.ID.Type.ProgramVariableUID;
+import static org.hisp.dhis.expression.spi.ID.Type.ProgramVariableName;
+import static org.hisp.dhis.expression.spi.ID.Type.ReportingRateType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -154,18 +155,9 @@ class DataItemTypeTest {
 
     @Test
     void testDataSet() {
-        //FIXME convert reporting rate type to a UID value? or some other thing?
         assertEquals(Set.of(new DataItem(REPORTING_RATE,
-                        new ID(DataSetUID, "u1234567890"))),
+                        new ID(DataSetUID, "u1234567890"), new ID(ReportingRateType, "ACTUAL_REPORTS"))),
                 evaluate("R{u1234567890.ACTUAL_REPORTS}"));
-    }
-
-    @Test
-    void testProgramVariable() {
-        //FIXME a PV is not a data item - what to do?
-        assertEquals(Set.of(new DataItem(PROGRAM_VARIABLE,
-                        new ID(ProgramVariableUID, "u1234567890"))),
-                evaluate("V{u1234567890}"));
     }
 
     private static Set<DataItem> evaluate(String expression) {

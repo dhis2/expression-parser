@@ -40,9 +40,9 @@ public class DataItem {
         str.append(type.getSymbol()).append("{");
         str.append(uid0.toString());
         if (!uid1.isEmpty())
-            str.append( uid1.stream().map(ID::getValue).collect(joining("&")));
+            str.append('.').append( uid1.stream().map(ID::getValue).collect(joining("&")));
         if (!uid2.isEmpty())
-            str.append( uid2.stream().map(ID::getValue).collect(joining("&")));
+            str.append('.').append( uid2.stream().map(ID::getValue).collect(joining("&")));
         str.append("}").append(modifiers);
         return str.toString();
     }

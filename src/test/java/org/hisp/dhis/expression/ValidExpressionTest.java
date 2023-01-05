@@ -29,21 +29,30 @@ class ValidExpressionTest {
     void testInvalidSyntaxExpression1()
     {
         ParseException ex = assertThrows( ParseException.class, () ->  evaluate( "1+1+1 > 0 _ 1" ));
-        assertEquals("Invalid string token '_' at line:1 character:10", ex.getMessage() );
+        assertEquals("Unexpected input character: '_'\n" +
+                "\tat line:1 character:10\n" +
+                "\t1+1+1 > 0 _ 1\n" +
+                "\t          ^", ex.getMessage() );
     }
 
     @Test
     void testInvalidSyntaxExpression2()
     {
         ParseException ex = assertThrows( ParseException.class, () -> evaluate( "1 + 1 + a" ));
-        assertEquals("Invalid string token 'a' at line:1 character:8", ex.getMessage() );
+        assertEquals("Unknown function or constant: 'a'\n" +
+                "\tat line:1 character:8\n" +
+                "\t1 + 1 + a\n" +
+                "\t        ^", ex.getMessage() );
     }
 
     @Test
     void testInvalidSyntaxExpression3()
     {
         ParseException ex = assertThrows( ParseException.class, () -> evaluate( "1 + 1  ( 2 + 2 )" ));
-        assertEquals("Invalid string token '(' at line:1 character:7", ex.getMessage() );
+        assertEquals("Unexpected input character: '('\n" +
+                "\tat line:1 character:7\n" +
+                "\t1 + 1  ( 2 + 2 )\n" +
+                "\t       ^", ex.getMessage() );
     }
 
     @Test
@@ -53,15 +62,20 @@ class ValidExpressionTest {
     }
 
     @Test
-    void testExpressionWithValidSyntaxAndNotSupportedVariable()
-    {
-        assertThrows( ParseException.class, () -> evaluate( "2 > V{not_supported}" ));
-    }
-
-    @Test
     void testExpressionWithValidSyntaxAndNotSupportedAttribute()
     {
         assertThrows( ParseException.class, () -> evaluate( "2 > A{not_supported}" ));
+    }
+
+    @Test
+    void testExpressionWithValidSyntaxAndNotSupportedVariable()
+    {
+        ParseException ex = assertThrows( ParseException.class, () -> evaluate( "2 > V{not_supported}" ));
+        assertEquals("Invalid ProgramVariable option: 'not_supported'\n" +
+                "\toptions are: [analytics_period_end, analytics_period_start, completed_date, creation_date, current_date, due_date, enrollment_count, enrollment_date, enrollment_id, enrollment_status, environment, event_count, scheduled_event_count, event_date, scheduled_date, event_id, event_status, execution_date, incident_date, org_unit_count, org_unit, orgunit_code, program_name, program_stage_id, program_stage_name, sync_date, tei_count, value_count, zero_pos_value_count]\n" +
+                "\tat line:1 character:6\n" +
+                "\t2 > V{not_supported}\n" +
+                "\t      ^-----------^", ex.getMessage());
     }
 
     private static Object evaluate( String expression )

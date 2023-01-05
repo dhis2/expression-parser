@@ -75,11 +75,11 @@ public interface ExpressionBackend {
         return Stream.of(values).filter(Objects::nonNull).min(comparing(Number::doubleValue)).orElse(null);
     }
 
-    default Double log(Number base, Number n) {
-        return n.doubleValue(); //TODO
+    default double log( Number n ) {
+        return Math.log(n.doubleValue());
     }
 
-    default Double log10(Number n)
+    default double log10(Number n)
     {
         return Math.log10(n.doubleValue());
     }

@@ -16,7 +16,7 @@ public interface FragmentContext {
         NonTerminal res = lookup.apply(name);
         if (res == null)
         {
-            expr.error(s, "name not available in context: "+name);
+            expr.error(s, "Unknown function or constant: '"+name+"'");
         }
         return res;
     }

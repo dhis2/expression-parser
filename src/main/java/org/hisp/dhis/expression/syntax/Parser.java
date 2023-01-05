@@ -22,15 +22,18 @@ public final class Parser implements ParseContext {
     private static final Map<NodeType, Node.Factory> DEFAULT_FACTORIES = new EnumMap<>(NodeType.class);
 
     static {
+        // complex nodes (have children)
         DEFAULT_FACTORIES.put(NodeType.PAR, Nodes.ParenthesesNode::new);
         DEFAULT_FACTORIES.put(NodeType.ARGUMENT, Nodes.ArgumentNode::new);
         DEFAULT_FACTORIES.put(NodeType.FUNCTION, Nodes.FunctionNode::new);
         DEFAULT_FACTORIES.put(NodeType.MODIFIER, Nodes.ModifierNode::new);
         DEFAULT_FACTORIES.put(NodeType.DATA_ITEM, Nodes.DataItemNode::new);
+        DEFAULT_FACTORIES.put(NodeType.VARIABLE, Nodes.VariableNode::new);
 
         DEFAULT_FACTORIES.put(NodeType.UNARY_OPERATOR, Nodes.UnaryOperatorNode::new);
         DEFAULT_FACTORIES.put(NodeType.BINARY_OPERATOR, Nodes.BinaryOperatorNode::new);
 
+        // simple nodes
         DEFAULT_FACTORIES.put(NodeType.STRING, Nodes.Utf8StringNode::new);
         DEFAULT_FACTORIES.put(NodeType.NAMED_VALUE, Nodes.TextNode::new);
         DEFAULT_FACTORIES.put(NodeType.UID, Nodes.TextNode::new);
@@ -48,7 +51,7 @@ public final class Parser implements ParseContext {
 
     public static Node<?> parse(String expr, List<NonTerminal> fragments) {
         Parser parser = Parser.withFragments(fragments);
-        Expr.expr(new Expr(expr), parser);
+        Expr.parse(expr, parser);
         Node<?> root = parser.getRoot();
         Node.attachModifiers(root);
         Node.groupOperators(root);

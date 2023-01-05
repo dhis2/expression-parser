@@ -9,25 +9,24 @@ public enum NodeType
     FUNCTION,
     MODIFIER,
     /**
-     * A DATA_ITEM takes one of 3 forms in its subtree:
-     *
-     * 1. Classic data item with 1-3 UID positions (each might have a tag and 1 or more UIDs)
      * <pre>
      * DATA_ITEM => (ARGUMENT => (IDENTIFIER? UID+)){1,3}
      * </pre>
-     *
-     * 2. A program rule variable name
-     * <pre>
-     * DATA_ITEM => IDENTIFIER
-     * </pre>
-     *
-     * 3. A program rule variable name string
-     * <pre>
-     * DATA_ITEM => STRING
-     * </pre>
-     *
      */
     DATA_ITEM,
+
+    /**
+     * 1. A program rule variable name or program variable name
+     * <pre>
+     * VARIABLE => IDENTIFIER
+     * </pre>
+     *
+     * 2. A program rule variable name string
+     * <pre>
+     * VARIABLE => STRING
+     * </pre>
+     */
+    VARIABLE,
 
     // operators
     BINARY_OPERATOR,

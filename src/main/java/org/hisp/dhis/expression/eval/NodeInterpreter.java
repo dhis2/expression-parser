@@ -6,6 +6,7 @@ import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.UnaryOperator;
+import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItemType;
 
 import java.time.LocalDate;
@@ -32,6 +33,7 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
             case FUNCTION: return evalFunction((Node<NamedFunction>) node);
             case MODIFIER: return evalModifier((Node<DataItemModifier>) node);
             case DATA_ITEM: return evalDataItem((Node<DataItemType>) node);
+            case VARIABLE: return evalVariable((Node<VariableType>) node);
 
             // simple nodes
             case BOOLEAN: return evalBoolean((Node<Boolean>) node);
@@ -65,6 +67,8 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
     T evalModifier(Node<DataItemModifier> modifier) ;
 
     T evalDataItem(Node<DataItemType> data) ;
+
+    T evalVariable(Node<VariableType> variable);
 
     /*
     Simple nodes:

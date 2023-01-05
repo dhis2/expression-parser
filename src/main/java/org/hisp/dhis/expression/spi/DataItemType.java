@@ -28,7 +28,7 @@ public enum DataItemType
     INDICATOR("N", ID.Type.IndicatorUID),
     ORG_UNIT_GROUP("OUG", ID.Type.OrganisationUnitGroupUID),
     REPORTING_RATE("R", ID.Type.DataSetUID, ID.Type.ReportingRateType),
-    PROGRAM_VARIABLE("V", ID.Type.ProgramVariableUID);
+    PROGRAM_VARIABLE("V", ID.Type.ProgramVariableName);
 
     private final String symbol;
     private final List<List<ID.Type>> parameterTypes;

@@ -126,6 +126,19 @@ public interface Node<T> extends Typed {
     }
 
     /**
+     * Maps this tree to a new tree-structure.
+     *
+     * @param nodeMap maps a node to the value of the target node replacement
+     * @param newNode creates a new node from a value and the mapped list of children
+     * @return root of the mapped tree
+     * @param <N> type of the nodes in the target tree structure
+     * @param <V> type of the values in each node in the target tree structure
+     */
+    default <N,V> N map(Function<Node<?>, V> nodeMap, BiFunction<V, List<N>, N> newNode ) {
+        return eval(node -> newNode.apply(nodeMap.apply(node), node.children().map(n -> n.map(nodeMap, newNode)).collect(toList())));
+    }
+
+    /**
      * Unfiltered aggregation.
      *
      * @see #aggregate(Object, Function, BiConsumer, Predicate)
@@ -364,6 +377,11 @@ public interface Node<T> extends Typed {
 
     static Set<String> collectProgramRuleVariables(Node<?> root) {
         return root.aggregate(new HashSet<>(), node -> node.child(0).getRawValue(), Set::add,
-                node -> node.getType() == NodeType.DATA_ITEM && node.size() == 1 && node.child(0).getType() != NodeType.ARGUMENT);
+                node -> node.getType() == NodeType.VARIABLE && node.getValue() == VariableType.PROGRAM_RULE);
+    }
+
+    static Set<String> collectProgramVariables(Node<?> root) {
+        return root.aggregate(new HashSet<>(), node -> node.child(0).getRawValue(), Set::add,
+                node -> node.getType() == NodeType.VARIABLE && node.getValue() == VariableType.PROGRAM);
     }
 }

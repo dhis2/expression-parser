@@ -45,6 +45,22 @@ class AggregateFunctionsExpressionTest {
         assertEquals(25.0d, evaluate("sum(#{u1234567890})", dataValues ));
     }
 
+    @Test
+    void testMin() {
+        Map<DataItem, Object> dataValues = Map.of(
+                newDeDataItem("u1234567890"), new double[] { 0d, 10d, 5d, 3d, 7d });
+
+        assertEquals(0d, evaluate("min(#{u1234567890})", dataValues ));
+    }
+
+    @Test
+    void testMax() {
+        Map<DataItem, Object> dataValues = Map.of(
+                newDeDataItem("u1234567890"), new double[] { 0d, 10d, 5d, 3d, 7d });
+
+        assertEquals(10.0d, evaluate("max(#{u1234567890})", dataValues ));
+    }
+
     private static Double evaluate(String expression, Map<DataItem, Object> dataValues) {
         Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
         return (Double) root.eval(new CalcNodeInterpreter(items -> null, Map.of(), dataValues));

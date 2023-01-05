@@ -47,7 +47,7 @@ public interface Nodes {
         }
 
         static <E extends Enum<E>> BiFunction<String,RuntimeException,RuntimeException> rethrowAs(Class<E> valueType, Function<E,String> toText) {
-            return (rawValue, ex) -> new IllegalArgumentException(format("Not a valid option for type %s: %s%navailable options are: %s",
+            return (rawValue, ex) -> new IllegalArgumentException(format("Invalid %s option: '%s'%n\toptions are: %s",
                     valueType.getSimpleName(), rawValue, Stream.of(valueType.getEnumConstants()).map(toText).collect(toList())));
         }
 
@@ -217,16 +217,12 @@ public interface Nodes {
 
         @Override
         public DataItem toDataItem() {
-            return child(0).getType() == NodeType.ARGUMENT ? toDataItemInternal() : null;
-        }
-
-        private DataItem toDataItemInternal() {
             List<List<ID>> idGroups = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
             DataItemType itemType = getValue();
             for (int i = 0; i < size(); i++) {
                 Node<?> arg = child(i);
                 Node<?> argC0 = arg.child(0);
-                ID.Type type = argC0.getType() == NodeType.IDENTIFIER
+                ID.Type type = argC0.getType() == NodeType.IDENTIFIER && argC0.getValue() instanceof Tag
                         ? ((Tag)argC0.getValue()).getIdType()
                         : itemType.getType(size(), i);
                 idGroups.set(i, arg.children()
@@ -277,6 +273,18 @@ public interface Nodes {
             super(type, rawValue, Function.identity());
         }
 
+    }
+
+    final class VariableNode extends ComplexNode<VariableType> {
+
+        public VariableNode(NodeType type, String rawValue) {
+            super(type, rawValue, VariableType::fromSymbol);
+        }
+
+        @Override
+        public ValueType getValueType() {
+            return isEmpty() ? ValueType.UNKNOWN : child(0).getValueType();
+        }
     }
 
     final class Utf8StringNode extends SimpleNode<String> {

@@ -8,6 +8,7 @@ import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.UnaryOperator;
+import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.spi.ExpressionBackend;
@@ -87,6 +88,10 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
         }
         switch (function.getValue()) {
             case firstNonNull: return backend.firstNonNull(function.children().map(node -> node.eval(this)).collect(toList()));
+            case log: return function.size() == 1
+                    ? backend.log(evalToNumber(function.child(0)))
+                    : backend.log(evalToNumber(function.child(0))) / backend.log(evalToNumber(function.child(1)));
+            case log10: return backend.log10(evalToNumber(function.child(0)));
             // "not implemented yet" => null
             default: return null;
         }
@@ -127,14 +132,15 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
 
     @Override
     public Object evalDataItem(Node<DataItemType> item) {
-        Node<?> c0 = item.child(0);
-        if (item.size() == 1 && (c0.getType() == NodeType.STRING || c0.getType() == NodeType.IDENTIFIER)) {
-            return programRuleVariableValues.get(evalToString(c0));
-        }
         Object value = dataItemValues.get(item.toDataItem());
         return value != null && value.getClass().isArray()
                 ? Array.get(value, dataItemIndex)
                 : value;
+    }
+
+    @Override
+    public Object evalVariable(Node<VariableType> variable) {
+        return programRuleVariableValues.get(evalToString(variable.child(0)));
     }
 
     @Override

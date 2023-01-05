@@ -8,6 +8,7 @@ import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Tag;
 import org.hisp.dhis.expression.ast.UnaryOperator;
+import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItemType;
 
 import java.time.LocalDate;
@@ -72,26 +73,29 @@ public class EchoTreeWalker implements NodeVisitor {
     }
 
     @Override
-    public void visitDataItem(Node<DataItemType> data) {
-        Node<?> c0 = data.child(0);
-        if (data.size() == 1 && (c0.getType() == NodeType.STRING || c0.getType() == NodeType.IDENTIFIER)) {
-            // programRuleStringVariableName
-            c0.walk(this);
-            return;
-        }
+    public void visitDataItem(Node<DataItemType> item) {
+        Node<?> c0 = item.child(0);
         boolean isPS_EVENTDATE = c0.child(0).getValue() == Tag.PS_EVENTDATE;
         if (!isPS_EVENTDATE) {
-            out.append(data.getValue().getSymbol());
+            out.append(item.getValue().getSymbol());
             out.append('{');
         }
-        for (int i = 0; i < data.size(); i++)
+        for (int i = 0; i < item.size(); i++)
         {
             if (i > 0) out.append('.');
-            data.child(i).walk(this);
+            item.child(i).walk(this);
         }
         if (!isPS_EVENTDATE) {
             out.append('}');
         }
+    }
+
+    @Override
+    public void visitVariable(Node<VariableType> variable) {
+        out.append(variable.getRawValue());
+        out.append('{');
+        variable.child(0).walk(this);
+        out.append('}');
     }
 
     @Override
