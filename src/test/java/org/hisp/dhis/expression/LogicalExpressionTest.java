@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Port of the ANTLR {@code LogicalExpressionTest}.
+ * Port of the ANTLR {@code LogicalExpressionTest} and some more.
  */
 class LogicalExpressionTest {
 

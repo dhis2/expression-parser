@@ -3,8 +3,10 @@ package org.hisp.dhis.expression;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.UnaryOperator;
+
 /**
- * Port of the ANTLR {@code MathExpressionTest}.
+ * Port of the ANTLR {@code MathExpressionTest} and some more.
  */
 class MathExpressionTest {
     @Test
@@ -87,6 +89,9 @@ class MathExpressionTest {
     }
 
     private static Number evaluate(String expression) {
-        return (Number) new Expression(expression).evaluate();
+        Expression expr = new Expression(expression);
+        UnaryOperator<String> clean = str -> str.replaceAll("\\s+", "");
+        Assertions.assertEquals(clean.apply(expression), clean.apply(expr.normalise()));
+        return (Number) expr.evaluate();
     }
 }

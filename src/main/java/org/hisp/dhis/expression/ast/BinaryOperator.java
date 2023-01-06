@@ -21,6 +21,7 @@ public enum BinaryOperator implements Typed
 {
     // OBS!!! in order of precedence - highest to lowest
     EXP("^", NUMBER, NUMBER),
+    // unary operators are here precedence wise
     MUL("*", NUMBER, NUMBER),
     DIV("/", NUMBER, NUMBER),
     MOD("%", NUMBER, NUMBER),
@@ -128,7 +129,6 @@ public enum BinaryOperator implements Typed
     }
 
     public static Number multiply(Number left, Number right) {
-        System.out.println(left +" * "+right);
         return isSpecialDouble(left) || isSpecialDouble(right)
                 ? left.doubleValue() * right.doubleValue()
                 : asBigDecimal(left).multiply(asBigDecimal(right)).doubleValue();

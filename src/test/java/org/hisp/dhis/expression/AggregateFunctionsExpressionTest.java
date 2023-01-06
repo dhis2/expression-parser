@@ -58,7 +58,7 @@ class AggregateFunctionsExpressionTest {
     }
 
     private static Double evaluate(String expression, Map<DataItem, Object> dataValues) {
-        return (Double) new Expression(expression).evaluate(items -> null, Map.of(), dataValues);
+        return (Double) new Expression(expression).evaluate(name -> null, Map.of(), dataValues);
     }
 
     private static DataItem newDeDataItem(String u1234567890) {

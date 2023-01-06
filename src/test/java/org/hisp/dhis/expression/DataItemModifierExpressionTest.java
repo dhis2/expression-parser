@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Jan Bernitt
  */
-class DataItemModifierTest {
+class DataItemModifierExpressionTest {
 
     /**
      * Any data item within an aggregation function is a period aggregation.

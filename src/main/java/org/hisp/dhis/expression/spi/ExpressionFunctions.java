@@ -4,7 +4,6 @@ import org.hisp.dhis.expression.ast.NamedValue;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
 
@@ -80,6 +79,10 @@ public interface ExpressionFunctions {
     default double log10(Number n)
     {
         return Math.log10(n.doubleValue());
+    }
+
+    default Number removeZeros(Number n) {
+        return n.doubleValue() == 0d ? null : n;
     }
 
     /*

@@ -55,7 +55,7 @@ public final class Parser implements ParseContext {
         Node<?> root = parser.getRoot();
         Node.propagateModifiers(root);
         Node.groupOperators(root);
-        return root;
+        return root.getType() == NodeType.PAR && root.size() == 1 ? root.child(0) : root;
     }
 
     private final Map<String, NonTerminal> fragmentsByName;

@@ -98,6 +98,8 @@ public class EvaluateFunction implements NodeInterpreter<Object> {
                     ? functions.log(evalToNumber(fn.child(0)))
                     : functions.log(evalToNumber(fn.child(0))) / functions.log(evalToNumber(fn.child(1)));
             case log10: return functions.log10(evalToNumber(fn.child(0)));
+            case removeZeros: return functions.removeZeros(evalToNumber(fn.child(0)));
+
             // "not implemented yet" => null
             default: return null;
         }

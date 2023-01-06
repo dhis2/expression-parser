@@ -23,31 +23,31 @@ class VariableExpressionTest {
 
     @Test
     void testProgramVariable() {
-        assertHasStructure(TNode.ofLevels(PAR, VARIABLE, IDENTIFIER),
+        assertHasStructure(TNode.ofLevels(VARIABLE, IDENTIFIER),
                 "V{current_date}");
     }
 
     @Test
     void testProgramRuleVariable_Hash() {
-        assertHasStructure(TNode.ofLevels(PAR, VARIABLE, IDENTIFIER),
+        assertHasStructure(TNode.ofLevels(VARIABLE, IDENTIFIER),
                 "#{varname}");
     }
 
     @Test
     void testProgramRuleVariable_A() {
-        assertHasStructure(TNode.ofLevels(PAR, VARIABLE, IDENTIFIER),
+        assertHasStructure(TNode.ofLevels(VARIABLE, IDENTIFIER),
                 "A{varname}");
     }
 
     @Test
     void testProgramRuleVariable_SingleQuoted() {
-        assertHasStructure(TNode.ofLevels(PAR, FUNCTION, ARGUMENT, VARIABLE, STRING),
+        assertHasStructure(TNode.ofLevels(FUNCTION, ARGUMENT, VARIABLE, STRING),
                 "d2:maxValue('varname')");
     }
 
     @Test
     void testProgramRuleVariable_DoubleQuoted() {
-        assertHasStructure(TNode.ofLevels(PAR, FUNCTION, ARGUMENT, VARIABLE, STRING),
+        assertHasStructure(TNode.ofLevels(FUNCTION, ARGUMENT, VARIABLE, STRING),
                 "d2:maxValue(\"varname\")");
     }
 

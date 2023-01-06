@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Jan Bernitt
  */
-class ProgramRuleVariableTest {
+class ProgramRuleVariableExpressionTest {
 
     @Test
     void testProgramRuleVariableString() {

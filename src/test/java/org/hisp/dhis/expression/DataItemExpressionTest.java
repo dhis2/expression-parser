@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Jan Bernitt
  */
-class DataItemTypeTest {
+class DataItemExpressionTest {
 
     @Test
     void testDataElement() {

@@ -36,12 +36,9 @@ public class NormaliseConsumer implements NodeVisitor {
 
     @Override
     public void visitParentheses(Node<Void> group) {
-        boolean root = out.length() > 0;
-        if (root)
-            out.append('(');
+        out.append('(');
         group.walkChildren(this, null);
-        if (root)
-            out.append(')');
+        out.append(')');
     }
 
     @Override

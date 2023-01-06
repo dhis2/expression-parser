@@ -50,7 +50,7 @@ public final class Expression {
     }
 
     public Object evaluate() {
-        return evaluate(item -> null, Map.of(), Map.of());
+        return evaluate(name -> null, Map.of(), Map.of());
     }
 
     public Object evaluate(ExpressionFunctions functions, Map<String, Object> programRuleVariableValues, Map<DataItem, Object> dataItemValues) throws IllegalExpressionException {
