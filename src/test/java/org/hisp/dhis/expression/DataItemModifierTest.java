@@ -1,8 +1,5 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.Parser;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemModifiers;
 import org.hisp.dhis.expression.spi.ID;
@@ -123,6 +120,6 @@ class DataItemModifierTest {
     }
 
     private static Set<DataItem> evaluate(String expression) {
-        return Node.collectDataItems(Parser.parse(expression, ExpressionGrammar.Fragments));
+        return new Expression(expression).collectDataItems();
     }
 }

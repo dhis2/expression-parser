@@ -1,8 +1,5 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.Parser;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemModifiers;
 import org.hisp.dhis.expression.spi.ID;
@@ -18,22 +15,20 @@ import static org.hisp.dhis.expression.spi.DataItemType.INDICATOR;
 import static org.hisp.dhis.expression.spi.DataItemType.ORG_UNIT_GROUP;
 import static org.hisp.dhis.expression.spi.DataItemType.PROGRAM_DATA_ELEMENT;
 import static org.hisp.dhis.expression.spi.DataItemType.PROGRAM_INDICATOR;
-import static org.hisp.dhis.expression.spi.DataItemType.PROGRAM_VARIABLE;
 import static org.hisp.dhis.expression.spi.DataItemType.REPORTING_RATE;
-import static org.hisp.dhis.expression.spi.ID.Type.AttributeUID;
 import static org.hisp.dhis.expression.spi.ID.Type.AttributeOptionComboUID;
-import static org.hisp.dhis.expression.spi.ID.Type.CategoryOptionUID;
+import static org.hisp.dhis.expression.spi.ID.Type.AttributeUID;
 import static org.hisp.dhis.expression.spi.ID.Type.CategoryOptionGroupUID;
+import static org.hisp.dhis.expression.spi.ID.Type.CategoryOptionUID;
 import static org.hisp.dhis.expression.spi.ID.Type.ConstantUID;
 import static org.hisp.dhis.expression.spi.ID.Type.DataElementUID;
 import static org.hisp.dhis.expression.spi.ID.Type.DataSetUID;
 import static org.hisp.dhis.expression.spi.ID.Type.DateElementGroupUID;
 import static org.hisp.dhis.expression.spi.ID.Type.IndicatorUID;
 import static org.hisp.dhis.expression.spi.ID.Type.OrganisationUnitGroupUID;
-import static org.hisp.dhis.expression.spi.ID.Type.ProgramUID;
 import static org.hisp.dhis.expression.spi.ID.Type.ProgramIndicatorUID;
 import static org.hisp.dhis.expression.spi.ID.Type.ProgramStageUID;
-import static org.hisp.dhis.expression.spi.ID.Type.ProgramVariableName;
+import static org.hisp.dhis.expression.spi.ID.Type.ProgramUID;
 import static org.hisp.dhis.expression.spi.ID.Type.ReportingRateType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -161,6 +156,6 @@ class DataItemTypeTest {
     }
 
     private static Set<DataItem> evaluate(String expression) {
-        return Node.collectDataItems(Parser.parse(expression, ExpressionGrammar.Fragments));
+        return new Expression(expression).collectDataItems();
     }
 }

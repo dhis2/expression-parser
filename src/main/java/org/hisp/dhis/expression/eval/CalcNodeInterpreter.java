@@ -12,6 +12,7 @@ import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.spi.ExpressionBackend;
+import org.hisp.dhis.expression.spi.IllegalExpressionException;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
@@ -21,7 +22,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.toList;
-import static org.hisp.dhis.expression.ast.NamedFunction.avg;
 
 /**
  * A {@link NodeInterpreter} that calculates the expression result value
@@ -77,7 +77,7 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
             case NOT: return !evalToBoolean(operand);
             case PLUS: return evalToNumber(operand);
             case MINUS: return UnaryOperator.negate(evalToNumber(operand));
-            default: throw new UnsupportedOperationException("Unary operator not supported for direct evaluation: "+operator.getValue());
+            default: throw new IllegalExpressionException("Unary operator not supported for direct evaluation: "+operator.getValue());
         }
     }
 

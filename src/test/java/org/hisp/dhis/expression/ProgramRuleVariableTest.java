@@ -1,14 +1,16 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.Parser;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests that program rule variables are identified and collected.
+ *
+ * @author Jan Bernitt
+ */
 class ProgramRuleVariableTest {
 
     @Test
@@ -22,8 +24,6 @@ class ProgramRuleVariableTest {
     }
 
     private static Set<String> evaluate(String expression) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
-        Node.groupOperators(root);
-        return Node.collectProgramRuleVariables(root);
+        return new Expression(expression).collectProgramRuleVariables();
     }
 }

@@ -1,13 +1,11 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.UnaryOperator;
-import org.hisp.dhis.expression.eval.CalcNodeInterpreter;
-import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.Parser;
+import org.hisp.dhis.expression.spi.IllegalExpressionException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Tests the {@link UnaryOperator} evaluation.
@@ -37,11 +35,11 @@ class UnaryOperatorExpressionTest {
 
     @Test
     void testUnaryDistinct() {
-        //TODO
+        IllegalExpressionException ex = assertThrows(IllegalExpressionException.class, () -> evaluate("distinct 1"));
+        assertEquals("Unary operator not supported for direct evaluation: DISTINCT", ex.getMessage());
     }
 
     private static Object evaluate(String expression) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
-        return root.eval(new CalcNodeInterpreter());
+        return new Expression(expression).evaluate();
     }
 }

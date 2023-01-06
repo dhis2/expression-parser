@@ -1,11 +1,6 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.eval.CalcNodeInterpreter;
-import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.Parser;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -82,7 +77,6 @@ class MathExpressionTest {
     }
 
     private static Number evaluate(String expression) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
-        return (Number) root.eval(new CalcNodeInterpreter());
+        return (Number) new Expression(expression).evaluate();
     }
 }

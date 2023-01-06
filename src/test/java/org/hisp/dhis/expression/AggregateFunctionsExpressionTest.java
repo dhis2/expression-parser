@@ -1,9 +1,5 @@
 package org.hisp.dhis.expression;
 
-import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.eval.CalcNodeInterpreter;
-import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.Parser;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.ID;
 import org.junit.jupiter.api.Test;
@@ -62,8 +58,7 @@ class AggregateFunctionsExpressionTest {
     }
 
     private static Double evaluate(String expression, Map<DataItem, Object> dataValues) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
-        return (Double) root.eval(new CalcNodeInterpreter(items -> null, Map.of(), dataValues));
+        return (Double) new Expression(expression).evaluate(items -> null, Map.of(), dataValues);
     }
 
     private static DataItem newDeDataItem(String u1234567890) {

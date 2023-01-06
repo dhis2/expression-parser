@@ -152,7 +152,7 @@ public interface ExpressionGrammar
             NonTerminal.constant(NodeType.BOOLEAN, "false")
     );
 
-    List<NonTerminal> Fragments = Stream.of(Modifiers, Functions, Constants, DataItems, Variables)
+    List<NonTerminal> AllFragments = Stream.of(Modifiers, Functions, Constants, DataItems, Variables)
             .flatMap(Collection::stream)
             .collect(toUnmodifiableList());
 

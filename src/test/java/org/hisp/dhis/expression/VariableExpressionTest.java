@@ -14,6 +14,11 @@ import static org.hisp.dhis.expression.ast.NodeType.STRING;
 import static org.hisp.dhis.expression.ast.NodeType.VARIABLE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests that expressions with variable names are parsed into the expected AST structure.
+ *
+ * @author Jan Bernitt
+ */
 class VariableExpressionTest {
 
     @Test
@@ -47,7 +52,7 @@ class VariableExpressionTest {
     }
 
     private void assertHasStructure(TNode expected, String expression) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
+        Node<?> root = Parser.parse(expression, ExpressionGrammar.AllFragments);
         assertEquals(expected, TNode.of(root));
     }
 }

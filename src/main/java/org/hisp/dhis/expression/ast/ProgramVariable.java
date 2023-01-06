@@ -2,6 +2,9 @@ package org.hisp.dhis.expression.ast;
 
 @SuppressWarnings("java:S115")
 public enum ProgramVariable {
+    /*
+    OBS! These are the names as they are expected in the syntax
+     */
     analytics_period_end,
     analytics_period_start,
     completed_date,

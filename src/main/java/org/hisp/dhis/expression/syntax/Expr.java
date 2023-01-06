@@ -2,6 +2,7 @@ package org.hisp.dhis.expression.syntax;
 
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Nodes;
+import org.hisp.dhis.expression.spi.ParseException;
 import org.hisp.dhis.expression.syntax.Chars.CharPredicate;
 
 import java.io.Serializable;
@@ -26,37 +27,27 @@ public final class Expr implements Serializable
 
     public void error( int pos0, String desc )
     {
-        throw new ParseException( pos0, this, desc );
+        throw new ParseException( formatError(pos0, this, desc) );
     }
 
-    public static class ParseException extends IllegalArgumentException
+    private static String formatError(int pos0, Expr expr, String desc )
     {
-        final Expr expr;
-
-        ParseException(int pos0, Expr expr, String msg )
-        {
-            super( msg + pointer(pos0, expr));
-            this.expr = expr;
-        }
-
-        static String pointer(int pos0, Expr expr) {
-            int line = 1;
-            int posLine0 = 0;
-            for (int p = 0; p < pos0; p++)
-                if (expr.expr[p] == '\n') {
-                    line++;
-                    posLine0 = p;
-                }
-            int offset0 = pos0 - posLine0;
-            int posLineEnd = posLine0;
-            while (posLineEnd < expr.expr.length && expr.expr[posLineEnd] != '\n') posLineEnd++;
-            int cutoutLength = Math.min(20, posLineEnd - posLine0);
-            String exprCutout = new String(expr.expr, posLine0, cutoutLength  );
-            String pointer = expr.pos - pos0 <= 1
-                    ? " ".repeat(offset0)+"^"
-                    : " ".repeat(offset0)+"^"+"-".repeat(Math.max(0, expr.pos-pos0-2))+"^";
-            return String.format("%n\tat line:%d character:%d%n\t%s%n\t%s", line, offset0, exprCutout, pointer);
-        }
+        int line = 1;
+        int posLine0 = 0;
+        for (int p = 0; p < pos0; p++)
+            if (expr.expr[p] == '\n') {
+                line++;
+                posLine0 = p;
+            }
+        int offset0 = pos0 - posLine0;
+        int posLineEnd = posLine0;
+        while (posLineEnd < expr.expr.length && expr.expr[posLineEnd] != '\n') posLineEnd++;
+        int cutoutLength = Math.min(20, posLineEnd - posLine0);
+        String exprCutout = new String(expr.expr, posLine0, cutoutLength  );
+        String pointer = expr.pos - pos0 <= 1
+                ? " ".repeat(offset0)+"^"
+                : " ".repeat(offset0)+"^"+"-".repeat(Math.max(0, expr.pos-pos0-2))+"^";
+        return String.format("%s%n\tat line:%d character:%d%n\t%s%n\t%s", desc, line, offset0, exprCutout, pointer);
     }
 
     /**

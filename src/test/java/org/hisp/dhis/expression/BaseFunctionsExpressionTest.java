@@ -1,10 +1,6 @@
 package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.NamedFunction;
-import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.eval.CalcNodeInterpreter;
-import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.Parser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +28,6 @@ class BaseFunctionsExpressionTest {
     }
 
     private static Object evaluate(String expression) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.Fragments);
-        return root.eval(new CalcNodeInterpreter());
+        return new Expression(expression).evaluate();
     }
 }

@@ -118,10 +118,10 @@ class TestExpr {
     }
 
     private static void eval(String expr) {
-        ParseContext ctx = new DebugParseContext(ExpressionGrammar.Fragments, System.out, EnumSet.noneOf(NodeType.class));
+        ParseContext ctx = new DebugParseContext(ExpressionGrammar.AllFragments, System.out, EnumSet.noneOf(NodeType.class));
         //Expr.expr(new Expr(expr), ctx);
 
-        Parser ctx2 = Parser.withFragments(ExpressionGrammar.Fragments);
+        Parser ctx2 = Parser.withFragments(ExpressionGrammar.AllFragments);
         Expr.parse(expr, ctx2);
         Node<?> root = ctx2.getRoot();
         Node.attachModifiers(root);
