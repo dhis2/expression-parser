@@ -11,7 +11,7 @@ import org.hisp.dhis.expression.ast.UnaryOperator;
 import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemType;
-import org.hisp.dhis.expression.spi.ExpressionBackend;
+import org.hisp.dhis.expression.spi.ExpressionFunctions;
 import org.hisp.dhis.expression.spi.IllegalExpressionException;
 
 import java.lang.reflect.Array;
@@ -25,18 +25,18 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * A {@link NodeInterpreter} that calculates the expression result value
- * using a {@link ExpressionBackend} to implement the named functions, modifiers and data loading.
+ * using a {@link ExpressionFunctions} to implement the named functions, modifiers and data loading.
  *
  * @author Jan Bernitt
  */
 @RequiredArgsConstructor
-public class CalcNodeInterpreter implements NodeInterpreter<Object> {
+public class EvaluateFunction implements NodeInterpreter<Object> {
 
-    private final ExpressionBackend backend;
+    private final ExpressionFunctions functions;
     private final Map<String, Object> programRuleVariableValues;
     private final Map<DataItem, Object> dataItemValues;
     private int dataItemIndex = 0;
-    public CalcNodeInterpreter() {
+    public EvaluateFunction() {
         this(items -> null, Map.of(), Map.of());
     }
 
@@ -44,14 +44,14 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
     public Object evalBinaryOperator(Node<BinaryOperator> operator) {
 
         switch (operator.getValue()) {
-            case EQ: return evalBinaryOperator(BinaryOperator::equal, operator, this::eval);
-            case NEQ: return evalBinaryOperator(BinaryOperator::notEqual, operator, this::eval);
-            case AND: return evalBinaryOperator(BinaryOperator::and, operator, this::eval);
-            case OR: return evalBinaryOperator(BinaryOperator::or, operator, this::eval);
-            case LT: return evalBinaryOperator(BinaryOperator::lessThan, operator, this::eval);
-            case LE: return evalBinaryOperator(BinaryOperator::lessThanOrEqual, operator, this::eval);
-            case GT: return evalBinaryOperator(BinaryOperator::greaterThan, operator, this::eval);
-            case GE: return evalBinaryOperator(BinaryOperator::greaterThanOrEqual, operator, this::eval);
+            case EQ: return evalBinaryOperator(BinaryOperator::equal, operator, this::evalToObj);
+            case NEQ: return evalBinaryOperator(BinaryOperator::notEqual, operator, this::evalToObj);
+            case AND: return evalBinaryOperator(BinaryOperator::and, operator, this::evalToObj);
+            case OR: return evalBinaryOperator(BinaryOperator::or, operator, this::evalToObj);
+            case LT: return evalBinaryOperator(BinaryOperator::lessThan, operator, this::evalToObj);
+            case LE: return evalBinaryOperator(BinaryOperator::lessThanOrEqual, operator, this::evalToObj);
+            case GT: return evalBinaryOperator(BinaryOperator::greaterThan, operator, this::evalToObj);
+            case GE: return evalBinaryOperator(BinaryOperator::greaterThanOrEqual, operator, this::evalToObj);
             case ADD: return evalBinaryOperator(BinaryOperator::add, operator, this::evalToNumber);
             case SUB: return evalBinaryOperator(BinaryOperator::subtract, operator, this::evalToNumber);
             case MUL: return evalBinaryOperator(BinaryOperator::multiply, operator, this::evalToNumber);
@@ -82,43 +82,48 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
     }
 
     @Override
-    public Object evalFunction(Node<NamedFunction> function) {
-        if (function.getValue().isAggregating()) {
-            return evalAggFunction(function);
+    public Object evalFunction(Node<NamedFunction> fn) {
+        if (fn.getValue().isAggregating()) {
+            return evalAggFunction(fn);
         }
-        switch (function.getValue()) {
-            case firstNonNull: return backend.firstNonNull(function.children().map(node -> node.eval(this)).collect(toList()));
-            case log: return function.size() == 1
-                    ? backend.log(evalToNumber(function.child(0)))
-                    : backend.log(evalToNumber(function.child(0))) / backend.log(evalToNumber(function.child(1)));
-            case log10: return backend.log10(evalToNumber(function.child(0)));
+        switch (fn.getValue()) {
+            case firstNonNull: return functions.firstNonNull(evalChildrenToObj(fn));
+            case greatest: return functions.greatest(evalChildrenToNumber(fn));
+            case ifThenElse: return functions.ifThenElse(evalToBoolean(fn.child(0)), evalToObj(fn.child(1)), evalToObj(fn.child(2)));
+            case isNotNull: return functions.isNotNull(evalToObj(fn.child(0)));
+            case isNull: return functions.isNull(evalToObj(fn.child(0)));
+            case least: return functions.least(evalChildrenToNumber(fn));
+            case log: return fn.size() == 1
+                    ? functions.log(evalToNumber(fn.child(0)))
+                    : functions.log(evalToNumber(fn.child(0))) / functions.log(evalToNumber(fn.child(1)));
+            case log10: return functions.log10(evalToNumber(fn.child(0)));
             // "not implemented yet" => null
             default: return null;
         }
     }
 
-    private Double evalAggFunction(Node<NamedFunction> function) {
-        List<DataItem> items = function.aggregate(new ArrayList<>(), Node::toDataItem, List::add, node -> node.getType() == NodeType.DATA_ITEM);
+    private Double evalAggFunction(Node<NamedFunction> fn) {
+        List<DataItem> items = fn.aggregate(new ArrayList<>(), Node::toDataItem, List::add, node -> node.getType() == NodeType.DATA_ITEM);
         if (items.isEmpty()) throw new IllegalExpressionException("Aggregate function used without data item");
         double[] val0 = (double[]) dataItemValues.get(items.get(0));
         double[] values = new double[val0.length];
         for (dataItemIndex = 0; dataItemIndex < values.length; dataItemIndex++) {
-            Number value = evalToNumber(function.child(0));
+            Number value = evalToNumber(fn.child(0));
             values[dataItemIndex] = value == null ? Double.NaN : value.doubleValue();
         }
         dataItemIndex = 0;
-        switch (function.getValue()) {
-            case avg: return backend.avg(values);
-            case count: return backend.count(values);
-            case max: return backend.max(values);
-            case median: return backend.median(values);
-            case min: return backend.min(values);
-            case percentileCont: return backend.percentileCont(values, evalToNumber(function.child(1)));
-            case stddev: return backend.stddev(values);
-            case stddevPop: return backend.stddevPop(values);
-            case stddevSamp: return backend.stddevSamp(values);
-            case sum: return backend.sum(values);
-            case variance: return backend.variance(values);
+        switch (fn.getValue()) {
+            case avg: return functions.avg(values);
+            case count: return functions.count(values);
+            case max: return functions.max(values);
+            case median: return functions.median(values);
+            case min: return functions.min(values);
+            case percentileCont: return functions.percentileCont(values, evalToNumber(fn.child(1)));
+            case stddev: return functions.stddev(values);
+            case stddevPop: return functions.stddevPop(values);
+            case stddevSamp: return functions.stddevSamp(values);
+            case sum: return functions.sum(values);
+            case variance: return functions.variance(values);
             default: throw new UnsupportedOperationException();
         }
     }
@@ -145,7 +150,7 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
 
     @Override
     public Object evalNamedValue(Node<NamedValue> value) {
-        return backend.namedValue(value.getValue());
+        return functions.namedValue(value.getValue());
     }
 
     @Override
@@ -208,7 +213,15 @@ public class CalcNodeInterpreter implements NodeInterpreter<Object> {
         return eval(node, Number.class::cast);
     }
 
-    private Object eval(Node<?> node) {
+    private Object evalToObj(Node<?> node) {
         return node.eval(this);
+    }
+
+    private List<?> evalChildrenToObj(Node<?> node) {
+        return node.children().map(this::evalToObj).collect(toList());
+    }
+
+    private List<? extends Number> evalChildrenToNumber(Node<?> node) {
+        return node.children().map(this::evalToNumber).collect(toList());
     }
 }

@@ -13,11 +13,16 @@ import org.hisp.dhis.expression.spi.DataItemType;
 
 import java.time.LocalDate;
 
-public class EchoTreeWalker implements NodeVisitor {
+/**
+ * Converts an AST back into a normalised {@link String} form.
+ *
+ * @author Jan Bernitt
+ */
+public class NormaliseConsumer implements NodeVisitor {
 
     public static String toExpression(Node<?> node)
     {
-        EchoTreeWalker walker = new EchoTreeWalker();
+        NormaliseConsumer walker = new NormaliseConsumer();
         node.walk(walker);
         return walker.toString();
     }

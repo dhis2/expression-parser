@@ -9,14 +9,12 @@ import java.util.stream.Stream;
 import static java.util.Comparator.comparing;
 
 /**
- * Joins all required backends of the expression languages as {@link ExpressionBackend}.
- *
- * The backend connect named functions, modifiers and constants/values to their actual implementation or actual value.
+ * Implementation API for all expression languages functions.
  *
  * @author Jan Bernitt
  */
 @FunctionalInterface
-public interface ExpressionBackend {
+public interface ExpressionFunctions {
 
     Object namedValue(NamedValue key);
 
@@ -37,9 +35,9 @@ public interface ExpressionBackend {
      * @param values zero or more values, nulls allowed (ignored)
      * @return maximum value or null if all values are null
      */
-    default Number greatest(Number...values)
+    default Number greatest(List<? extends Number> values)
     {
-        return Stream.of(values).filter(Objects::nonNull).max(comparing(Number::doubleValue)).orElse(null);
+        return values.stream().filter(Objects::nonNull).max(comparing(Number::doubleValue)).orElse(null);
     }
 
     /**
@@ -71,8 +69,8 @@ public interface ExpressionBackend {
      * @param values zero or more values, nulls allowed (ignored)
      * @return minimum value or null if all values are null
      */
-    default Number least(Number... values) {
-        return Stream.of(values).filter(Objects::nonNull).min(comparing(Number::doubleValue)).orElse(null);
+    default Number least(List<? extends Number> values) {
+        return values.stream().filter(Objects::nonNull).min(comparing(Number::doubleValue)).orElse(null);
     }
 
     default double log( Number n ) {

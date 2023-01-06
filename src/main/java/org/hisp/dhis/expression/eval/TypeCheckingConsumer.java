@@ -13,9 +13,9 @@ import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
-import static org.hisp.dhis.expression.eval.EchoTreeWalker.toExpression;
+import static org.hisp.dhis.expression.eval.NormaliseConsumer.toExpression;
 
-public class TypeCheckingNodeVisitor implements NodeVisitor {
+public class TypeCheckingConsumer implements NodeVisitor {
 
     static class Violation {
         final Node<?> node;

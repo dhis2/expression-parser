@@ -127,6 +127,9 @@ public interface ExpressionGrammar
             fn( NamedFunction.d2_zScoreWFH , expr, expr, expr )
     );
 
+    /**
+     * Everything that is considered a data item
+     */
     List<NonTerminal> DataItems = List.of( // (alphabetical)
             dataItemHash.named(DataItemType.DATA_ELEMENT.getSymbol()),
             dataItemA.named(DataItemType.ATTRIBUTE.getSymbol()),
@@ -138,6 +141,9 @@ public interface ExpressionGrammar
             item(DataItemType.ORG_UNIT_GROUP, UID)
     );
 
+    /**
+     * Top level variables
+     */
     List<NonTerminal> Variables = List.of(
             var(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new))
     );
@@ -156,11 +162,6 @@ public interface ExpressionGrammar
             .flatMap(Collection::stream)
             .collect(toUnmodifiableList());
 
-    // Parse MOdes
-    // 1. Description ( subst. UID with name of items)
-    // 2. Find data items to load from database (indicators, validation rules, predictors)
-    // 3. evaluate the expression value (plug in 2.)
-    // 4. Translate to SQL
 
     static NonTerminal mod(DataItemModifier modifier, NonTerminal... args )
     {

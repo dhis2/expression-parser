@@ -266,8 +266,9 @@ public interface Node<T> extends Typed {
      * @param root the node to start the transformation from
      */
     static void groupOperators(Node<?> root) {
+        groupBinaryOperators(root, BinaryOperator.EXP);
         stream(UnaryOperator.values()).forEachOrdered(op -> groupUnaryOperators(root, op));
-        stream(BinaryOperator.values()).forEachOrdered(op -> groupBinaryOperators(root, op));
+        stream(BinaryOperator.values()).filter(op -> op != BinaryOperator.EXP).forEachOrdered(op -> groupBinaryOperators(root, op));
     }
 
     /**
@@ -320,14 +321,18 @@ public interface Node<T> extends Typed {
             List<Node<?>> grouped = new ArrayList<>(children.size());
             grouped.add(children.get(0));
             for (int i = 1; i < children.size(); i++) {
-                Node<?> child = children.get(i);
-                if (isBinary.test(child)) {
-                    child.addChild(grouped.remove(grouped.size()-1));
-                    child.addChild(children.get(i+1));
-                    grouped.add(child);
-                    i++; // also skip the right-hand side of the operator
+                Node<?> operator = children.get(i);
+                if (isBinary.test(operator)) {
+                    operator.addChild(grouped.remove(grouped.size()-1)); // left
+                    Node<?> right = children.get(++i);
+                    while (op == BinaryOperator.EXP && right.getType() == NodeType.UNARY_OPERATOR) {
+                        operator.addChild(right);
+                        right = children.get(++i);
+                    }
+                    operator.addChild(right); // right value
+                    grouped.add(operator);
                 } else {
-                    grouped.add(child);
+                    grouped.add(operator);
                 }
             }
             return grouped;
@@ -344,7 +349,7 @@ public interface Node<T> extends Typed {
      *
      * @param root the node to start the transformation from.
      */
-    static void attachModifiers(Node<?> root) {
+    static void propagateModifiers(Node<?> root) {
         root.transform((node, children) -> {
             Predicate<Node<?>> isModifier = child -> child.getType() == NodeType.MODIFIER;
             if (node.getValue() instanceof NamedFunction && ((NamedFunction) node.getValue()).isAggregating()) {

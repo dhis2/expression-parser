@@ -1,17 +1,16 @@
 package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.ast.NodeType;
-import org.hisp.dhis.expression.eval.EchoTreeWalker;
-import org.hisp.dhis.expression.eval.TypeCheckingNodeVisitor;
+import org.hisp.dhis.expression.eval.NormaliseConsumer;
 import org.hisp.dhis.expression.syntax.Expr;
 import org.hisp.dhis.expression.syntax.ExpressionGrammar;
-import org.hisp.dhis.expression.syntax.ParseContext;
 import org.hisp.dhis.expression.syntax.Parser;
-import org.hisp.dhis.expression.util.DebugParseContext;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.EnumSet;
+import java.util.function.UnaryOperator;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestExpr {
 
@@ -118,23 +117,10 @@ class TestExpr {
     }
 
     private static void eval(String expr) {
-        ParseContext ctx = new DebugParseContext(ExpressionGrammar.AllFragments, System.out, EnumSet.noneOf(NodeType.class));
-        //Expr.expr(new Expr(expr), ctx);
+        Expression expression = new Expression(expr);
 
-        Parser ctx2 = Parser.withFragments(ExpressionGrammar.AllFragments);
-        Expr.parse(expr, ctx2);
-        Node<?> root = ctx2.getRoot();
-        Node.attachModifiers(root);
-        Node.groupOperators(root);
-        //System.out.println(root);
-        EchoTreeWalker walker = new EchoTreeWalker();
-        root.walk(walker);
-        System.out.println(expr);
-        System.out.println(walker);
-
-        TypeCheckingNodeVisitor typeCheck = new TypeCheckingNodeVisitor();
-        root.visit(typeCheck);
-        System.out.println(typeCheck.getViolations());
+        UnaryOperator<String> toComparable = str -> str.replaceAll("\\s+", "");
+        assertEquals(toComparable.apply(expr), toComparable.apply(expression.normalise()));
     }
 
 }

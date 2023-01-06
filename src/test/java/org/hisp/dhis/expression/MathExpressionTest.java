@@ -62,6 +62,10 @@ class MathExpressionTest {
         assertEquals( 1.0, evaluate( "1.4^( 1 - 1 )" ) );
         assertEquals( 4.0, evaluate( "2^2" ) );
         assertEquals( 0.25, evaluate( "2^-2" ) );
+        assertEquals( 4.0, evaluate( "2^--2" ) );
+        assertEquals( 16.0, evaluate( "2^2^2" ) );
+        assertEquals( 9.0, evaluate( "(-3)^2" ) );
+        assertEquals( -27.0, evaluate( "(-3)^3" ) );
     }
 
     @Test
@@ -70,6 +74,11 @@ class MathExpressionTest {
         assertEquals( 1.0, evaluate( "5%2" ) );
         assertEquals( 1.4, evaluate( "1.4%( 1 + 1 )" ) );
         assertEquals( Double.NaN, evaluate( "1.0%( 1 - 1 )" ) );
+    }
+
+    @Test
+    void testBracketsAndOperatorPrecedence() {
+        assertEquals(-2.25141952945498598E18, evaluate("(1+2)*-3^(9*4)*5+6"));
     }
 
     private static void assertEquals(double expected, Number actual) {

@@ -126,6 +126,7 @@ public enum BinaryOperator implements Typed
     }
 
     public static Number multiply(Number left, Number right) {
+        System.out.println(left +" * "+right);
         return isSpecialDouble(left) || isSpecialDouble(right)
                 ? left.doubleValue() * right.doubleValue()
                 : asBigDecimal(left).multiply(asBigDecimal(right)).doubleValue();
