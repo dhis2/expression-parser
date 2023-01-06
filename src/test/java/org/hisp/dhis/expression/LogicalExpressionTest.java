@@ -53,6 +53,12 @@ class LogicalExpressionTest {
         assertEquals( false, evaluate( "not true" ) );
     }
 
+    @Test
+    void testEquality() {
+        assertEquals(true, evaluate("true != false"));
+        assertEquals(false, evaluate("true == false"));
+    }
+
     private static Boolean evaluate(String expression) {
         return (Boolean) new Expression(expression).evaluate();
     }

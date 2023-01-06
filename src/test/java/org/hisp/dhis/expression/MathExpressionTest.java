@@ -79,6 +79,7 @@ class MathExpressionTest {
     @Test
     void testBracketsAndOperatorPrecedence() {
         assertEquals(-2.25141952945498598E18, evaluate("(1+2)*-3^(9*4)*5+6"));
+        assertEquals(-787313d, evaluate("1+2*-3^9*4*5+6"));
     }
 
     private static void assertEquals(double expected, Number actual) {
