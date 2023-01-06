@@ -69,7 +69,7 @@ class MathExpressionTest {
     }
 
     @Test
-    void testModule() {
+    void testModulo() {
         assertEquals( 1.0, evaluate( "1%2" ) );
         assertEquals( 1.0, evaluate( "5%2" ) );
         assertEquals( 1.4, evaluate( "1.4%( 1 + 1 )" ) );

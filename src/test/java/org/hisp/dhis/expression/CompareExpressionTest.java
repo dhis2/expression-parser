@@ -99,7 +99,7 @@ class CompareExpressionTest {
     void testIncompatibleTypes() {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
                 () -> evaluate("2.1 == false"));
-        assertEquals("Could not cast Double '2.1' to Boolean", ex.getMessage());
+        assertEquals("Could not coerce Double '2.1' to Boolean", ex.getMessage());
     }
 
     private static Object evaluate(String expression) {

@@ -24,7 +24,7 @@ class LogicalExpressionTest {
     @Test
     void testDoubleAsBoolean() {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> evaluate("1.1 and 2"));
-        assertEquals("Could not cast Double '1.1' to Boolean", ex.getMessage());
+        assertEquals("Could not coerce Double '1.1' to Boolean\n\t at: 1.1", ex.getMessage());
     }
 
     @Test

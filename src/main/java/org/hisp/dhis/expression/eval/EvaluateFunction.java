@@ -7,6 +7,7 @@ import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NamedValue;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.NodeType;
+import org.hisp.dhis.expression.ast.Typed;
 import org.hisp.dhis.expression.ast.UnaryOperator;
 import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItem;
@@ -46,8 +47,8 @@ public class EvaluateFunction implements NodeInterpreter<Object> {
         switch (operator.getValue()) {
             case EQ: return evalBinaryOperator(BinaryOperator::equal, operator, this::evalToObj);
             case NEQ: return evalBinaryOperator(BinaryOperator::notEqual, operator, this::evalToObj);
-            case AND: return evalBinaryOperator(BinaryOperator::and, operator, this::evalToObj);
-            case OR: return evalBinaryOperator(BinaryOperator::or, operator, this::evalToObj);
+            case AND: return evalBinaryOperator(BinaryOperator::and, operator, this::evalToBoolean);
+            case OR: return evalBinaryOperator(BinaryOperator::or, operator, this::evalToBoolean);
             case LT: return evalBinaryOperator(BinaryOperator::lessThan, operator, this::evalToObj);
             case LE: return evalBinaryOperator(BinaryOperator::lessThanOrEqual, operator, this::evalToObj);
             case GT: return evalBinaryOperator(BinaryOperator::greaterThan, operator, this::evalToObj);
@@ -198,19 +199,23 @@ public class EvaluateFunction implements NodeInterpreter<Object> {
      */
 
     private <T> T eval(Node<?> node, Function<Object, T> cast) {
-        return cast.apply(node.eval(this));
+        try {
+            return cast.apply(node.eval(this));
+        } catch (RuntimeException ex) {
+            throw new IllegalExpressionException(ex.getMessage()+"\n\t at: "+NormaliseConsumer.toExpression(node));
+        }
     }
 
     private String evalToString(Node<?> node) {
-        return eval(node, String.class::cast);
+        return eval(node, Typed::toStringTypeCoercion);
     }
 
     private Boolean evalToBoolean(Node<?> node) {
-        return eval(node, Boolean.class::cast);
+        return eval(node, Typed::toBooleanTypeCoercion);
     }
 
     private Number evalToNumber(Node<?> node) {
-        return eval(node, Number.class::cast);
+        return eval(node, Typed::toNumberTypeCoercion);
     }
 
     private Object evalToObj(Node<?> node) {

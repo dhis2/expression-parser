@@ -7,6 +7,8 @@ import java.util.List;
 import static java.lang.Double.isInfinite;
 import static java.lang.Double.isNaN;
 import static java.lang.String.format;
+import static org.hisp.dhis.expression.ast.Typed.toBooleanTypeCoercion;
+import static org.hisp.dhis.expression.ast.Typed.toNumberTypeCoercion;
 import static org.hisp.dhis.expression.ast.ValueType.BOOLEAN;
 import static org.hisp.dhis.expression.ast.ValueType.NUMBER;
 import static org.hisp.dhis.expression.ast.ValueType.SAME;
@@ -171,23 +173,19 @@ public enum BinaryOperator implements Typed
      * @param right right-hand side of the operator, maybe null
      * @return arguments combined with OR, maybe null
      */
-    public static Boolean or(Object left, Object right) {
-        Boolean l = toBooleanTypeCoercion(left);
-        Boolean r = toBooleanTypeCoercion(right);
-        if (l == null) {
-            return r == Boolean.TRUE ? true : null;
+    public static Boolean or(Boolean left, Boolean right) {
+        if (left == null) {
+            return right == Boolean.TRUE ? true : null;
         }
-        if (r == null)
+        if (right == null)
         {
-            return l == Boolean.TRUE ? true : null;
+            return left == Boolean.TRUE ? true : null;
         }
-        return l || r;
+        return left || right;
     }
 
-    public static Boolean and(Object left, Object right) {
-        Boolean l = toBooleanTypeCoercion(left);
-        Boolean r = toBooleanTypeCoercion(right);
-        return l == null || r == null ? null :  l && r;
+    public static Boolean and(Boolean left, Boolean right) {
+        return left == null || right == null ? null :  left && right;
     }
 
     /*
@@ -245,39 +243,4 @@ public enum BinaryOperator implements Typed
         return !equal(left, right);
     }
 
-    static Double toNumberTypeCoercion(Object value)
-    {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Boolean) {
-            return value == Boolean.TRUE ? 1d : 0d;
-        }
-        if (value instanceof Number) {
-            return ((Number) value).doubleValue();
-        }
-        return Double.valueOf(value.toString());
-    }
-
-    static Boolean toBooleanTypeCoercion(Object value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-        if (value instanceof Boolean) {
-            return (Boolean) value;
-        }
-        if (value instanceof Number) {
-            if (!isInteger((Number) value)) {
-                throw new IllegalArgumentException(format("Could not cast Double '%s' to Boolean", value));
-            }
-            return ((Number) value).intValue() != 0;
-        }
-        return Boolean.valueOf(value.toString());
-    }
-
-    static boolean isInteger(Number value) {
-        return value.doubleValue() % 1.0d == 0d;
-    }
 }
