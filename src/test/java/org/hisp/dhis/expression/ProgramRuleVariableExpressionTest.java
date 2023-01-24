@@ -21,6 +21,7 @@ class ProgramRuleVariableExpressionTest {
     @Test
     void testProgramRuleVariableName() {
         assertEquals(Set.of("var1"), evaluate("#{var1}"));
+        assertEquals(Set.of("var1"), evaluate("A{var1}"));
     }
 
     private static Set<String> evaluate(String expression) {

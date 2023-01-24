@@ -1,16 +1,22 @@
 package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.eval.EvaluateFunction;
-import org.hisp.dhis.expression.eval.NormaliseConsumer;
+import org.hisp.dhis.expression.ast.ValueType;
+import org.hisp.dhis.expression.eval.Evaluate;
+import org.hisp.dhis.expression.eval.DescribeConsumer;
 import org.hisp.dhis.expression.eval.TypeCheckingConsumer;
 import org.hisp.dhis.expression.spi.DataItem;
+import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.spi.ExpressionFunctions;
+import org.hisp.dhis.expression.spi.ID;
 import org.hisp.dhis.expression.spi.IllegalExpressionException;
 import org.hisp.dhis.expression.spi.ParseException;
+import org.hisp.dhis.expression.spi.Variable;
 import org.hisp.dhis.expression.syntax.ExpressionGrammar;
+import org.hisp.dhis.expression.syntax.Fragment;
 import org.hisp.dhis.expression.syntax.Parser;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,55 +28,124 @@ import java.util.Set;
  */
 public final class Expression {
 
-    // Parse MOdes
-    // 1. Description ( subst. UID with name of items)
-    // 2. Find data items to load from database (indicators, validation rules, predictors)
-    // 3. evaluate the expression value (plug in 2.)
-    // 4. Translate to SQL
-
     public enum Mode {
-        //TODO each mode has it defined list of fragments to use
-        // mode is added as a constructor argument for the expression
+        // never SQL unless in an indicator sub-expression
+        VALIDATION_RULE_EXPRESSION(ExpressionGrammar.ValidationRuleExpressionMode, ValueType.NUMBER),
+        PREDICTOR_EXPRESSION(ExpressionGrammar.PredictorExpressionMode, ValueType.NUMBER, ValueType.STRING),
+        INDICATOR_EXPRESSION(ExpressionGrammar.IndicatorExpressionMode, ValueType.NUMBER),
+        PREDICTOR_SKIP_TEST(ExpressionGrammar.PredictorSkipTestMode, ValueType.BOOLEAN),
+        SIMPLE_TEST(ExpressionGrammar.SimpleTestMode, ValueType.BOOLEAN),
+
+        // always SQL for entire expression
+        PROGRAM_INDICATOR_EXPRESSION(ExpressionGrammar.ProgramIndicatorExpressionMode, ValueType.NUMBER),
+
+        // never SQL (also we need JS)
+        PROGRAM_RULE_EXPRESSION(null, ValueType.NUMBER); // dhis2-rule-engine
+
+        final EnumSet<ValueType> result;
+        final List<Fragment> fragments;
+
+        Mode(List<Fragment> fragments, ValueType... resultTypes) {
+            this.result = EnumSet.of(resultTypes[0], resultTypes);
+            this.fragments = fragments;
+        }
     }
 
     private final String expression;
     private final Node<?> root;
 
     public Expression(String expression) throws ParseException {
+        this(expression, Mode.PREDICTOR_EXPRESSION);
+    }
+
+    public Expression(String expression, Mode mode) throws ParseException {
         this.expression = expression;
-        this.root = Parser.parse(expression, ExpressionGrammar.AllFragments);
+        this.root = Parser.parse(expression, mode.fragments);
     }
 
     public Set<DataItem> collectDataItems() {
-        return Node.collectDataItems(root);
+        return Evaluate.collectDataItems(root);
     }
 
     public Set<String> collectProgramRuleVariables() {
-        return Node.collectProgramRuleVariables(root);
+        return Evaluate.collectProgramRuleVariables(root);
     }
 
-    public Object evaluate() {
+    /**
+     * For testing only.
+     *
+     * @see #evaluate(ExpressionFunctions, Map, Map)
+     */
+    Object evaluate() {
         return evaluate(name -> null, Map.of(), Map.of());
     }
 
     public Object evaluate(ExpressionFunctions functions, Map<String, Object> programRuleVariableValues, Map<DataItem, Object> dataItemValues) throws IllegalExpressionException {
-        return root.eval(new EvaluateFunction(functions, programRuleVariableValues, dataItemValues));
+        return Evaluate.evaluate(root, functions, programRuleVariableValues, dataItemValues);
     }
 
     public List<?> typeCheck() {
         //TODO use a class that is spi for the violations
         TypeCheckingConsumer typeCheck = new TypeCheckingConsumer();
         root.visit(typeCheck);
+        //TODO check that the root returns the expected result type
         return typeCheck.getViolations();
+    }
+
+    //TODO propagate modifiers to vars
+    // and create a Variable class that has the modifiers and the name
+    public Set<Variable> collectProgramVariables() {
+        return Evaluate.collectProgramVariables(root);
+    }
+
+    public String generateSQL(ExpressionFunctions functions, Map<String, String> sqlByProgramVariable) {
+        return null;
+    }
+
+    /**
+     * Collects all ID that are UID values.
+     *
+     * OBS! This does not include {@link ID}s that are not {@link ID.Type#isUID()}.
+     *
+     * @return A set of {@link ID}s used in the expression.
+     */
+    public Set<ID> collectUIDs() {
+        return Evaluate.collectUIDs(root);
+    }
+
+    public String describe(Map<ID, String> displayNames) {
+        return Evaluate.describe(root, displayNames);
+    }
+
+    public Set<DataItem> collectDataItemForRegenerate() {
+        return Evaluate.collectDataItems(root, DataItemType.CONSTANT, DataItemType.ORG_UNIT_GROUP);
+    }
+
+    /**
+     * Regenerates an expression from the parse tree where all constant IDs are substituted with their values
+     * and all organisation unit groups IDs are substituted with their member count provided that are contained in
+     * the given map.
+     *
+     * @see #collectDataItemForRegenerate()
+     *
+     * @param dataItemValues values for constants, member count for organisation unit groups
+     * @return an expression where constant and organisation unit group data items are substituted with values
+     */
+    public String regenerate(Map<DataItem, Number> dataItemValues ) {
+        // old: org.hisp.dhis.expression.DefaultExpressionService#regenerateIndicatorExpression (indicator only)
+        return Evaluate.regenerate(root, dataItemValues);
     }
 
     /**
      * @return the expression in its normalised from (str => AST => str)
      */
     public String normalise() {
-        return NormaliseConsumer.toExpression(root);
+        return Evaluate.normalise(root);
     }
 
+    /**
+     * @return the expression in its original (user input) form
+     */
     @Override
     public String toString() {
         return expression;

@@ -17,14 +17,15 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 /**
  * Declaration of the DHIS2 expression language.
  *
- * The language is composed out of {@link Terminal}s and named {@link NonTerminal}s.
+ * The language is composed out of {@link Terminal}s and named {@link Fragment}s.
  *
  * @author Jan Bernitt
  */
+@SuppressWarnings("java:S2386")
 public interface ExpressionGrammar
 {
     /*
-    Terminals (basic building blocks)
+    Terminals (simple building blocks)
      */
 
     Terminal
@@ -35,10 +36,10 @@ public interface ExpressionGrammar
             DATE       = () -> NodeType.DATE;
 
     /*
-    Essential Non-Terminals
+    Essential composed building blocks
      */
 
-    NonTerminal
+    Fragment
             expr = Expr::expr,
             dataItem = Expr::dataItem,
             dataItemHash = Expr::dataItemHash,
@@ -48,7 +49,7 @@ public interface ExpressionGrammar
     Production Rules
      */
 
-    List<NonTerminal> Modifiers = List.of( // (alphabetical)
+    List<Fragment> Modifiers = List.of( // (alphabetical)
             mod( DataItemModifier.aggregationType, IDENTIFIER.as(Nodes.AggregationTypeNode::new) ),
             mod( DataItemModifier.maxDate, DATE),
             mod( DataItemModifier.minDate, DATE),
@@ -56,7 +57,7 @@ public interface ExpressionGrammar
             mod( DataItemModifier.stageOffset, INTEGER),
             mod( DataItemModifier.yearToDate));
 
-    List<NonTerminal> BaseFunctions = List.of( // (alphabetical)
+    List<Fragment> CommonFunctions = List.of( // (alphabetical)
             fn( NamedFunction.firstNonNull , expr.plus() ),
             fn( NamedFunction.greatest , expr.plus() ),
             fn( NamedFunction.ifThenElse , expr, expr, expr ),
@@ -65,16 +66,21 @@ public interface ExpressionGrammar
             fn( NamedFunction.least , expr.plus() ),
             fn( NamedFunction.log , expr, expr.maybe() ),
             fn( NamedFunction.log10 , expr ),
+            fn( NamedFunction.removeZeros , expr )
+    );
+
+    List<Fragment> ValidationRuleFunctions = List.of(
             fn( NamedFunction.orgUnit_ancestor , UID.plus() ),
             fn( NamedFunction.orgUnit_dataSet , UID.plus() ),
             fn( NamedFunction.orgUnit_group , UID.plus() ),
-            fn( NamedFunction.orgUnit_program , UID.plus() ),
-            fn( NamedFunction.removeZeros , expr ),
-            //TODO make mod?
+            fn( NamedFunction.orgUnit_program , UID.plus() )
+    );
+
+    List<Fragment> IndicatorFunctions = List.of(
             fn( NamedFunction.subExpression , expr )
     );
 
-    List<NonTerminal> AggregationFunctions = List.of( // (alphabetical)
+    List<Fragment> AggregationFunctions = List.of( // (alphabetical)
             fn( NamedFunction.avg, expr ),
             fn( NamedFunction.count, expr),
             fn( NamedFunction.max , expr ),
@@ -88,7 +94,7 @@ public interface ExpressionGrammar
             fn( NamedFunction.variance , expr )
     );
 
-    List<NonTerminal> ProgramFunctions = List.of( // (alphabetical)
+    List<Fragment> ProgramFunctions = List.of( // (alphabetical)
             fn( NamedFunction.d2_addDays , expr, expr ),
             fn( NamedFunction.d2_ceil , expr ),
             fn( NamedFunction.d2_concatenate , expr.plus() ),
@@ -99,7 +105,7 @@ public interface ExpressionGrammar
             fn( NamedFunction.d2_countIfZeroPos , dataItem),
             fn( NamedFunction.d2_daysBetween , expr, expr ),
             fn( NamedFunction.d2_extractDataMatrixValue , expr, expr ),
-            fn( NamedFunction.d2_floor , expr ),
+            fn( NamedFunction.d2_floor, expr ),
             fn( NamedFunction.d2_hasUserRole , expr ),
             fn( NamedFunction.d2_hasValue , dataItem),
             fn( NamedFunction.d2_inOrgUnitGroup , expr ),
@@ -130,64 +136,67 @@ public interface ExpressionGrammar
     /**
      * Everything that is considered a data item
      */
-    List<NonTerminal> DataItems = List.of( // (alphabetical)
+    List<Fragment> CommonDataItems = List.of( // (alphabetical)
             dataItemHash.named(DataItemType.DATA_ELEMENT.getSymbol()),
             dataItemA.named(DataItemType.ATTRIBUTE.getSymbol()),
             item(DataItemType.CONSTANT, UID),
             item(DataItemType.PROGRAM_DATA_ELEMENT, UID, UID),
             item(DataItemType.PROGRAM_INDICATOR, UID),
-            item(DataItemType.INDICATOR, UID),
             item(DataItemType.REPORTING_RATE, UID, IDENTIFIER.as(Nodes.ReportingRateTypeNode::new)),
             item(DataItemType.ORG_UNIT_GROUP, UID)
     );
 
-    /**
-     * Top level variables
+    List<Fragment> IndicatorDataItems = List.of(
+            item(DataItemType.INDICATOR, UID),
+            variable(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new))
+    );
+
+    List<Fragment> CommonConstants = List.of(
+            Fragment.constant(NodeType.NULL, "null"),
+            Fragment.constant(NodeType.BOOLEAN, "true"),
+            Fragment.constant(NodeType.BOOLEAN, "false")
+    );
+
+    /*
+    Modes
      */
-    List<NonTerminal> Variables = List.of(
-            var(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new))
-    );
 
-    List<NonTerminal> Functions = Stream.of(BaseFunctions, AggregationFunctions, ProgramFunctions)
-            .flatMap(Collection::stream)
-            .collect(toUnmodifiableList());
+    List<Fragment> ValidationRuleExpressionMode = concat(CommonFunctions, CommonDataItems, ValidationRuleFunctions, CommonConstants);
+    List<Fragment> PredictorExpressionMode = concat(ValidationRuleExpressionMode, AggregationFunctions, Modifiers); //TODO only min/max mods
+    List<Fragment> IndicatorExpressionMode = concat(CommonFunctions, CommonDataItems, IndicatorFunctions, IndicatorDataItems, Modifiers, CommonConstants);
+    List<Fragment> PredictorSkipTestMode = PredictorExpressionMode;
+    List<Fragment> SimpleTestMode = concat(CommonFunctions, CommonConstants, List.of(item(DataItemType.CONSTANT, UID)));
 
-    List<NonTerminal> Constants = List.of(
-            NonTerminal.constant(NodeType.NULL, "null"),
-            NonTerminal.constant(NodeType.BOOLEAN, "true"),
-            NonTerminal.constant(NodeType.BOOLEAN, "false")
-    );
+    List<Fragment> ProgramIndicatorExpressionMode = concat(CommonFunctions, CommonDataItems, ProgramFunctions, CommonConstants, IndicatorDataItems); //TODO check
+    /*
+    Block expressions
+     */
 
-    List<NonTerminal> AllFragments = Stream.of(Modifiers, Functions, Constants, DataItems, Variables)
-            .flatMap(Collection::stream)
-            .collect(toUnmodifiableList());
-
-
-    static NonTerminal mod(DataItemModifier modifier, NonTerminal... args )
+    static Fragment mod(DataItemModifier modifier, Fragment... args )
     {
         String name = modifier.name();
         return block( NodeType.MODIFIER, name, '(',',', ')', args ).named(name);
     }
 
-    static NonTerminal fn(NamedFunction function, NonTerminal... args )
+    static Fragment fn(NamedFunction function, Fragment... args )
     {
         String name = function.getName();
         return block( NodeType.FUNCTION, name, '(',',', ')', args ).named(name);
     }
 
-    static NonTerminal item(DataItemType value, NonTerminal... args)
+    static Fragment item(DataItemType value, Fragment... args)
     {
         String symbol = value.getSymbol();
         return block(NodeType.DATA_ITEM, symbol, '{', '.','}', args).named(symbol);
     }
 
-    static NonTerminal var(DataItemType value, NonTerminal... args)
+    static Fragment variable(DataItemType value, Fragment... args)
     {
         String symbol = value.getSymbol();
         return block(NodeType.VARIABLE, symbol, '{', '.','}', args).named(symbol);
     }
 
-    static NonTerminal block(NodeType type, String name, char start, char argsSeparator, char end, NonTerminal... args )
+    static Fragment block(NodeType type, String name, char start, char argsSeparator, char end, Fragment... args )
     {
         return ( expr, ctx ) -> {
             expr.expect(start);
@@ -195,7 +204,7 @@ public interface ExpressionGrammar
             for ( int i = 0; i < args.length || args.length > 0 && args[args.length-1].isVarargs(); i++ )
             {
                 expr.skipWS();
-                NonTerminal arg = args[Math.min(i, args.length-1)];
+                Fragment arg = args[Math.min(i, args.length-1)];
                 char c = expr.peek();
                 if ( c == end )
                 {
@@ -224,5 +233,12 @@ public interface ExpressionGrammar
             ctx.endNode(type);
             expr.expect(end);
         };
+    }
+
+    @SafeVarargs
+    static List<Fragment> concat(List<Fragment>... nonTerminals) {
+        return Stream.of(nonTerminals)
+                .flatMap(Collection::stream)
+                .collect(toUnmodifiableList());
     }
 }

@@ -45,11 +45,11 @@ public final class Parser implements ParseContext {
         DEFAULT_FACTORIES.put(NodeType.NULL, Nodes.ConstantNode::new);
     }
 
-    public static Parser withFragments(List<NonTerminal> fragments) {
+    public static Parser withFragments(List<Fragment> fragments) {
         return new Parser(fragments, new EnumMap<>(DEFAULT_FACTORIES));
     }
 
-    public static Node<?> parse(String expr, List<NonTerminal> fragments) {
+    public static Node<?> parse(String expr, List<Fragment> fragments) {
         Parser parser = Parser.withFragments(fragments);
         Expr.parse(expr, parser);
         Node<?> root = parser.getRoot();
@@ -58,23 +58,23 @@ public final class Parser implements ParseContext {
         return root.getType() == NodeType.PAR && root.size() == 1 ? root.child(0) : root;
     }
 
-    private final Map<String, NonTerminal> fragmentsByName;
+    private final Map<String, Fragment> fragmentsByName;
     private final Map<NodeType, Node.Factory> factoryByType;
 
     private final LinkedList<Node<?>> stack = new LinkedList<>();
 
     private Node<?> root;
 
-    private Parser(List<NonTerminal> fragments, Map<NodeType, Node.Factory> factoryByType) {
+    private Parser(List<Fragment> fragments, Map<NodeType, Node.Factory> factoryByType) {
         this.fragmentsByName = mapByName(fragments);
         this.factoryByType = factoryByType;
     }
 
-    private static Map<String, NonTerminal> mapByName(List<NonTerminal> functions) {
-        return functions.stream().collect(toUnmodifiableMap(NonTerminal::name, Function.identity()));
+    private static Map<String, Fragment> mapByName(List<Fragment> functions) {
+        return functions.stream().collect(toUnmodifiableMap(Fragment::name, Function.identity()));
     }
 
-    public Parser withFragments(NonTerminal... fragments) {
+    public Parser withFragments(Fragment... fragments) {
         this.fragmentsByName.putAll(mapByName(List.of(fragments)));
         return this;
     }
@@ -89,7 +89,7 @@ public final class Parser implements ParseContext {
     }
 
     @Override
-    public NonTerminal fragment(String name) {
+    public Fragment fragment(String name) {
         return fragmentsByName.get(name);
     }
 

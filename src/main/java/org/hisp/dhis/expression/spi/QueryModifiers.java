@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 
 @Value
 @Builder(toBuilder = true)
-public class DataItemModifiers {
+public class QueryModifiers {
 
     /**
      * Use aggregation over periods when loading data.

@@ -2,6 +2,13 @@ package org.hisp.dhis.expression.spi;
 
 import lombok.Value;
 
+/**
+ * An identifier of some type as used in {@link DataItem}s.
+ *
+ * Mostly these are UIDs but sometimes these are other identifiers.
+ *
+ * @author Jan Bernitt
+ */
 @Value
 public class ID {
 
@@ -23,7 +30,11 @@ public class ID {
         ProgramVariableName,
         ProgramStageUID,
         // not a UID but an Identifier
-        ReportingRateType
+        ReportingRateType;
+
+        public boolean isUID() {
+            return this != ProgramVariableName && this != ReportingRateType;
+        }
     }
 
     Type type;

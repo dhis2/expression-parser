@@ -52,7 +52,7 @@ class VariableExpressionTest {
     }
 
     private void assertHasStructure(TNode expected, String expression) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.AllFragments);
+        Node<?> root = Parser.parse(expression, ExpressionGrammar.ProgramIndicatorExpressionMode);
         assertEquals(expected, TNode.of(root));
     }
 }

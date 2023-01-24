@@ -1,9 +1,10 @@
 package org.hisp.dhis.expression.ast;
 
 import org.hisp.dhis.expression.spi.DataItem;
-import org.hisp.dhis.expression.spi.DataItemModifiers;
+import org.hisp.dhis.expression.spi.QueryModifiers;
 import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.spi.ID;
+import org.hisp.dhis.expression.spi.Variable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -188,26 +189,53 @@ public interface Nodes {
         }
     }
 
-    final class DataItemNode extends ComplexNode<DataItemType> {
-
+    abstract class ModifiedNode<T> extends ComplexNode<T> {
         /**
          * This list of modifiers is always empty from pure parsing.
          * It is used to aggregate the effective modifiers in AST transformation step.
          */
         private final List<Node<?>> modifiers = new ArrayList<>();
 
-        public DataItemNode(NodeType type, String rawValue) {
-            super(type, rawValue, DataItemType::fromSymbol, rethrowAs(DataItemType.class, DataItemType::getSymbol));
+        ModifiedNode(NodeType type, String rawValue, Function<String, T> converter) {
+            super(type, rawValue, converter);
+        }
+
+        ModifiedNode(NodeType type, String rawValue, Function<String, T> converter, BiFunction<String, RuntimeException, RuntimeException> rethrowAs) {
+            super(type, rawValue, converter, rethrowAs);
         }
 
         @Override
-        public void addModifier(Node<?> mod) {
+        public final void addModifier(Node<?> mod) {
             this.modifiers.add(mod);
         }
 
         @Override
-        public Iterable<Node<?>> modifiers() {
+        public final Iterable<Node<?>> modifiers() {
             return modifiers;
+        }
+
+        final QueryModifiers getQueryModifiers() {
+            QueryModifiers.QueryModifiersBuilder mods = QueryModifiers.builder();
+            modifiers.forEach(mod -> {
+                Supplier<Object> value = () -> mod.child(0).child(0).getValue();
+                switch ((DataItemModifier)mod.getValue()) {
+                    case aggregationType: mods.aggregationType( (AggregationType) value.get()); break;
+                    case maxDate: mods.maxDate((LocalDate) value.get()); break;
+                    case minDate: mods.minDate( (LocalDate) value.get()); break;
+                    case periodOffset: mods.periodOffset( (Integer) value.get()); break;
+                    case stageOffset: mods.stageOffset((Integer) value.get()); break;
+                    case yearToDate: mods.yearToDate( true); break;
+                    case periodAggregation: mods.periodAggregation(true); break;
+                }
+            });
+            return mods.build();
+        }
+    }
+
+    final class DataItemNode extends ModifiedNode<DataItemType> {
+
+        public DataItemNode(NodeType type, String rawValue) {
+            super(type, rawValue, DataItemType::fromSymbol, rethrowAs(DataItemType.class, DataItemType::getSymbol));
         }
 
         @Override
@@ -230,24 +258,7 @@ public interface Nodes {
                         .map(n -> new ID(type, n.getRawValue()))
                         .collect(toList()));
             }
-            return new DataItem(itemType, idGroups.get(0).get(0), idGroups.get(1), idGroups.get(2), dataItemModifiersOf(modifiers));
-        }
-
-        static DataItemModifiers dataItemModifiersOf(List<Node<?>> modifiers) {
-            DataItemModifiers.DataItemModifiersBuilder mods = DataItemModifiers.builder();
-            modifiers.forEach(mod -> {
-                Supplier<Object> value = () -> mod.child(0).child(0).getValue();
-                switch ((DataItemModifier)mod.getValue()) {
-                        case aggregationType: mods.aggregationType( (AggregationType) value.get()); break;
-                        case maxDate: mods.maxDate((LocalDate) value.get()); break;
-                        case minDate: mods.minDate( (LocalDate) value.get()); break;
-                        case periodOffset: mods.periodOffset( (Integer) value.get()); break;
-                        case stageOffset: mods.stageOffset((Integer) value.get()); break;
-                        case yearToDate: mods.yearToDate( true); break;
-                        case periodAggregation: mods.periodAggregation(true); break;
-                    }
-                });
-            return mods.build();
+            return new DataItem(itemType, idGroups.get(0).get(0), idGroups.get(1), idGroups.get(2), getQueryModifiers());
         }
     }
 
@@ -275,10 +286,18 @@ public interface Nodes {
 
     }
 
-    final class VariableNode extends ComplexNode<VariableType> {
+    final class VariableNode extends ModifiedNode<VariableType> {
 
         public VariableNode(NodeType type, String rawValue) {
             super(type, rawValue, VariableType::fromSymbol);
+        }
+
+        @Override
+        public Variable toVariable() {
+            if (getValue() != VariableType.PROGRAM) {
+                return null;
+            }
+            return new Variable((ProgramVariable) child(0).getValue(), getQueryModifiers());
         }
 
         @Override

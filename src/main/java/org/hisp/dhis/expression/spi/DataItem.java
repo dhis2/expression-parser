@@ -16,22 +16,22 @@ public class DataItem {
     ID uid0;
     List<ID> uid1;
     List<ID> uid2;
-    DataItemModifiers modifiers;
+    QueryModifiers modifiers;
 
     public DataItem(DataItemType type, ID... uid012) {
         this(type,
                 uid012[0],
                 uid012.length > 1 ? List.of(uid012[1]): List.of(),
                 uid012.length > 2 ? List.of(uid012[2]): List.of(),
-                DataItemModifiers.builder().build() );
+                QueryModifiers.builder().build() );
     }
 
-    public DataItem(DataItemType type, ID uid0, DataItemModifiers modifiers) {
+    public DataItem(DataItemType type, ID uid0, QueryModifiers modifiers) {
         this(type, uid0, List.of(), List.of(), modifiers );
     }
 
-    public DataItem(DataItemType type, ID uid0, UnaryOperator<DataItemModifiers.DataItemModifiersBuilder> modifiers) {
-        this(type, uid0, modifiers.apply(DataItemModifiers.builder()).build());
+    public DataItem(DataItemType type, ID uid0, UnaryOperator<QueryModifiers.QueryModifiersBuilder> modifiers) {
+        this(type, uid0, modifiers.apply(QueryModifiers.builder()).build());
     }
 
     @Override

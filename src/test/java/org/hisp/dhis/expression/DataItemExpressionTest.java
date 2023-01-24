@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.spi.DataItem;
-import org.hisp.dhis.expression.spi.DataItemModifiers;
+import org.hisp.dhis.expression.spi.QueryModifiers;
 import org.hisp.dhis.expression.spi.ID;
 import org.junit.jupiter.api.Test;
 
@@ -84,7 +84,7 @@ class DataItemExpressionTest {
                         new ID(ProgramStageUID, "u1234567890"),
                         List.of(new ID(CategoryOptionGroupUID, "v1234567890"), new ID(CategoryOptionGroupUID, "w1234567890")),
                         List.of(),
-                        DataItemModifiers.builder().build())),
+                        QueryModifiers.builder().build())),
                 evaluate("#{u1234567890.coGroup:v1234567890&w1234567890}"));
     }
 

@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
-import static org.hisp.dhis.expression.eval.NormaliseConsumer.toExpression;
+import static org.hisp.dhis.expression.eval.DescribeConsumer.toExpression;
 
 public class TypeCheckingConsumer implements NodeVisitor {
 

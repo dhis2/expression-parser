@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toList;
  * @author Jan Bernitt
  */
 @RequiredArgsConstructor
-public class EvaluateFunction implements NodeInterpreter<Object> {
+class EvaluateFunction implements NodeInterpreter<Object> {
 
     private final ExpressionFunctions functions;
     private final Map<String, Object> programRuleVariableValues;
@@ -204,7 +204,7 @@ public class EvaluateFunction implements NodeInterpreter<Object> {
         try {
             return cast.apply(node.eval(this));
         } catch (RuntimeException ex) {
-            throw new IllegalExpressionException(ex.getMessage()+"\n\t at: "+NormaliseConsumer.toExpression(node));
+            throw new IllegalExpressionException(ex.getMessage()+"\n\t at: "+ DescribeConsumer.toExpression(node));
         }
     }
 

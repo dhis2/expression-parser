@@ -1,12 +1,12 @@
 package org.hisp.dhis.expression.ast;
 
 import org.hisp.dhis.expression.spi.DataItem;
+import org.hisp.dhis.expression.spi.ID;
+import org.hisp.dhis.expression.spi.Variable;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.stream;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
 
 /**
  * A node in the AST of the expression language.
@@ -31,7 +32,7 @@ import static java.util.stream.Collectors.toList;
  * </ul>
  *
  * A {@link Node} AST is a mutable data structure that is initially constructed during the parsing process.
- * Later it can be transformed using {@link #transform(java.util.function.UnaryOperator)}.
+ * Later it can be transformed using {@link #transform(BiFunction)}}.
  */
 public interface Node<T> extends Typed {
 
@@ -231,6 +232,15 @@ public interface Node<T> extends Typed {
         return null;
     }
 
+    default Stream<ID> toIDs() {
+        DataItem item = toDataItem();
+        return item == null
+                ? Stream.empty()
+                : concat(concat(Stream.of(item.getUid0()), item.getUid1().stream()), item.getUid2().stream());
+    }
+
+    default Variable toVariable() { return null; }
+
     /**
      * Iterate this node's modifiers.
      *
@@ -367,8 +377,10 @@ public interface Node<T> extends Typed {
                     int target = i-1;
                     while (target >= 0 && children.get(target).getType() == NodeType.MODIFIER) target--;
                     if (target >= 0) {
-                        children.get(target).visit(NodeType.DATA_ITEM, modified ->
-                                modified.addModifier(maybeModifier));
+                        Consumer<Node<?>> addModifier = modified -> modified.addModifier(maybeModifier);
+                        children.get(target).visit(NodeType.DATA_ITEM, addModifier);
+                        children.get(target).visit(addModifier,
+                                n -> n.getType() == NodeType.VARIABLE && n.getValue() == VariableType.PROGRAM);
                     }
                 }
             }
@@ -376,17 +388,4 @@ public interface Node<T> extends Typed {
         });
     }
 
-    static Set<DataItem> collectDataItems(Node<?> root) {
-        return root.aggregate(new HashSet<>(), Node::toDataItem, Set::add, node -> node.getType() == NodeType.DATA_ITEM);
-    }
-
-    static Set<String> collectProgramRuleVariables(Node<?> root) {
-        return root.aggregate(new HashSet<>(), node -> node.child(0).getRawValue(), Set::add,
-                node -> node.getType() == NodeType.VARIABLE && node.getValue() == VariableType.PROGRAM_RULE);
-    }
-
-    static Set<String> collectProgramVariables(Node<?> root) {
-        return root.aggregate(new HashSet<>(), node -> node.child(0).getRawValue(), Set::add,
-                node -> node.getType() == NodeType.VARIABLE && node.getValue() == VariableType.PROGRAM);
-    }
 }

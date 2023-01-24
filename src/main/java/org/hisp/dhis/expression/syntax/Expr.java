@@ -42,11 +42,12 @@ public final class Expr implements Serializable
         int offset0 = pos0 - posLine0;
         int posLineEnd = posLine0;
         while (posLineEnd < expr.expr.length && expr.expr[posLineEnd] != '\n') posLineEnd++;
-        int cutoutLength = Math.min(20, posLineEnd - posLine0);
+        int markLen = expr.pos - pos0;
+        int cutoutLength = Math.min(pos0 - posLine0+markLen, posLineEnd - posLine0);
         String exprCutout = new String(expr.expr, posLine0, cutoutLength  );
-        String pointer = expr.pos - pos0 <= 1
+        String pointer = markLen <= 1
                 ? " ".repeat(offset0)+"^"
-                : " ".repeat(offset0)+"^"+"-".repeat(Math.max(0, expr.pos-pos0-2))+"^";
+                : " ".repeat(offset0)+"^"+"-".repeat(Math.max(0, markLen-2))+"^";
         return String.format("%s%n\tat line:%d character:%d%n\t%s%n\t%s", desc, line, offset0, exprCutout, pointer);
     }
 

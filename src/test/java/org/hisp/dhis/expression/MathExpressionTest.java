@@ -68,6 +68,8 @@ class MathExpressionTest {
         assertEquals( 16.0, evaluate( "2^2^2" ) );
         assertEquals( 9.0, evaluate( "(-3)^2" ) );
         assertEquals( -27.0, evaluate( "(-3)^3" ) );
+        assertEquals( -27.0, evaluate( "-3^3" ) );
+        assertEquals( -9.0, evaluate( "-3^2" ) );
     }
 
     @Test

@@ -3,10 +3,10 @@ package org.hisp.dhis.expression.syntax;
 import org.hisp.dhis.expression.ast.NodeType;
 
 /**
- * A {@link NonTerminal} is a building block of a grammar that consists of further blocks that either are {@link NonTerminal}s themselves or are {@link Terminal}s.
+ * A {@link Fragment} is a building block of a grammar that consists of further blocks that either are {@link Fragment}s themselves or are {@link Terminal}s.
  */
 @FunctionalInterface
-public interface NonTerminal
+public interface Fragment
 {
     /**
      * Parse this non-terminal token for the expr at its current position
@@ -49,11 +49,11 @@ public interface NonTerminal
      *
      * @return This block as optional block (only in argument lists)
      */
-    default NonTerminal maybe()
+    default Fragment maybe()
     {
         class Maybe extends Delegate {
 
-            Maybe(NonTerminal body) {
+            Maybe(Fragment body) {
                 super(body);
             }
 
@@ -66,10 +66,10 @@ public interface NonTerminal
         return this instanceof Maybe ? this : new Maybe(this);
     }
 
-    default NonTerminal plus() {
+    default Fragment plus() {
         class Plus extends Delegate {
 
-            Plus(NonTerminal body) {
+            Plus(Fragment body) {
                 super(body);
             }
 
@@ -81,7 +81,7 @@ public interface NonTerminal
         return this instanceof Plus ? this : new Plus(this);
     }
 
-    default NonTerminal star() {
+    default Fragment star() {
         return plus().maybe();
     }
 
@@ -93,13 +93,13 @@ public interface NonTerminal
      *
      * @return this block but with a name label attached to it
      */
-    default NonTerminal named(String name )
+    default Fragment named(String name )
     {
         class Named extends Delegate
         {
             final String name;
 
-            Named( String name, NonTerminal body )
+            Named( String name, Fragment body )
             {
                 super(body);
                 this.name = name;
@@ -114,7 +114,7 @@ public interface NonTerminal
         return new Named( name, this instanceof Named ? ((Named) this).to : this );
     }
 
-    default NonTerminal quoted()
+    default Fragment quoted()
     {
         return ( expr, ctx ) -> {
             char c = expr.peek();
@@ -127,16 +127,16 @@ public interface NonTerminal
         };
     }
 
-    static NonTerminal constant(NodeType type, String literal) {
-        NonTerminal token = (expr, ctx) -> ctx.addNode(type, literal);
+    static Fragment constant(NodeType type, String literal) {
+        Fragment token = (expr, ctx) -> ctx.addNode(type, literal);
         return token.named(literal);
     }
 
-    abstract class Delegate implements NonTerminal {
+    abstract class Delegate implements Fragment {
 
-        protected final NonTerminal to;
+        protected final Fragment to;
 
-        protected Delegate(NonTerminal to) {
+        protected Delegate(Fragment to) {
             this.to = to;
         }
 

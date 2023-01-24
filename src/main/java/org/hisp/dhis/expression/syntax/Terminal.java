@@ -6,9 +6,9 @@ import org.hisp.dhis.expression.ast.NodeType;
 /**
  * A {@link Terminal} is a building block of a grammar that does not consist and any smaller parts. They represent a simple value or leaf in the AST.
  *
- * In the java model {@link Terminal}s extends {@link NonTerminal} so that they can be mixed with them as argument building blocks that make up a {@link NonTerminal}.
+ * In the java model {@link Terminal}s extends {@link Fragment} so that they can be mixed with them as argument building blocks that make up a {@link Fragment}.
  */
-public interface Terminal extends NonTerminal
+public interface Terminal extends Fragment
 {
     @Override
     default void parse( Expr expr, ParseContext ctx )

@@ -9,25 +9,51 @@ import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Tag;
 import org.hisp.dhis.expression.ast.UnaryOperator;
 import org.hisp.dhis.expression.ast.VariableType;
+import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemType;
+import org.hisp.dhis.expression.spi.ID;
 
 import java.time.LocalDate;
+import java.util.Map;
 
 /**
  * Converts an AST back into a normalised {@link String} form.
  *
  * @author Jan Bernitt
  */
-public class NormaliseConsumer implements NodeVisitor {
+public class DescribeConsumer implements NodeVisitor {
 
-    public static String toExpression(Node<?> node)
+    public static String toExpression(Node<?> root)
     {
-        NormaliseConsumer walker = new NormaliseConsumer();
-        node.walk(walker);
+        return toExpression(root, Map.of());
+    }
+
+    public static String toExpression(Node<?> root, Map<DataItem, Number> dataItemValues)
+    {
+        DescribeConsumer walker = new DescribeConsumer(dataItemValues, Map.of());
+        root.walk(walker);
+        return walker.toString();
+    }
+
+    public static String toDisplayExpression(Node<?> root, Map<ID, String> displayNames)
+    {
+        DescribeConsumer walker = new DescribeConsumer(Map.of(), displayNames);
+        root.walk(walker);
         return walker.toString();
     }
 
     private final StringBuilder out = new StringBuilder();
+    private final Map<DataItem, Number> dataItemValues;
+    private final Map<ID, String> displayNames;
+
+    private int currentDataItemCardinality;
+    private DataItem currentDataItem;
+    private int currentDataItemIdIndex;
+
+    public DescribeConsumer(Map<DataItem, Number> dataItemValues, Map<ID, String> displayNames) {
+        this.dataItemValues = dataItemValues;
+        this.displayNames = displayNames;
+    }
 
     @Override
     public String toString() {
@@ -76,6 +102,17 @@ public class NormaliseConsumer implements NodeVisitor {
 
     @Override
     public void visitDataItem(Node<DataItemType> item) {
+        currentDataItemCardinality = item.size();
+        currentDataItem = item.toDataItem();
+        Number value = dataItemValues.get(currentDataItem);
+        if (value != null) {
+            out.append(value);
+        } else {
+            describeDataItem(item);
+        }
+    }
+
+    private void describeDataItem(Node<DataItemType> item) {
         Node<?> c0 = item.child(0);
         boolean isPS_EVENTDATE = c0.child(0).getValue() == Tag.PS_EVENTDATE;
         if (!isPS_EVENTDATE) {
@@ -85,10 +122,20 @@ public class NormaliseConsumer implements NodeVisitor {
         for (int i = 0; i < item.size(); i++)
         {
             if (i > 0) out.append('.');
+            currentDataItemIdIndex = i;
             item.child(i).walk(this);
         }
         if (!isPS_EVENTDATE) {
             out.append('}');
+        }
+        visitModifiers(item);
+    }
+
+    private void visitModifiers(Node<?> item) {
+        for (Node<?> mod : item.modifiers()) {
+            if (mod.getValue() != DataItemModifier.periodAggregation) {
+                mod.walk(this);
+            }
         }
     }
 
@@ -98,6 +145,7 @@ public class NormaliseConsumer implements NodeVisitor {
         out.append('{');
         variable.child(0).walk(this);
         out.append('}');
+        visitModifiers(variable);
     }
 
     @Override
@@ -139,6 +187,14 @@ public class NormaliseConsumer implements NodeVisitor {
 
     @Override
     public void visitUid(Node<String> value) {
+        if (!displayNames.isEmpty()) {
+            ID id = new ID(currentDataItem.getType().getType(currentDataItemCardinality, currentDataItemIdIndex), value.getValue());
+            String name = displayNames.get(id);
+            if (name != null) {
+                out.append(name);
+                return;
+            }
+        }
         out.append(value.getValue());
     }
 
