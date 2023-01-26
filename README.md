@@ -13,7 +13,7 @@ Each such method accepts two arguments:
 
 The parsing is implemented in 4 levels (high to low):
 1. `ExprGrammar`: high level composition of non-terminals (functions, methods, constants)
-2. `Expr`: non-terminals `expr` (operators, brackets) and `data`
+2. `Expr`: non-terminals `expr` (operators, brackets) and `dataResolver`
 3. `Literals`: terminals of the language; string, number, date literals etc.
 4. `Chars`: named character sets of the language as used by `Literals`
 
@@ -29,11 +29,11 @@ expr1           = UNARY_OPERATOR expr1
                 | NUMBER
                 | DATE
                 | function
-                | data-value
+                | dataResolver-value
                 | constant
 function        = NAME '(' expr (',' expr )* ')'
 method          = '.' NAME '(' expr (',' expr )* ')'
-data-value      = NAME '{' reference '}'
+dataResolver-value      = NAME '{' reference '}'
 reference       = uid ( '.' uid )? ( '.' uid )?
                 | REF
 uid             = tag? UID ('&' UID)*
@@ -57,7 +57,7 @@ STRING          = '"' ... '"'   // ... => its complicated, escaping, unicode
 
 While in general functions and methods have `expr` arguments each named
 function has a particular sequence of parameters which might be limited to a
-case like expecting a `DATE` or a `data-value` item.
+case like expecting a `DATE` or a `dataResolver-value` item.
 
 ### AST
 The parser builds an AST with "flat" operators. Meaning the operands are not
@@ -76,9 +76,9 @@ way that is easy to maintain:
 - `d2:relationshipCount` is the only function expecting a quoted `UID`
 - a `programRuleStringVariableName` is any string and only identifiable having
   a special meaning by its position as argument to certain functions
-- `PS_EVENTDATE:` is a tag for a `UID` for a data value but does not use the
+- `PS_EVENTDATE:` is a tag for a `UID` for a dataResolver value but does not use the
   `#{...}` wrapper and can therefore easily be confused for a named function
-- functions accepting data item values do not accept all data item value types
+- functions accepting dataResolver item values do not accept all dataResolver item value types
   that can occur on top level.
 - the `de:*`-functions contain `:` which is hard to distinguish from a tag
 - `orgUnit.*`-functions contain `.` which is hard to distinguish from a method

@@ -43,6 +43,11 @@
 
   <url>https://github.com/dhis2/dhis2-expression-parser</url>
 
+  <properties>
+    <lombok.version>1.18.24</lombok.version>
+    <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -56,6 +61,12 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
@@ -171,6 +182,13 @@
         <configuration>
           <source>11</source>
           <target>11</target>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
       </plugin>
       <plugin>
@@ -198,6 +216,11 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-maven-plugin</artifactId>
+        <version>${lombok-maven-plugin.version}</version>
       </plugin>
     </plugins>
   </build>
