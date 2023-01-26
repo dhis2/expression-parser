@@ -156,6 +156,6 @@ class DataItemExpressionTest {
     }
 
     private static Set<DataItem> evaluate(String expression) {
-        return new Expression(expression).collectDataItems();
+        return new Expression(expression, Expression.Mode.INDICATOR_EXPRESSION).collectDataItems();
     }
 }

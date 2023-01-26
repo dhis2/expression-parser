@@ -86,18 +86,18 @@ class DataItemModifierExpressionTest {
 
     @Test
     void testMultipleModifiersIndirectlyApplied() {
-        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).build();
+        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).periodAggregation(true).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("d2:ceil(#{u1234567890}).yearToDate().stageOffset(42)"));
+                evaluate("sum(#{u1234567890}).yearToDate().stageOffset(42)"));
     }
 
     @Test
     void testMultipleModifiersIndirectlyAppliedToMany() {
-        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).build();
+        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).periodAggregation(true).build();
         assertEquals(Set.of(
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
-                evaluate("d2:ceil(#{u1234567890} + #{v1234567890}).yearToDate().stageOffset(42)"));
+                evaluate("sum(#{u1234567890} + #{v1234567890}).yearToDate().stageOffset(42)"));
     }
 
     @Test

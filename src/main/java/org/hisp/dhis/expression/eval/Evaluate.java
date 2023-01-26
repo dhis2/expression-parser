@@ -5,10 +5,12 @@ import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemType;
+import org.hisp.dhis.expression.spi.ExpressionData;
 import org.hisp.dhis.expression.spi.ExpressionFunctions;
 import org.hisp.dhis.expression.spi.ID;
 import org.hisp.dhis.expression.spi.IllegalExpressionException;
 import org.hisp.dhis.expression.spi.Variable;
+import org.hisp.dhis.expression.spi.VariableValue;
 
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -27,45 +29,54 @@ public final class Evaluate {
         throw new UnsupportedOperationException("util");
     }
 
-    public static Object evaluate(Node<?> root, ExpressionFunctions functions, Map<String, Object> programRuleVariableValues, Map<DataItem, Object> dataItemValues) throws IllegalExpressionException {
-        return root.eval(new EvaluateFunction(functions, programRuleVariableValues, dataItemValues));
+    /*
+    Main functions to compute a result
+     */
+
+    public static Object evaluate(Node<?> root, ExpressionFunctions functions, ExpressionData data) throws IllegalExpressionException {
+        return root.eval(new EvaluateFunction(functions, data));
     }
+
+    public static String normalise(Node<?> root) {
+        return DescribeConsumer.toNormalisedExpression(root);
+    }
+
+    public static String regenerate(Node<?> root, Map<DataItem, Number> dataItemValues) {
+        return DescribeConsumer.toValueExpression(root, dataItemValues);
+    }
+
+    public static String describe(Node<?> root, Map<ID, String> displayNames) {
+        return DescribeConsumer.toDisplayExpression(root, displayNames);
+    }
+
+    /*
+    Support functions to collect identifiers to supply values to main functions
+     */
 
     public static Set<DataItem> collectDataItems(Node<?> root) {
         return root.aggregate(new HashSet<>(), Node::toDataItem, Set::add, node -> node.getType() == NodeType.DATA_ITEM);
     }
 
     public static Set<DataItem> collectDataItems(Node<?> root, DataItemType... ofTypes) {
+        //TODO need to add subExpression modifier SQL in case that is present
         EnumSet<DataItemType> filter = EnumSet.of(ofTypes[0], ofTypes);
         return root.aggregate(new HashSet<>(), Node::toDataItem, Set::add,
                 node -> node.getType() == NodeType.DATA_ITEM && filter.contains(node.getValue()));
     }
 
-    public static Set<String> collectProgramRuleVariables(Node<?> root) {
+    public static Set<String> collectVariableNames(Node<?> root, VariableType type) {
         return root.aggregate(new HashSet<>(), node -> node.child(0).getRawValue(), Set::add,
-                node -> node.getType() == NodeType.VARIABLE && node.getValue() == VariableType.PROGRAM_RULE);
+                node -> node.getType() == NodeType.VARIABLE && node.getValue() == type);
     }
 
-    public static Set<Variable> collectProgramVariables(Node<?> root) {
-        return root.aggregate(new HashSet<>(), node -> node.toVariable(), Set::add,
-                node -> node.getType() == NodeType.VARIABLE && node.getValue() == VariableType.PROGRAM);
+    public static Set<Variable> collectVariables(Node<?> root, VariableType type) {
+        return root.aggregate(new HashSet<>(), Node::toVariable, Set::add,
+                node -> node.getType() == NodeType.VARIABLE && node.getValue() == type);
     }
 
     public static Set<ID> collectUIDs(Node<?> root) {
         return root.aggregate(new HashSet<>(), Node::toIDs,
                 (set, ids) -> ids.filter(id -> id.getType().isUID()).forEach(set::add),
                 node -> node.getType() == NodeType.DATA_ITEM);
-    }
-
-    public static String normalise(Node<?> root) {
-        return DescribeConsumer.toExpression(root);
-    }
-
-    public static String regenerate(Node<?> root, Map<DataItem, Number> dataItemValues) {
-        return DescribeConsumer.toExpression(root, dataItemValues);
-    }
-
-    public static String describe(Node<?> root, Map<ID, String> displayNames) {
-        return DescribeConsumer.toDisplayExpression(root, displayNames);
     }
 }

@@ -53,7 +53,7 @@ public final class Parser implements ParseContext {
         Parser parser = Parser.withFragments(fragments);
         Expr.parse(expr, parser);
         Node<?> root = parser.getRoot();
-        Node.propagateModifiers(root);
+        Nodes.propagateModifiers(root);
         Node.groupOperators(root);
         return root.getType() == NodeType.PAR && root.size() == 1 ? root.child(0) : root;
     }

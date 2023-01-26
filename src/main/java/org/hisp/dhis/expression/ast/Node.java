@@ -15,7 +15,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
-import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
@@ -211,7 +210,7 @@ public interface Node<T> extends Typed {
      * @param child the child to add
      * @throws UnsupportedOperationException when this node does not support children
      */
-    default void addChild(Node<?> child) {
+    default Node<T> addChild(Node<?> child) {
         throw new UnsupportedOperationException("Node of type "+getType()+" cannot have children.");
     }
 
@@ -221,7 +220,7 @@ public interface Node<T> extends Typed {
      * @param modifier add a modifier node to this node
      * @throws UnsupportedOperationException when this node does not support modifiers
      */
-    default void addModifier(Node<?> modifier) {
+    default Node<T> addModifier(Node<?> modifier) {
         throw new UnsupportedOperationException("Node of type "+getType()+" cannot have modifiers.");
     }
 
@@ -346,45 +345,6 @@ public interface Node<T> extends Typed {
                 }
             }
             return grouped;
-        });
-    }
-
-    /**
-     * Modifiers affect data items only. However, they can be applied to data items directly or indirectly.
-     * Within a function or round bracket that has a modifier all data items within the bracket body are affected.
-     * <p>
-     * This transformation moves modifiers from being {@link Node#children()} to be added as {@link Node#addModifier(Node)}.
-     * <p>
-     * This transformation should only be applied when the expression should be evaluated including resolving data items to their actual value.
-     *
-     * @param root the node to start the transformation from.
-     */
-    static void propagateModifiers(Node<?> root) {
-        root.transform((node, children) -> {
-            Predicate<Node<?>> isModifier = child -> child.getType() == NodeType.MODIFIER;
-            if (node.getValue() instanceof NamedFunction && ((NamedFunction) node.getValue()).isAggregating()) {
-                children.forEach(child -> child.visit(NodeType.DATA_ITEM,
-                        modified -> modified.addModifier(new Nodes.ModifierNode(NodeType.MODIFIER, DataItemModifier.periodAggregation.name()))));
-            }
-            if (children.stream().noneMatch(isModifier)) {
-                return children;
-            }
-            // attach any modifier found on this level to any data item in the subtree of the child before them
-            for (int i = 1; i < children.size(); i++) {
-                Node<?> maybeModifier = children.get(i);
-                if (maybeModifier.getType() == NodeType.MODIFIER) {
-                    // go back 1 (or more if node before is a modifier)
-                    int target = i-1;
-                    while (target >= 0 && children.get(target).getType() == NodeType.MODIFIER) target--;
-                    if (target >= 0) {
-                        Consumer<Node<?>> addModifier = modified -> modified.addModifier(maybeModifier);
-                        children.get(target).visit(NodeType.DATA_ITEM, addModifier);
-                        children.get(target).visit(addModifier,
-                                n -> n.getType() == NodeType.VARIABLE && n.getValue() == VariableType.PROGRAM);
-                    }
-                }
-            }
-            return children.stream().filter(not(isModifier)).collect(toList());
         });
     }
 

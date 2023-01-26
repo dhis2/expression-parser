@@ -7,7 +7,7 @@ import static org.hisp.dhis.expression.ast.ValueType.DATE;
 import static org.hisp.dhis.expression.ast.ValueType.NUMBER;
 import static org.hisp.dhis.expression.ast.ValueType.SAME;
 import static org.hisp.dhis.expression.ast.ValueType.STRING;
-import static org.hisp.dhis.expression.ast.ValueType.UNKNOWN;
+import static org.hisp.dhis.expression.ast.ValueType.MIXED;
 
 @SuppressWarnings("java:S115")
 public enum NamedFunction implements Typed
@@ -46,9 +46,9 @@ public enum NamedFunction implements Typed
     d2_ceil("d2:ceil", NUMBER, NUMBER),
     d2_concatenate("d2:concatenate", STRING, true, STRING),
     d2_condition("d2:condition", SAME, BOOLEAN, SAME, SAME),
-    d2_count("d2:count", NUMBER, UNKNOWN),
-    d2_countIfCondition("d2:countIfCondition", NUMBER, BOOLEAN, UNKNOWN),
-    d2_countIfValue("d2:countIfValue", NUMBER, UNKNOWN, UNKNOWN),
+    d2_count("d2:count", NUMBER, MIXED),
+    d2_countIfCondition("d2:countIfCondition", NUMBER, BOOLEAN, MIXED),
+    d2_countIfValue("d2:countIfValue", NUMBER, MIXED, MIXED),
     d2_countIfZeroPos("d2:countIfZeroPos", NUMBER, NUMBER),
     d2_daysBetween("d2:daysBetween", NUMBER, DATE, DATE),
     d2_extractDataMatrixValue("d2:extractDataMatrixValue", STRING, STRING, STRING),
@@ -59,15 +59,15 @@ public enum NamedFunction implements Typed
     d2_lastEventDate("d2:lastEventDate", DATE, STRING),
     d2_left("d2:left", STRING, STRING, NUMBER),
     d2_length("d2:length", NUMBER, STRING),
-    d2_maxValue("d2:maxValue", NUMBER, STRING),
+    d2_maxValue("d2:maxValue", NUMBER, MIXED),
     d2_minutesBetween("d2:minutesBetween", NUMBER, DATE, DATE),
-    d2_minValue("d2:minValue", NUMBER, STRING),
+    d2_minValue("d2:minValue", NUMBER, MIXED),
     d2_modulus("d2:modulus", NUMBER, NUMBER, NUMBER),
     d2_monthsBetween("d2:monthsBetween", NUMBER, DATE, DATE),
     d2_oizp("d2:oizp", NUMBER, NUMBER),
     d2_relationshipCount("d2:relationshipCount", NUMBER, STRING),
     d2_right("d2:right", STRING, STRING, NUMBER),
-    d2_round("d2:round", NUMBER, NUMBER),
+    d2_round("d2:round", NUMBER, NUMBER, NUMBER),
     d2_split("d2:split", STRING, STRING, STRING, NUMBER),
     d2_substring("d2:substring", STRING, STRING, NUMBER, NUMBER),
     d2_validatePattern("d2:validatePattern", BOOLEAN, STRING, STRING),

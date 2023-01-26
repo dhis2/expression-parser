@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
-import static org.hisp.dhis.expression.eval.DescribeConsumer.toExpression;
+import static org.hisp.dhis.expression.eval.DescribeConsumer.toNormalisedExpression;
 
 public class TypeCheckingConsumer implements NodeVisitor {
 
@@ -28,7 +28,7 @@ public class TypeCheckingConsumer implements NodeVisitor {
 
         @Override
         public String toString() {
-            return msg+"\nin: "+ toExpression(node);
+            return msg+"\nin: "+ toNormalisedExpression(node);
         }
     }
 
@@ -64,7 +64,7 @@ public class TypeCheckingConsumer implements NodeVisitor {
             validIndividually = false;
             violations.add(new Violation(operator, format("Incompatible type for right operand of binary operator %s, expected %s but was: %s", operator.getValue().getSymbol(), expected, rightActual)));
         }
-        if (validIndividually && !leftActual.isPotentiallySameAs(rightActual)) {
+        if (validIndividually && !ValueType.allSame(List.of(leftActual, rightActual))) {
             violations.add(new Violation(operator, format("The type of the left and right operand of binary operator %s must be same but were: %s, %s", operator.getValue().getSymbol(), leftActual, rightActual)));
         }
     }
@@ -77,30 +77,28 @@ public class TypeCheckingConsumer implements NodeVisitor {
         }
     }
 
-    private void checkSameArgumentTypes(Node<NamedFunction> function) {
-        NamedFunction f = function.getValue();
+    private void checkSameArgumentTypes(Node<NamedFunction> fn) {
+        NamedFunction f = fn.getValue();
         List<ValueType> expectedTypes = f.getParameterTypes();
         if (!expectedTypes.contains(ValueType.SAME) || expectedTypes.size() == 1 && !f.isVarargs()) {
-            return;
+            return; // has no SAME in the signature
         }
-        ValueType same = ValueType.UNKNOWN;
-        for (int i = 0; i < expectedTypes.size(); i++)
+        ValueType same = null;
+        for (int i = 0; i < fn.size(); i++)
         {
-            if (expectedTypes.get(i).isSame()) {
-                Node<?> arg = function.child(i);
+            ValueType expected = expectedTypes.get(Math.min(expectedTypes.size()-1, i));
+            if (expected.isSame()) {
+                Node<?> arg = fn.child(i);
                 ValueType actual = arg.getValueType();
-                if (same.isUnknown()) {
+                if (same == null) {
                     same = actual;
                 } else if (actual != same) {
                     String s = IntStream.range(0, expectedTypes.size())
                             .filter(j -> expectedTypes.get(j).isSame()).mapToObj(j -> (j+1)+".").collect(joining(" and "));
-                    violations.add(new Violation(function, format("The argument types of parameters %s must be of the same type but were: %s, %s", s, same, arg.getValueType())));
+                    violations.add(new Violation(fn, format("The argument types of parameters %s must be of the same type but were: %s, %s", s, same, arg.getValueType())));
                     return;
                 }
             }
-        }
-        if (f.isVarargs() && expectedTypes.get(expectedTypes.size()-1).isSame()) {
-            //TODO ???
         }
     }
 
@@ -129,6 +127,7 @@ public class TypeCheckingConsumer implements NodeVisitor {
             violations.add(new Violation(called, format("Incompatible type for %d. argument, expected %s but was: %s", (value +1), expected, actual)));
             return false;
         }
+        //TODO distinguish assign/coerce with error/warning
         return true;
     }
 

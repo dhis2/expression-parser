@@ -2,16 +2,18 @@ package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.ValueType;
+import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.eval.Evaluate;
-import org.hisp.dhis.expression.eval.DescribeConsumer;
 import org.hisp.dhis.expression.eval.TypeCheckingConsumer;
 import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.DataItemType;
+import org.hisp.dhis.expression.spi.ExpressionData;
 import org.hisp.dhis.expression.spi.ExpressionFunctions;
 import org.hisp.dhis.expression.spi.ID;
 import org.hisp.dhis.expression.spi.IllegalExpressionException;
 import org.hisp.dhis.expression.spi.ParseException;
 import org.hisp.dhis.expression.spi.Variable;
+import org.hisp.dhis.expression.spi.VariableValue;
 import org.hisp.dhis.expression.syntax.ExpressionGrammar;
 import org.hisp.dhis.expression.syntax.Fragment;
 import org.hisp.dhis.expression.syntax.Parser;
@@ -40,7 +42,8 @@ public final class Expression {
         PROGRAM_INDICATOR_EXPRESSION(ExpressionGrammar.ProgramIndicatorExpressionMode, ValueType.NUMBER),
 
         // never SQL (also we need JS)
-        PROGRAM_RULE_EXPRESSION(null, ValueType.NUMBER); // dhis2-rule-engine
+        // PROGRAM_RULE_EXPRESSION
+        RULE_ENGINE(ExpressionGrammar.RuleEngineMode, ValueType.NUMBER);
 
         final EnumSet<ValueType> result;
         final List<Fragment> fragments;
@@ -67,38 +70,32 @@ public final class Expression {
         return Evaluate.collectDataItems(root);
     }
 
-    public Set<String> collectProgramRuleVariables() {
-        return Evaluate.collectProgramRuleVariables(root);
+    public Set<String> collectProgramRuleVariableNames() {
+        return Evaluate.collectVariableNames(root, VariableType.PROGRAM_RULE);
+    }
+
+    public Set<String> collectProgramVariablesNames() {
+        return Evaluate.collectVariableNames(root, VariableType.PROGRAM);
     }
 
     /**
      * For testing only.
      *
-     * @see #evaluate(ExpressionFunctions, Map, Map)
+     * @see #evaluate(ExpressionFunctions, ExpressionData)
      */
     Object evaluate() {
-        return evaluate(name -> null, Map.of(), Map.of());
+        return evaluate(name -> null, ExpressionData.builder().build());
     }
 
-    public Object evaluate(ExpressionFunctions functions, Map<String, Object> programRuleVariableValues, Map<DataItem, Object> dataItemValues) throws IllegalExpressionException {
-        return Evaluate.evaluate(root, functions, programRuleVariableValues, dataItemValues);
+    public Object evaluate(ExpressionFunctions functions, ExpressionData data) throws IllegalExpressionException {
+        return Evaluate.evaluate(root, functions, data);
     }
 
-    public List<?> typeCheck() {
-        //TODO use a class that is spi for the violations
-        TypeCheckingConsumer typeCheck = new TypeCheckingConsumer();
-        root.visit(typeCheck);
-        //TODO check that the root returns the expected result type
-        return typeCheck.getViolations();
-    }
-
-    //TODO propagate modifiers to vars
-    // and create a Variable class that has the modifiers and the name
     public Set<Variable> collectProgramVariables() {
-        return Evaluate.collectProgramVariables(root);
+        return Evaluate.collectVariables(root, VariableType.PROGRAM);
     }
 
-    public String generateSQL(ExpressionFunctions functions, Map<String, String> sqlByProgramVariable) {
+    public String generateSQL(ExpressionFunctions functions, Map<Variable, String> sqlByProgramVariable) {
         return null;
     }
 
@@ -134,6 +131,14 @@ public final class Expression {
     public String regenerate(Map<DataItem, Number> dataItemValues ) {
         // old: org.hisp.dhis.expression.DefaultExpressionService#regenerateIndicatorExpression (indicator only)
         return Evaluate.regenerate(root, dataItemValues);
+    }
+
+    public List<?> typeCheck() {
+        //TODO use a class that is spi for the violations
+        TypeCheckingConsumer typeCheck = new TypeCheckingConsumer();
+        root.visit(typeCheck);
+        //TODO check that the root returns the expected result type
+        return typeCheck.getViolations();
     }
 
     /**

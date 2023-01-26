@@ -16,7 +16,8 @@ public enum DataItemModifier implements Typed
     periodOffset(ValueType.NUMBER),
     stageOffset(ValueType.NUMBER),
     yearToDate(),
-    periodAggregation();
+    periodAggregation(),
+    subExpression();
 
     private final List<ValueType> parameterTypes;
 

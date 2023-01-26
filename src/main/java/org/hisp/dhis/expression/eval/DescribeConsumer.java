@@ -17,18 +17,18 @@ import java.time.LocalDate;
 import java.util.Map;
 
 /**
- * Converts an AST back into a normalised {@link String} form.
+ * Converts an AST back into a "normalised" {@link String} form.
  *
  * @author Jan Bernitt
  */
-public class DescribeConsumer implements NodeVisitor {
+class DescribeConsumer implements NodeVisitor {
 
-    public static String toExpression(Node<?> root)
+    public static String toNormalisedExpression(Node<?> root)
     {
-        return toExpression(root, Map.of());
+        return toValueExpression(root, Map.of());
     }
 
-    public static String toExpression(Node<?> root, Map<DataItem, Number> dataItemValues)
+    public static String toValueExpression(Node<?> root, Map<DataItem, Number> dataItemValues)
     {
         DescribeConsumer walker = new DescribeConsumer(dataItemValues, Map.of());
         root.walk(walker);

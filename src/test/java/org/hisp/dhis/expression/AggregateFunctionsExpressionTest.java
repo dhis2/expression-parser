@@ -1,6 +1,7 @@
 package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.spi.DataItem;
+import org.hisp.dhis.expression.spi.ExpressionData;
 import org.hisp.dhis.expression.spi.ID;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +59,8 @@ class AggregateFunctionsExpressionTest {
     }
 
     private static Double evaluate(String expression, Map<DataItem, Object> dataValues) {
-        return (Double) new Expression(expression).evaluate(name -> null, Map.of(), dataValues);
+        return (Double) new Expression(expression).evaluate(name -> null,
+                ExpressionData.builder().dataItemValues(dataValues).build());
     }
 
     private static DataItem newDeDataItem(String u1234567890) {

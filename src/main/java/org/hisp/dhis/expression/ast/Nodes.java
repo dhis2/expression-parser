@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -26,6 +27,57 @@ import static java.util.stream.Collectors.toList;
  * @author Jan Bernitt
  */
 public interface Nodes {
+
+    static void supplySubExpressionSQL(Node<?> root) {
+        root.transform((node, children) -> {
+            if (node.getValue() == NamedFunction.subExpression) {
+                children.forEach(child -> child.visit(NodeType.DATA_ITEM, modified ->  modified
+                        .addModifier(new ModifierNode(NodeType.MODIFIER, DataItemModifier.subExpression.name())
+                                .addChild(new ArgumentNode(NodeType.ARGUMENT, "0")
+                                        .addChild(new TextNode(NodeType.STRING,"@"+System.identityHashCode(node)))))));
+            }
+            return children;
+        });
+    }
+
+    /**
+     * Modifiers affect data items only. However, they can be applied to data items directly or indirectly.
+     * Within a function or round bracket that has a modifier all data items within the bracket body are affected.
+     * <p>
+     * This transformation moves modifiers from being {@link Node#children()} to be added as {@link Node#addModifier(Node)}.
+     * <p>
+     * This transformation should only be applied when the expression should be evaluated including resolving data items to their actual value.
+     *
+     * @param root the node to start the transformation from.
+     */
+    static void propagateModifiers(Node<?> root) {
+        root.transform((node, children) -> {
+            Predicate<Node<?>> isModifier = child -> child.getType() == NodeType.MODIFIER;
+            if (node.getValue() instanceof NamedFunction && ((NamedFunction) node.getValue()).isAggregating()) {
+                children.forEach(child -> child.visit(NodeType.DATA_ITEM, modified -> modified.addModifier(
+                        new ModifierNode(NodeType.MODIFIER, DataItemModifier.periodAggregation.name()))));
+            }
+            if (children.stream().noneMatch(isModifier)) {
+                return children;
+            }
+            // attach any modifier found on this level to any data item in the subtree of the child before them
+            for (int i = 1; i < children.size(); i++) {
+                Node<?> maybeModifier = children.get(i);
+                if (maybeModifier.getType() == NodeType.MODIFIER) {
+                    // go back 1 (or more if node before is a modifier)
+                    int target = i-1;
+                    while (target >= 0 && children.get(target).getType() == NodeType.MODIFIER) target--;
+                    if (target >= 0) {
+                        Consumer<Node<?>> addModifier = modified -> modified.addModifier(maybeModifier);
+                        children.get(target).visit(NodeType.DATA_ITEM, addModifier);
+                        children.get(target).visit(addModifier,
+                                n -> n.getType() == NodeType.VARIABLE && n.getValue() == VariableType.PROGRAM);
+                    }
+                }
+            }
+            return children.stream().filter(not(isModifier)).collect(toList());
+        });
+    }
 
     abstract class AbstractNode<T> implements Node<T> {
 
@@ -116,8 +168,9 @@ public interface Nodes {
         }
 
         @Override
-        public final void addChild(Node<?> child) {
+        public final Node<T> addChild(Node<?> child) {
             children.add(child);
+            return this;
         }
 
         @Override
@@ -160,7 +213,7 @@ public interface Nodes {
 
         @Override
         public ValueType getValueType() {
-            return size() == 1 ? child(0).getValueType() : ValueType.UNKNOWN;
+            return size() == 1 ? child(0).getValueType() : ValueType.MIXED;
         }
     }
 
@@ -205,8 +258,9 @@ public interface Nodes {
         }
 
         @Override
-        public final void addModifier(Node<?> mod) {
+        public final Node<T> addModifier(Node<?> mod) {
             this.modifiers.add(mod);
+            return this;
         }
 
         @Override
@@ -216,16 +270,18 @@ public interface Nodes {
 
         final QueryModifiers getQueryModifiers() {
             QueryModifiers.QueryModifiersBuilder mods = QueryModifiers.builder();
+            java.util.function.BinaryOperator<Integer> sum = (a, b) -> a == null ? b : a + b;
             modifiers.forEach(mod -> {
                 Supplier<Object> value = () -> mod.child(0).child(0).getValue();
                 switch ((DataItemModifier)mod.getValue()) {
                     case aggregationType: mods.aggregationType( (AggregationType) value.get()); break;
                     case maxDate: mods.maxDate((LocalDate) value.get()); break;
                     case minDate: mods.minDate( (LocalDate) value.get()); break;
-                    case periodOffset: mods.periodOffset( (Integer) value.get()); break;
-                    case stageOffset: mods.stageOffset((Integer) value.get()); break;
+                    case periodOffset: mods.periodOffset(sum.apply(mods.build().getPeriodOffset(), (Integer) value.get())); break;
+                    case stageOffset: mods.stageOffset(sum.apply(mods.build().getStageOffset(), (Integer) value.get())); break;
                     case yearToDate: mods.yearToDate( true); break;
                     case periodAggregation: mods.periodAggregation(true); break;
+                    case subExpression: mods.subExpression((String) value.get()); break;
                 }
             });
             return mods.build();
@@ -240,7 +296,7 @@ public interface Nodes {
 
         @Override
         public ValueType getValueType() {
-            return ValueType.UNKNOWN;
+            return ValueType.MIXED;
         }
 
         @Override
@@ -253,10 +309,14 @@ public interface Nodes {
                 ID.Type type = argC0.getType() == NodeType.IDENTIFIER && argC0.getValue() instanceof Tag
                         ? ((Tag)argC0.getValue()).getIdType()
                         : itemType.getType(size(), i);
-                idGroups.set(i, arg.children()
+                List<ID> ids = arg.children()
                         .filter(n -> n.getType() == NodeType.UID)
                         .map(n -> new ID(type, n.getRawValue()))
-                        .collect(toList()));
+                        .collect(toList());
+                if (ids.isEmpty() && arg.size() == 1 && arg.child(0).getType() == NodeType.IDENTIFIER) {
+                    ids = List.of(new ID(type, arg.child(0).getRawValue()));
+                }
+                idGroups.set(i, ids);
             }
             return new DataItem(itemType, idGroups.get(0).get(0), idGroups.get(1), idGroups.get(2), getQueryModifiers());
         }
@@ -302,7 +362,7 @@ public interface Nodes {
 
         @Override
         public ValueType getValueType() {
-            return isEmpty() ? ValueType.UNKNOWN : child(0).getValueType();
+            return isEmpty() ? ValueType.MIXED : child(0).getValueType();
         }
     }
 

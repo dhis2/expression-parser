@@ -55,6 +55,14 @@ class VariableModifierExpressionTest {
                 evaluate("V{org_unit_count}.yearToDate()"));
     }
 
+    @Test
+    void testMultiStageOffset() {
+        // stage offsets add up
+        QueryModifiers expected = QueryModifiers.builder().stageOffset(3).build();
+        assertEquals(Set.of(new Variable(ProgramVariable.event_count, expected)),
+                evaluate("(V{event_count}.stageOffset(1)).stageOffset(2)"));
+    }
+
     private static Set<Variable> evaluate(String expression) {
         Expression expr = new Expression(expression, Expression.Mode.INDICATOR_EXPRESSION);
         return expr.collectProgramVariables();

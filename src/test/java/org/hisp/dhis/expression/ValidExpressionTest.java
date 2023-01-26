@@ -1,5 +1,6 @@
 package org.hisp.dhis.expression;
 
+import org.hisp.dhis.expression.spi.IllegalExpressionException;
 import org.hisp.dhis.expression.spi.ParseException;
 import org.junit.jupiter.api.Test;
 
@@ -54,13 +55,15 @@ class ValidExpressionTest {
     @Test
     void testExpressionWithValidSyntaxAndNotSupportedItem()
     {
-        assertThrows( ParseException.class, () -> evaluate( "2 > #{not_supported}" ));
+        IllegalExpressionException ex = assertThrows(IllegalExpressionException.class, () -> evaluate("2 > #{not_supported}"));
+        assertEquals("Unknown variable: 'not_supported'", ex.getMessage());
     }
 
     @Test
     void testExpressionWithValidSyntaxAndNotSupportedAttribute()
     {
-        assertThrows( ParseException.class, () -> evaluate( "2 > A{not_supported}" ));
+        IllegalExpressionException ex = assertThrows(IllegalExpressionException.class, () -> evaluate("2 > A{not_supported}"));
+        assertEquals("Unknown variable: 'not_supported'", ex.getMessage());
     }
 
     @Test

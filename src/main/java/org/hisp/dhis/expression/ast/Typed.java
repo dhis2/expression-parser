@@ -1,6 +1,8 @@
 package org.hisp.dhis.expression.ast;
 
-import org.hisp.dhis.expression.spi.IllegalExpressionException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 import static java.lang.String.format;
 
@@ -36,6 +38,14 @@ public interface Typed {
             return ((Number) value).intValue() != 0;
         }
         return Boolean.valueOf(value.toString());
+    }
+
+    static LocalDate toDateTypeCoercion(Object value) {
+        if (value == null) return null;
+        if (value instanceof LocalDate) return (LocalDate) value;
+        if (value instanceof String) return LocalDate.parse((String) value);
+        if (value instanceof Date) return LocalDate.ofInstant (((Date) value).toInstant(), ZoneId.systemDefault());
+        throw new IllegalArgumentException(format("Count not coerce to date: '%s'", value));
     }
 
     static String toStringTypeCoercion(Object value) {

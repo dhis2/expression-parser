@@ -168,6 +168,7 @@ public interface ExpressionGrammar
     List<Fragment> SimpleTestMode = concat(CommonFunctions, CommonConstants, List.of(item(DataItemType.CONSTANT, UID)));
 
     List<Fragment> ProgramIndicatorExpressionMode = concat(CommonFunctions, CommonDataItems, ProgramFunctions, CommonConstants, IndicatorDataItems); //TODO check
+    List<Fragment> RuleEngineMode = concat(CommonDataItems, ProgramFunctions);
     /*
     Block expressions
      */
