@@ -79,6 +79,6 @@ class ValidExpressionTest {
 
     private static Object evaluate( String expression )
     {
-        return new Expression(expression, Expression.Mode.INDICATOR_EXPRESSION).evaluate();
+        return new Expression(expression, Expression.Mode.PROGRAM_INDICATOR_EXPRESSION).evaluate();
     }
 }

@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Set;
 
+import static org.hisp.dhis.expression.Expression.Mode.INDICATOR_EXPRESSION;
+import static org.hisp.dhis.expression.Expression.Mode.PREDICTOR_EXPRESSION;
+import static org.hisp.dhis.expression.Expression.Mode.PROGRAM_INDICATOR_EXPRESSION;
 import static org.hisp.dhis.expression.ast.AggregationType.sum;
 import static org.hisp.dhis.expression.spi.DataItemType.DATA_ELEMENT;
 import static org.hisp.dhis.expression.spi.ID.Type.DataElementUID;
@@ -28,49 +31,49 @@ class DataItemModifierExpressionTest {
     void testPeriodAggregation() {
         QueryModifiers expected = QueryModifiers.builder().periodAggregation(true).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("avg(#{u1234567890})"));
+                evaluate("avg(#{u1234567890})", PREDICTOR_EXPRESSION));
     }
 
     @Test
     void testAggregationType() {
         QueryModifiers expected = QueryModifiers.builder().aggregationType(sum).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.aggregationType(sum)"));
+                evaluate("#{u1234567890}.aggregationType(sum)", INDICATOR_EXPRESSION));
     }
 
     @Test
     void testMaxDate() {
         QueryModifiers expected = QueryModifiers.builder().maxDate(LocalDate.parse("1980-11-11")).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.maxDate(1980-11-11)"));
+                evaluate("#{u1234567890}.maxDate(1980-11-11)", PREDICTOR_EXPRESSION));
     }
 
     @Test
     void testMinDate() {
         QueryModifiers expected = QueryModifiers.builder().minDate(LocalDate.parse("1980-11-11")).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.minDate(1980-11-11)"));
+                evaluate("#{u1234567890}.minDate(1980-11-11)", PREDICTOR_EXPRESSION));
     }
 
     @Test
     void testPeriodOffset() {
         QueryModifiers expected = QueryModifiers.builder().periodOffset(42).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.periodOffset(42)"));
+                evaluate("#{u1234567890}.periodOffset(42)", INDICATOR_EXPRESSION));
     }
 
     @Test
     void testStageOffset() {
         QueryModifiers expected = QueryModifiers.builder().stageOffset(42).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.stageOffset(42)"));
+                evaluate("#{u1234567890}.stageOffset(42)", PROGRAM_INDICATOR_EXPRESSION));
     }
 
     @Test
     void testYearToDate() {
         QueryModifiers expected = QueryModifiers.builder().yearToDate(true).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.yearToDate()"));
+                evaluate("#{u1234567890}.yearToDate()", INDICATOR_EXPRESSION));
     }
 
     /*
@@ -79,48 +82,51 @@ class DataItemModifierExpressionTest {
 
     @Test
     void testMultipleModifiersDirectlyApplied() {
-        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).build();
+        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).periodOffset(42).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.yearToDate().stageOffset(42)"));
+                evaluate("#{u1234567890}.yearToDate().periodOffset(42)", INDICATOR_EXPRESSION));
     }
 
     @Test
     void testMultipleModifiersIndirectlyApplied() {
-        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).periodAggregation(true).build();
+        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).periodOffset(42).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("sum(#{u1234567890}).yearToDate().stageOffset(42)"));
+                evaluate("(#{u1234567890}).yearToDate().periodOffset(42)", INDICATOR_EXPRESSION));
     }
 
     @Test
     void testMultipleModifiersIndirectlyAppliedToMany() {
-        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).periodAggregation(true).build();
+        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).periodOffset(42).build();
         assertEquals(Set.of(
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
-                evaluate("sum(#{u1234567890} + #{v1234567890}).yearToDate().stageOffset(42)"));
+                evaluate("(#{u1234567890} + #{v1234567890}).yearToDate().periodOffset(42)", INDICATOR_EXPRESSION));
     }
 
     @Test
     void testMultipleModifiersIndirectlyAppliedToManyWithAggregation() {
-        QueryModifiers expected = QueryModifiers.builder().yearToDate(true).stageOffset(42).periodAggregation(true).build();
+        QueryModifiers expected = QueryModifiers.builder()
+                .minDate(LocalDate.parse("1980-11-11"))
+                .maxDate(LocalDate.parse("2000-11-11"))
+                .periodAggregation(true).build();
         assertEquals(Set.of(
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
-                evaluate("avg(#{u1234567890} + #{v1234567890}).yearToDate().stageOffset(42)"));
+                evaluate("avg(#{u1234567890} + #{v1234567890}).minDate(1980-11-11).maxDate(2000-11-11)", PREDICTOR_EXPRESSION));
     }
 
     @Test
     void testMultipleModifiersIndirectlyAppliedToManyWithAggregationAndIndividualDifferences() {
-        QueryModifiers expected1 = QueryModifiers.builder().yearToDate(true).stageOffset(42).periodAggregation(true).build();
-        QueryModifiers expected2 = QueryModifiers.builder().stageOffset(42).periodAggregation(true).build();
+        QueryModifiers expected1 = QueryModifiers.builder().yearToDate(true).periodOffset(42).build();
+        QueryModifiers expected2 = QueryModifiers.builder().periodOffset(42).build();
         assertEquals(Set.of(
                         new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected1),
                         new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected2)),
-                evaluate("avg(#{u1234567890}.yearToDate() + #{v1234567890}).stageOffset(42)"));
+                evaluate("(#{u1234567890}.yearToDate() + #{v1234567890}).periodOffset(42)", INDICATOR_EXPRESSION));
     }
 
-    private static Set<DataItem> evaluate(String expression) {
-        Expression expr = new Expression(expression);
+    private static Set<DataItem> evaluate(String expression, Expression.Mode mode) {
+        Expression expr = new Expression(expression, mode);
         return expr.collectDataItems();
     }
 }
