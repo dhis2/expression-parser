@@ -1,7 +1,5 @@
 package org.hisp.dhis.expression.spi;
 
-import org.hisp.dhis.expression.ast.NamedValue;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -9,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -146,11 +145,6 @@ public interface ExpressionFunctions {
         return String.join("", values);
     }
 
-    @Deprecated // was never in rules engine
-    default <T>  T d2_condition(Boolean condition,  T ifValue, T elseValue) {
-        return Boolean.TRUE.equals(condition) ? ifValue : elseValue;
-    }
-
     /**
      * Counts the number of values that is entered for the source field in the argument.
      * The source field parameter is the name of one of the defined source fields in the program.
@@ -161,24 +155,14 @@ public interface ExpressionFunctions {
         return value == null ? 0 : value.candidates().size();
     }
 
-    //There is another String d2_count(DataItem); // => SQL
-
-    @Deprecated // was never in rules engine
-    default int d2_countIfCondition(Object candidates, String str) {
-        return (int) unsupported("d2:countIfCondition");
+    default int d2_countIfValue(VariableValue value, Object booleanOrNumber) {
+        if (value == null || booleanOrNumber == null) return 0;
+        return Collections.frequency(value.candidates(), booleanOrNumber);
     }
 
-    default int d2_countIfValue(Object candidates, Object booleanOrNumber) {
-        if (candidates == null || booleanOrNumber == null) return 0;
-        if (candidates instanceof Collection) return Collections.frequency((Collection<?>) candidates, booleanOrNumber);
-        return Objects.equals(candidates, booleanOrNumber) ? 1 : 0;
-    }
-
-    default int d2_countIfZeroPos(Object candidates) {
-        if (candidates == null) return 0;
-        if (candidates instanceof Collection) return (int) ((Collection<?>) candidates).stream()
-                .filter(n -> Double.parseDouble(n.toString()) >= 0d).count();
-        return Double.parseDouble(candidates.toString()) >= 0d ? 1 : 0;
+    default int d2_countIfZeroPos(VariableValue value) {
+        if (value == null) return 0;
+        return (int) value.candidates().stream().filter(n -> Double.parseDouble(n) >= 0d).count();
     }
 
     default int d2_daysBetween(LocalDate start, LocalDate end) {
@@ -193,22 +177,23 @@ public interface ExpressionFunctions {
         return value == null ? 0d : Math.floor(value.doubleValue());
     }
 
-    default boolean d2_hasUserRole(String role) {
-        return (boolean) unsupported("d2:hasUserRole");
+    default boolean d2_hasUserRole(String role, List<String> roles) {
+        if (roles == null) throw new IllegalExpressionException("Supplementary data for user needs to be provided");
+        return roles.contains(role);
     }
 
-    default boolean d2_hasValue(String value) {
-        return (boolean) unsupported("d2:hasValue");
+    default boolean d2_hasValue(VariableValue value) {
+        return value != null && value.value() != null;
     }
 
-    default boolean d2_inOrgUnitGroup(String group) {
-        return (boolean) unsupported("d2:inOrgUnitGroup");
+    default boolean d2_inOrgUnitGroup(String group, VariableValue orgUnit, Map<String, List<String>> supplementaryValues) {
+        List<String> members = supplementaryValues.get( group );
+        String uid = orgUnit == null ? "" : orgUnit.value().replace("'", "");
+        return members != null && members.contains(uid);
     }
 
-    default LocalDate d2_lastEventDate(String value) {
-        //FIXME arg is a RuleVariableValue which has a eventDate attached => would require an equivalent to RuleVariableValue here
-        // appear that this is maybe more of a modifier on the variable
-        return (LocalDate) unsupported("d2:lastEventDate");
+    default LocalDate d2_lastEventDate(VariableValue value) {
+        return value == null ? null : LocalDate.parse(value.eventDate());
     }
 
     default String d2_left(String input, Integer length) {
@@ -219,22 +204,18 @@ public interface ExpressionFunctions {
         return str == null ? 0 : str.length();
     }
 
-    default double d2_maxValue(Object candidates) {
-        if (candidates == null) return Double.NaN;
-        if (candidates instanceof Collection) return Collections.max((List<Double>)candidates, Double::compare );
-        if (candidates instanceof Number) return ((Number) candidates).doubleValue();
-        return Double.NaN;
+    default double d2_maxValue(VariableValue value) {
+        if (value == null) return Double.NaN;
+        return value.candidates().stream().mapToDouble(Double::parseDouble).max().orElse(Double.NaN);
     }
 
     default int d2_minutesBetween(LocalDate start, LocalDate end) {
         return (int) ChronoUnit.MINUTES.between(start, end);
     }
 
-    default double d2_minValue(Object candidates) {
-        if (candidates == null) return Double.NaN;
-        if (candidates instanceof Collection) return Collections.min((List<Double>)candidates, Double::compare );
-        if (candidates instanceof Number) return ((Number) candidates).doubleValue();
-        return Double.NaN;
+    default double d2_minValue(VariableValue value) {
+        if (value == null) return Double.NaN;
+        return value.candidates().stream().mapToDouble(Double::parseDouble).min().orElse(Double.NaN);
     }
 
     default double d2_modulus(Number left, Number right) {
@@ -247,11 +228,6 @@ public interface ExpressionFunctions {
 
     default double d2_oizp(Number value) {
         return value != null && value.doubleValue() >= 0d ? 1d : 0d;
-    }
-
-    @Deprecated // was never in rules engine
-    default double d2_relationshipCount(String str) {
-        return (double) unsupported("d2:relationshipCount");
     }
 
     default String d2_right(String input, Integer length) {
