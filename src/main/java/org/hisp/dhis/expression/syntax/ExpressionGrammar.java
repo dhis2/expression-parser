@@ -192,6 +192,7 @@ public interface ExpressionGrammar
             List.of(HASH_BRACE, A_BRACE, C_BRACE, V_BRACE, STAGE_OFFSET));
 
     List<Fragment> RuleEngineMode = concat(
+            CommonConstants,
             CommonD2Functions,
             RuleEngineD2Functions,
             List.of(HASH_BRACE, A_BRACE, C_BRACE, V_BRACE));

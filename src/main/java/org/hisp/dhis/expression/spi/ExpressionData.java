@@ -16,7 +16,7 @@ import java.util.Map;
 public class ExpressionData {
 
     @Builder.Default
-    Map<String, VariableValue> programRuleVariableValues = Map.of();
+    Map<String, ? extends VariableValue> programRuleVariableValues = Map.of();
     @Builder.Default
     Map<String, Object> programVariableValues = Map.of();
     @Builder.Default
