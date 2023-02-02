@@ -34,7 +34,8 @@ public final class Evaluate {
      */
 
     public static Object evaluate(Node<?> root, ExpressionFunctions functions, ExpressionData data) throws IllegalExpressionException {
-        return root.eval(new EvaluateFunction(functions, data));
+        Object value = root.eval(new EvaluateFunction(functions, data));
+        return value instanceof VariableValue ? ((VariableValue) value).valueOrDefault() : value;
     }
 
     public static String normalise(Node<?> root) {
@@ -45,7 +46,7 @@ public final class Evaluate {
         return DescribeConsumer.toValueExpression(root, dataItemValues);
     }
 
-    public static String describe(Node<?> root, Map<ID, String> displayNames) {
+    public static String describe(Node<?> root, Map<String, String> displayNames) {
         return DescribeConsumer.toDisplayExpression(root, displayNames);
     }
 

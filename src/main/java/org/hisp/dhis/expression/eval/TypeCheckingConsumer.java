@@ -5,7 +5,7 @@ import org.hisp.dhis.expression.ast.DataItemModifier;
 import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.Node;
 import org.hisp.dhis.expression.ast.UnaryOperator;
-import org.hisp.dhis.expression.ast.ValueType;
+import org.hisp.dhis.expression.spi.ValueType;
 
 import java.util.ArrayList;
 import java.util.List;

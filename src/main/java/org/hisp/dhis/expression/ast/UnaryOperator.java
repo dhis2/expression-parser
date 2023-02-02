@@ -1,5 +1,7 @@
 package org.hisp.dhis.expression.ast;
 
+import org.hisp.dhis.expression.spi.ValueType;
+
 import java.util.List;
 
 import static java.lang.Math.negateExact;

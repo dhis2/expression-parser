@@ -35,7 +35,7 @@ class DescribeConsumer implements NodeVisitor {
         return walker.toString();
     }
 
-    public static String toDisplayExpression(Node<?> root, Map<ID, String> displayNames)
+    public static String toDisplayExpression(Node<?> root, Map<String, String> displayNames)
     {
         DescribeConsumer walker = new DescribeConsumer(Map.of(), displayNames);
         root.walk(walker);
@@ -44,13 +44,13 @@ class DescribeConsumer implements NodeVisitor {
 
     private final StringBuilder out = new StringBuilder();
     private final Map<DataItem, Number> dataItemValues;
-    private final Map<ID, String> displayNames;
+    private final Map<String, String> displayNames;
 
     private int currentDataItemCardinality;
     private DataItem currentDataItem;
     private int currentDataItemIdIndex;
 
-    public DescribeConsumer(Map<DataItem, Number> dataItemValues, Map<ID, String> displayNames) {
+    public DescribeConsumer(Map<DataItem, Number> dataItemValues, Map<String, String> displayNames) {
         this.dataItemValues = dataItemValues;
         this.displayNames = displayNames;
     }
@@ -141,6 +141,13 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitVariable(Node<VariableType> variable) {
+        if (!displayNames.isEmpty()) {
+            String name = displayNames.get(variable.child(0).getRawValue());
+            if (name != null) {
+                out.append(name);
+                return;
+            }
+        }
         out.append(variable.getRawValue());
         out.append('{');
         variable.child(0).walk(this);
@@ -189,7 +196,7 @@ class DescribeConsumer implements NodeVisitor {
     public void visitUid(Node<String> value) {
         if (!displayNames.isEmpty()) {
             ID id = new ID(currentDataItem.getType().getType(currentDataItemCardinality, currentDataItemIdIndex), value.getValue());
-            String name = displayNames.get(id);
+            String name = displayNames.get(value.getValue());
             if (name != null) {
                 out.append(name);
                 return;

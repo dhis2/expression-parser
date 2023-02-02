@@ -4,6 +4,7 @@ import org.hisp.dhis.expression.ast.DataItemModifier;
 import org.hisp.dhis.expression.ast.NamedFunction;
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Nodes;
+import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.DataItemType;
 
 import java.util.Collection;

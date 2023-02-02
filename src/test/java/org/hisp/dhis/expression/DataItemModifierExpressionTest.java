@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.Set;
 
 import static org.hisp.dhis.expression.Expression.Mode.INDICATOR_EXPRESSION;
-import static org.hisp.dhis.expression.Expression.Mode.PREDICTOR_EXPRESSION;
+import static org.hisp.dhis.expression.Expression.Mode.PREDICTOR_GENERATOR_EXPRESSION;
 import static org.hisp.dhis.expression.Expression.Mode.PROGRAM_INDICATOR_EXPRESSION;
 import static org.hisp.dhis.expression.ast.AggregationType.sum;
 import static org.hisp.dhis.expression.spi.DataItemType.DATA_ELEMENT;
@@ -31,7 +31,7 @@ class DataItemModifierExpressionTest {
     void testPeriodAggregation() {
         QueryModifiers expected = QueryModifiers.builder().periodAggregation(true).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("avg(#{u1234567890})", PREDICTOR_EXPRESSION));
+                evaluate("avg(#{u1234567890})", PREDICTOR_GENERATOR_EXPRESSION));
     }
 
     @Test
@@ -45,14 +45,14 @@ class DataItemModifierExpressionTest {
     void testMaxDate() {
         QueryModifiers expected = QueryModifiers.builder().maxDate(LocalDate.parse("1980-11-11")).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.maxDate(1980-11-11)", PREDICTOR_EXPRESSION));
+                evaluate("#{u1234567890}.maxDate(1980-11-11)", PREDICTOR_GENERATOR_EXPRESSION));
     }
 
     @Test
     void testMinDate() {
         QueryModifiers expected = QueryModifiers.builder().minDate(LocalDate.parse("1980-11-11")).build();
         assertEquals(Set.of(new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected)),
-                evaluate("#{u1234567890}.minDate(1980-11-11)", PREDICTOR_EXPRESSION));
+                evaluate("#{u1234567890}.minDate(1980-11-11)", PREDICTOR_GENERATOR_EXPRESSION));
     }
 
     @Test
@@ -112,7 +112,7 @@ class DataItemModifierExpressionTest {
         assertEquals(Set.of(
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
                     new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
-                evaluate("avg(#{u1234567890} + #{v1234567890}).minDate(1980-11-11).maxDate(2000-11-11)", PREDICTOR_EXPRESSION));
+                evaluate("avg(#{u1234567890} + #{v1234567890}).minDate(1980-11-11).maxDate(2000-11-11)", PREDICTOR_GENERATOR_EXPRESSION));
     }
 
     @Test

@@ -4,6 +4,7 @@ import org.hisp.dhis.expression.spi.DataItem;
 import org.hisp.dhis.expression.spi.QueryModifiers;
 import org.hisp.dhis.expression.spi.DataItemType;
 import org.hisp.dhis.expression.spi.ID;
+import org.hisp.dhis.expression.spi.ValueType;
 import org.hisp.dhis.expression.spi.Variable;
 
 import java.time.LocalDate;
@@ -290,6 +291,11 @@ public interface Nodes {
 
     final class DataItemNode extends ModifiedNode<DataItemType> {
 
+        /**
+         * Just to cache the result
+         */
+        private DataItem value;
+
         public DataItemNode(NodeType type, String rawValue) {
             super(type, rawValue, DataItemType::fromSymbol, rethrowAs(DataItemType.class, DataItemType::getSymbol));
         }
@@ -301,6 +307,7 @@ public interface Nodes {
 
         @Override
         public DataItem toDataItem() {
+            if (value != null) return value;
             List<List<ID>> idGroups = new ArrayList<>(List.of(List.of(), List.of(), List.of()));
             DataItemType itemType = getValue();
             for (int i = 0; i < size(); i++) {
@@ -318,7 +325,8 @@ public interface Nodes {
                 }
                 idGroups.set(i, ids);
             }
-            return new DataItem(itemType, idGroups.get(0).get(0), idGroups.get(1), idGroups.get(2), getQueryModifiers());
+            value = new DataItem(itemType, idGroups.get(0).get(0), idGroups.get(1), idGroups.get(2), getQueryModifiers());
+            return value;
         }
     }
 
