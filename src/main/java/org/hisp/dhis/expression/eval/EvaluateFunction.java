@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -61,6 +62,14 @@ class EvaluateFunction implements NodeInterpreter<Object> {
             case EXP: return evalBinaryOperator(BinaryOperator::exp, operator, this::evalToNumber);
             default: throw new UnsupportedOperationException();
         }
+    }
+
+    private static <T> Object evalBinaryOperator(java.util.function.BiPredicate<T, T> op, Node<?> operator, Function<Node<?>, T> eval) {
+        Node<?> left = operator.child(0);
+        Node<?> right = operator.child(1);
+        T lVal = eval.apply(left);
+        T rVal = eval.apply(right);
+        return op.test(lVal, rVal);
     }
 
     private static <T> Object evalBinaryOperator(java.util.function.BinaryOperator<T> op, Node<?> operator, Function<Node<?>, T> eval) {
@@ -118,7 +127,7 @@ class EvaluateFunction implements NodeInterpreter<Object> {
             case d2_hasUserRole: return functions.d2_hasUserRole(evalToString(fn.child(0)), data.getSupplementaryValues().get("USER"));
             case d2_hasValue: return functions.d2_hasValue(evalToVar(fn.child(0)));
             case d2_inOrgUnitGroup: return functions.d2_inOrgUnitGroup(evalToString(fn.child(0)), data.getProgramRuleVariableValues().get("org_unit"), data.getSupplementaryValues());
-            case d2_lastEventDate: return functions.d2_lastEventDate(evalToVar(fn.child(0)));
+            case d2_lastEventDate: return functions.d2_lastEventDate(data.getProgramRuleVariableValues().get(evalToString(fn.child(0))));
             case d2_left: return functions.d2_left(evalToString(fn.child(0)), evalToInteger(fn.child(1)));
             case d2_length: return functions.d2_length(evalToString(fn.child(0)));
             case d2_maxValue: return functions.d2_maxValue(evalToVar(fn.child(0)));
@@ -134,14 +143,14 @@ class EvaluateFunction implements NodeInterpreter<Object> {
             case d2_validatePattern: return functions.d2_validatePattern(evalToString(fn.child(0)), evalToString(fn.child(1)));
             case d2_weeksBetween: return functions.d2_weeksBetween(evalToDate(fn.child(0)), evalToDate(fn.child(1)));
             case d2_yearsBetween: return functions.d2_yearsBetween(evalToDate(fn.child(0)), evalToDate(fn.child(1)));
-            case d2_zing: return functions.d2_zing(evalToNumber(fn.child(1)));
+            case d2_zing: return functions.d2_zing(evalToNumber(fn.child(0)));
             case d2_zpvc: return functions.d2_zpvc(evalToNumbers(fn.children()));
             case d2_zScoreHFA: return functions.d2_zScoreHFA(evalToNumber(fn.child(0)), evalToNumber(fn.child(1)), evalToString(fn.child(2)));
             case d2_zScoreWFA: return functions.d2_zScoreWFA(evalToNumber(fn.child(0)), evalToNumber(fn.child(1)), evalToString(fn.child(2)));
             case d2_zScoreWFH: return functions.d2_zScoreWFH(evalToNumber(fn.child(0)), evalToNumber(fn.child(1)), evalToString(fn.child(2)));
 
-            // "not implemented yet" => null
-            default: return null;
+            // "not implemented yet"
+            default: return functions.unsupported(fnInfo.getName());
         }
     }
 
@@ -180,7 +189,14 @@ class EvaluateFunction implements NodeInterpreter<Object> {
 
     @Override
     public Object evalDataItem(Node<DataItemType> item) {
-        Object value = data.getDataItemValues().get(item.toDataItem());
+        DataItem dataItem = item.toDataItem();
+        if (!data.getProgramRuleVariableValues().isEmpty())
+        {
+            String diStr = dataItem.toString();
+            String key = diStr.substring(2, diStr.length()-1);
+            return data.getProgramRuleVariableValues().get(key);
+        }
+        Object value = data.getDataItemValues().get(dataItem);
         return value != null && value.getClass().isArray()
                 ? Array.get(value, dataItemIndex)
                 : value;
@@ -189,9 +205,9 @@ class EvaluateFunction implements NodeInterpreter<Object> {
     @Override
     public Object evalVariable(Node<VariableType> variable) {
         String name = evalToString(variable.child(0));
-        Map<String, ?> values = variable.getValue() == VariableType.PROGRAM
-            ? data.getProgramVariableValues()
-            : data.getProgramRuleVariableValues();
+        Map<String, ?> values = !data.getProgramRuleVariableValues().isEmpty()
+            ? data.getProgramRuleVariableValues()
+            : data.getProgramVariableValues();
         if (!values.containsKey(name))
             throw new IllegalExpressionException(format("Unknown variable: '%s'", name));
         return values.get(name);
@@ -246,24 +262,29 @@ class EvaluateFunction implements NodeInterpreter<Object> {
     Result Type conversion
      */
 
-    private <T> T eval(Node<?> node, Function<Object, T> cast) {
+    private <T> T eval(Node<?> node, Class<T> target, Function<Object, T> cast) {
+        Object value = null;
         try {
-            return cast.apply(node.eval(this));
+            value = node.eval(this);
+            return cast.apply(value);
+        } catch (IllegalExpressionException | UnsupportedOperationException ex) {
+          throw ex;
         } catch (RuntimeException ex) {
-            throw new IllegalExpressionException(ex.getMessage()+"\n\t at: "+ DescribeConsumer.toNormalisedExpression(node));
+            throw new IllegalExpressionException(format("Failed to coerce value '%s' (%s) to %s: %s%n\t in expression: %s",
+                    value, value == null ? "" : value.getClass().getSimpleName(), target.getSimpleName(), ex.getMessage(), DescribeConsumer.toNormalisedExpression(node)));
         }
     }
 
     private String evalToString(Node<?> node) {
-        return eval(node, Typed::toStringTypeCoercion);
+        return eval(node, String.class, Typed::toStringTypeCoercion);
     }
 
     private Boolean evalToBoolean(Node<?> node) {
-        return eval(node, Typed::toBooleanTypeCoercion);
+        return eval(node, Boolean.class, Typed::toBooleanTypeCoercion);
     }
 
     private Double evalToNumber(Node<?> node) {
-        return eval(node, Typed::toNumberTypeCoercion);
+        return eval(node, Double.class, Typed::toNumberTypeCoercion);
     }
 
     private Integer evalToInteger(Node<?> node) {
@@ -274,15 +295,15 @@ class EvaluateFunction implements NodeInterpreter<Object> {
     }
 
     private LocalDate evalToDate(Node<?> node) {
-        return eval(node, Typed::toDateTypeCoercion);
+        return eval(node, LocalDate.class, Typed::toDateTypeCoercion);
     }
 
     private Object evalToMixed(Node<?> node) {
-        return node.eval(this);
+        return eval(node, Object.class, Typed::toMixedTypeTypeCoercion );
     }
 
     private VariableValue evalToVar(Node<?> node) {
-        return eval(node, VariableValue.class::cast);
+        return eval(node, VariableValue.class, VariableValue.class::cast);
     }
 
     private List<?> evalToMixed(Stream<Node<?>> nodes) {

@@ -1,13 +1,15 @@
 package org.hisp.dhis.expression.ast;
 
+import org.hisp.dhis.expression.spi.ValueType;
+
 import java.util.List;
 
-import static org.hisp.dhis.expression.ast.ValueType.BOOLEAN;
-import static org.hisp.dhis.expression.ast.ValueType.DATE;
-import static org.hisp.dhis.expression.ast.ValueType.NUMBER;
-import static org.hisp.dhis.expression.ast.ValueType.SAME;
-import static org.hisp.dhis.expression.ast.ValueType.STRING;
-import static org.hisp.dhis.expression.ast.ValueType.MIXED;
+import static org.hisp.dhis.expression.spi.ValueType.BOOLEAN;
+import static org.hisp.dhis.expression.spi.ValueType.DATE;
+import static org.hisp.dhis.expression.spi.ValueType.NUMBER;
+import static org.hisp.dhis.expression.spi.ValueType.SAME;
+import static org.hisp.dhis.expression.spi.ValueType.STRING;
+import static org.hisp.dhis.expression.spi.ValueType.MIXED;
 
 @SuppressWarnings("java:S115")
 public enum NamedFunction implements Typed

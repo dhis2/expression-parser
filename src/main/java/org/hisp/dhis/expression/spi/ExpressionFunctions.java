@@ -1,5 +1,7 @@
 package org.hisp.dhis.expression.spi;
 
+import org.hisp.dhis.expression.ast.BinaryOperator;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -219,7 +221,7 @@ public interface ExpressionFunctions {
     }
 
     default double d2_modulus(Number left, Number right) {
-        return (left == null ? 0d : left.doubleValue()) % (right == null ? 0d : right.doubleValue());
+        return BinaryOperator.modulo(left, right).doubleValue();
     }
 
     default int d2_monthsBetween(LocalDate start, LocalDate end) {

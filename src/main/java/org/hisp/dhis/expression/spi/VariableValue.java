@@ -12,6 +12,8 @@ public interface VariableValue {
      */
     String value();
 
+    Object valueOrDefault();
+
     /**
      * @return list of candidates, never null
      */
@@ -21,4 +23,6 @@ public interface VariableValue {
      * @return associated event date, maybe null
      */
     String eventDate();
+
+    ValueType valueType();
 }

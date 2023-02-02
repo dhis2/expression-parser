@@ -1,7 +1,7 @@
 package org.hisp.dhis.expression;
 
 import org.hisp.dhis.expression.ast.Node;
-import org.hisp.dhis.expression.ast.ValueType;
+import org.hisp.dhis.expression.spi.ValueType;
 import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.eval.Evaluate;
 import org.hisp.dhis.expression.eval.TypeCheckingConsumer;
@@ -13,7 +13,6 @@ import org.hisp.dhis.expression.spi.ID;
 import org.hisp.dhis.expression.spi.IllegalExpressionException;
 import org.hisp.dhis.expression.spi.ParseException;
 import org.hisp.dhis.expression.spi.Variable;
-import org.hisp.dhis.expression.spi.VariableValue;
 import org.hisp.dhis.expression.syntax.ExpressionGrammar;
 import org.hisp.dhis.expression.syntax.Fragment;
 import org.hisp.dhis.expression.syntax.Parser;
@@ -31,14 +30,21 @@ import java.util.Set;
 public final class Expression {
 
     public enum Mode {
-        // never SQL unless in an indicator sub-expression
+        // analyses data values for validity
         VALIDATION_RULE_EXPRESSION(ExpressionGrammar.ValidationRuleExpressionMode, ValueType.NUMBER),
-        PREDICTOR_EXPRESSION(ExpressionGrammar.PredictorExpressionMode, ValueType.NUMBER, ValueType.STRING),
-        INDICATOR_EXPRESSION(ExpressionGrammar.IndicatorExpressionMode, ValueType.NUMBER),
+        VALIDATION_RULE_RESULT_TEST(ExpressionGrammar.SimpleTestMode, ValueType.BOOLEAN),
+
+        // data value generators
+        PREDICTOR_GENERATOR_EXPRESSION(ExpressionGrammar.PredictorExpressionMode, ValueType.NUMBER, ValueType.STRING),
+        // do a section in the data needs skipping (ignore)
         PREDICTOR_SKIP_TEST(ExpressionGrammar.PredictorSkipTestMode, ValueType.BOOLEAN),
-        SIMPLE_TEST(ExpressionGrammar.SimpleTestMode, ValueType.BOOLEAN),
+
+        // ad-hoc calculated (no DB)
+        // query analytics to compute some aggregate value
+        INDICATOR_EXPRESSION(ExpressionGrammar.IndicatorExpressionMode, ValueType.NUMBER),
 
         // always SQL for entire expression
+        // query analytics to compute some aggregate value
         PROGRAM_INDICATOR_EXPRESSION(ExpressionGrammar.ProgramIndicatorExpressionMode, ValueType.NUMBER),
 
         // never SQL (also we need JS)
@@ -58,7 +64,7 @@ public final class Expression {
     private final Node<?> root;
 
     public Expression(String expression) throws ParseException {
-        this(expression, Mode.PREDICTOR_EXPRESSION);
+        this(expression, Mode.PREDICTOR_GENERATOR_EXPRESSION);
     }
 
     public Expression(String expression, Mode mode) throws ParseException {
@@ -110,7 +116,7 @@ public final class Expression {
         return Evaluate.collectUIDs(root);
     }
 
-    public String describe(Map<ID, String> displayNames) {
+    public String describe(Map<String, String> displayNames) {
         return Evaluate.describe(root, displayNames);
     }
 

@@ -2,7 +2,9 @@ package org.hisp.dhis.expression.syntax;
 
 import org.hisp.dhis.expression.ast.NodeType;
 import org.hisp.dhis.expression.ast.Nodes;
+import org.hisp.dhis.expression.ast.VariableType;
 import org.hisp.dhis.expression.spi.ParseException;
+import org.hisp.dhis.expression.spi.Variable;
 import org.hisp.dhis.expression.syntax.Chars.CharPredicate;
 
 import java.io.Serializable;
@@ -174,6 +176,13 @@ public final class Expr implements Serializable
         if (c == '#' || c == 'A') {
             expr.gobble(); // #/A
             dataItem(expr, ctx, c);
+        } else if (c == 'V') { // V{<name>}
+            expr.gobble(); // V
+            expr.expect('{');
+            ctx.beginNode(NodeType.VARIABLE, "V");
+            ctx.addNode(NodeType.IDENTIFIER, expr, Literals::parseIdentifier);
+            ctx.endNode(NodeType.VARIABLE);
+            expr.expect('}');
         } else if (c == '"' || c == '\'') {
             // programRuleStringVariableName
             ctx.beginNode(NodeType.VARIABLE, "");

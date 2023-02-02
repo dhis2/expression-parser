@@ -1,5 +1,7 @@
 package org.hisp.dhis.expression.ast;
 
+import org.hisp.dhis.expression.spi.ValueType;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.List;
@@ -9,9 +11,9 @@ import static java.lang.Double.isNaN;
 import static java.lang.String.format;
 import static org.hisp.dhis.expression.ast.Typed.toBooleanTypeCoercion;
 import static org.hisp.dhis.expression.ast.Typed.toNumberTypeCoercion;
-import static org.hisp.dhis.expression.ast.ValueType.BOOLEAN;
-import static org.hisp.dhis.expression.ast.ValueType.NUMBER;
-import static org.hisp.dhis.expression.ast.ValueType.SAME;
+import static org.hisp.dhis.expression.spi.ValueType.BOOLEAN;
+import static org.hisp.dhis.expression.spi.ValueType.NUMBER;
+import static org.hisp.dhis.expression.spi.ValueType.SAME;
 
 /**
  *
