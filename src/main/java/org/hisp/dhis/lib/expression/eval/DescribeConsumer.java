@@ -76,13 +76,17 @@ class DescribeConsumer implements NodeVisitor {
     @Override
     public void visitBinaryOperator(Node<BinaryOperator> operator) {
         operator.child(0).walk(this);
-        out.append(operator.getValue().getSymbol());
+        out.append(' ').append(operator.getRawValue()).append(' ');
         operator.child(1).walk(this);
     }
 
     @Override
     public void visitUnaryOperator(Node<UnaryOperator> operator) {
-        out.append(operator.getValue().getSymbol());
+        String rawValue = operator.getRawValue();
+        boolean isWord = Character.isLetter(rawValue.charAt(0));
+        if (isWord) out.append(' ');
+        out.append(rawValue);
+        if (isWord) out.append(' ');
         operator.child(0).walk(this);
     }
 

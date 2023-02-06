@@ -36,7 +36,9 @@ public enum UnaryOperator implements Typed{
     private static final List<UnaryOperator> VALUES = List.of(values());
 
     static UnaryOperator fromSymbol(String symbol) {
-        return VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
+        return "not".equals(symbol)
+                ? NOT
+                : VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
     }
 
     public static Number negate(Number value) {

@@ -79,7 +79,7 @@ class FunctionsExpressionTest {
         IllegalExpressionException ex = assertThrows(IllegalExpressionException.class,
                 () -> evaluate("if(1%0, true, false)"));
         assertEquals("Failed to coerce value 'NaN' (Double) to Boolean: Could not coerce Double 'NaN' to Boolean\n" +
-                "\t in expression: 1%0", ex.getMessage());
+                "\t in expression: 1 % 0", ex.getMessage());
     }
 
     @Test
