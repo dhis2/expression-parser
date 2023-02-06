@@ -82,12 +82,12 @@ public final class Expr implements Serializable
             if (c == 'a' && expr.peek("and") && !expr.peek(3, Chars::isIdentifier))
             {
                 expr.gobble(3);
-                ctx.addNode(NodeType.BINARY_OPERATOR, "&&");
+                ctx.addNode(NodeType.BINARY_OPERATOR, "and");
             }
             else if (c == 'o' && expr.peek("or") && !expr.peek(2, Chars::isIdentifier))
             {
                 expr.gobble(2);
-                ctx.addNode(NodeType.BINARY_OPERATOR, "||");
+                ctx.addNode(NodeType.BINARY_OPERATOR, "or");
             }
             else if (Chars.isBinaryOperator(c))
             {
@@ -110,7 +110,7 @@ public final class Expr implements Serializable
         )
         { // unary operators:
             expr.gobble(c == 'n' ? 3 : 1); // unary op
-            ctx.addNode(NodeType.UNARY_OPERATOR, c == 'n' ? "!" : ""+c);
+            ctx.addNode(NodeType.UNARY_OPERATOR, c == 'n' ? "not" : c+"");
             expr1(expr, ctx);
             return;
         }

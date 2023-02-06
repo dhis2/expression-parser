@@ -64,7 +64,11 @@ public enum BinaryOperator implements Typed
     private static final List<BinaryOperator> VALUES = List.of(values());
 
     static BinaryOperator fromSymbol(String symbol) {
-        return VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
+        switch (symbol) {
+            case "and": return AND;
+            case "or": return OR;
+            default: return VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
+        }
     }
 
     /**
