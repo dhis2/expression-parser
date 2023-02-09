@@ -3,6 +3,7 @@ package org.hisp.dhis.lib.expression.spi;
 import org.hisp.dhis.lib.expression.ast.BinaryOperator;
 import org.hisp.dhis.lib.expression.math.AggregateMath;
 import org.hisp.dhis.lib.expression.math.GS1Elements;
+import org.hisp.dhis.lib.expression.math.ZScore;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -290,15 +291,15 @@ public interface ExpressionFunctions {
     }
 
     default double d2_zScoreHFA(Number parameter, Number weight, String gender) {
-        return (double) unsupported("d2:zScoreHFA");
+        return ZScore.value(ZScore.Mode.HFA, parameter, weight, gender);
     }
 
     default double d2_zScoreWFA(Number parameter, Number weight, String gender) {
-        return (double) unsupported("d2:zScoreWFA");
+        return ZScore.value(ZScore.Mode.WFA, parameter, weight, gender);
     }
 
     default double d2_zScoreWFH(Number parameter, Number weight, String gender) {
-        return (double) unsupported("d2:zScoreWFH");
+        return ZScore.value(ZScore.Mode.WFH, parameter, weight, gender);
     }
 
 }
