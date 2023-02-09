@@ -1,6 +1,8 @@
 package org.hisp.dhis.lib.expression.spi;
 
 import org.hisp.dhis.lib.expression.ast.BinaryOperator;
+import org.hisp.dhis.lib.expression.math.AggregateMath;
+import org.hisp.dhis.lib.expression.math.GS1Elements;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -172,7 +174,7 @@ public interface ExpressionFunctions {
     }
 
     default String d2_extractDataMatrixValue(String gs1Key, String value) {
-        return (String) unsupported("d2:extractDataMatrixValue");
+        return GS1Elements.fromKey( gs1Key ).format(value);
     }
 
     default double d2_floor(Number value) {

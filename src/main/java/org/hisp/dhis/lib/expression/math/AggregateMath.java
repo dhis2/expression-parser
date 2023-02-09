@@ -1,4 +1,4 @@
-package org.hisp.dhis.lib.expression.spi;
+package org.hisp.dhis.lib.expression.math;
 
 import java.util.Arrays;
 import java.util.stream.DoubleStream;
@@ -10,13 +10,13 @@ import java.util.stream.DoubleStream;
  *
  * @author Jan Bernitt
  */
-final class AggregateMath {
+public final class AggregateMath {
 
     private AggregateMath() {
         throw new UnsupportedOperationException("util");
     }
 
-    static double avg(double[] values) {
+    public static double avg(double[] values) {
         double sampleSize = values.length;
         double xbar = sum(values) / sampleSize;
         double correction = 0.0d;
@@ -28,7 +28,7 @@ final class AggregateMath {
         return xbar + correction / sampleSize;
     }
 
-    static double count(double[] values) {
+    public static double count(double[] values) {
         return values.length;
     }
 
@@ -38,11 +38,11 @@ final class AggregateMath {
      * @param values input vector
      * @return largest of the values ignoring NaNs or NaN if values has length zero
      */
-    static double max(double[] values) {
+    public static double max(double[] values) {
         return DoubleStream.of(values).filter(v -> !Double.isNaN(v)).max().orElse(Double.NaN);
     }
 
-    static double median(double[] values) {
+    public static double median(double[] values) {
         //TODO implement
         return 0d;
     }
@@ -54,7 +54,7 @@ final class AggregateMath {
      * @return smallest of the values ignoring NaNs or NaN if values has length zero
      */
 
-    static double min(double[] values) {
+    public static double min(double[] values) {
         return DoubleStream.of(values).filter(v -> !Double.isNaN(v)).min().orElse(Double.NaN);
     }
 
@@ -66,7 +66,7 @@ final class AggregateMath {
      *
      * @author Jim Grace
      */
-    static Double percentileCont(double[] values, Number fraction) {
+    public static Double percentileCont(double[] values, Number fraction) {
         if (values.length == 0 || fraction == null || fraction.doubleValue() < 0d || fraction.doubleValue() > 1d )
         {
             return null;
@@ -86,17 +86,17 @@ final class AggregateMath {
         return estimate(work, pivotsHeap, pos);
     }
 
-    static double stddev(double[] values) {
+    public static double stddev(double[] values) {
         //TODO implement
         return 0d;
     }
 
-    static double stddevPop(double[] values) {
+    public static double stddevPop(double[] values) {
         //TODO implement
         return 0d;
     }
 
-    static double stddevSamp(double[] values) {
+    public static double stddevSamp(double[] values) {
         //TODO implement
         return 0d;
     }
@@ -107,11 +107,11 @@ final class AggregateMath {
      * @param values input vector
      * @return sum of all values
      */
-    static double sum(double[] values) {
+    public static double sum(double[] values) {
         return DoubleStream.of(values).sum();
     }
 
-    static double variance(double[] values) {
+    public static double variance(double[] values) {
         //TODO implement
         return 0d;
     }
