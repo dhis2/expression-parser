@@ -192,9 +192,7 @@ class EvaluateFunction implements NodeInterpreter<Object> {
         DataItem dataItem = item.toDataItem();
         if (!data.getProgramRuleVariableValues().isEmpty())
         {
-            String diStr = dataItem.toString();
-            String key = diStr.substring(2, diStr.length()-1);
-            return data.getProgramRuleVariableValues().get(key);
+            return data.getProgramRuleVariableValues().get(dataItem.getKey());
         }
         Object value = data.getDataItemValues().get(dataItem);
         return value != null && value.getClass().isArray()
@@ -275,16 +273,20 @@ class EvaluateFunction implements NodeInterpreter<Object> {
         }
     }
 
-    private String evalToString(Node<?> node) {
+    String evalToString(Node<?> node) {
         return eval(node, String.class, Typed::toStringTypeCoercion);
     }
 
-    private Boolean evalToBoolean(Node<?> node) {
+    Boolean evalToBoolean(Node<?> node) {
         return eval(node, Boolean.class, Typed::toBooleanTypeCoercion);
     }
 
-    private Double evalToNumber(Node<?> node) {
+    Double evalToNumber(Node<?> node) {
         return eval(node, Double.class, Typed::toNumberTypeCoercion);
+    }
+
+    LocalDate evalToDate(Node<?> node) {
+        return eval(node, LocalDate.class, Typed::toDateTypeCoercion);
     }
 
     private Integer evalToInteger(Node<?> node) {
@@ -292,10 +294,6 @@ class EvaluateFunction implements NodeInterpreter<Object> {
         if (val == null) return null;
         if (val % 1d != 0d) throw new IllegalArgumentException("Expected an integer but got a floating point for: "+node);
         return val.intValue();
-    }
-
-    private LocalDate evalToDate(Node<?> node) {
-        return eval(node, LocalDate.class, Typed::toDateTypeCoercion);
     }
 
     private Object evalToMixed(Node<?> node) {

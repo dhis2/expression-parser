@@ -40,6 +40,6 @@ class RuleFunctionCeilTest {
     }
 
     private static double evaluate(String expression) {
-        return (double) new Expression(expression, Expression.Mode.RULE_ENGINE).evaluate();
+        return (double) new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate();
     }
 }

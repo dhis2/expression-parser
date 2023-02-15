@@ -62,4 +62,14 @@ public enum NodeType
         return ordinal() >= NULL.ordinal();
     }
 
+    /**
+     * Special purpose literals like {@link #UID} or {@link #IDENTIFIER} are not considered literals
+     * as they should not be used in places where literals for the {@link org.hisp.dhis.lib.expression.spi.ValueType}s can occur.
+     *
+     * @return true if this is a general literal for no special purpose
+     */
+    public boolean isValueLiteral() {
+        return isConstant() || this == NUMBER || this == INTEGER || this == STRING || this == DATE;
+    }
+
 }

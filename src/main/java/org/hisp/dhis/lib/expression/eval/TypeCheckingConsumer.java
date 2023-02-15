@@ -1,42 +1,32 @@
 package org.hisp.dhis.lib.expression.eval;
 
-import org.hisp.dhis.lib.expression.spi.ValueType;
+import lombok.RequiredArgsConstructor;
 import org.hisp.dhis.lib.expression.ast.BinaryOperator;
 import org.hisp.dhis.lib.expression.ast.DataItemModifier;
 import org.hisp.dhis.lib.expression.ast.NamedFunction;
 import org.hisp.dhis.lib.expression.ast.Node;
+import org.hisp.dhis.lib.expression.ast.NodeType;
 import org.hisp.dhis.lib.expression.ast.UnaryOperator;
+import org.hisp.dhis.lib.expression.spi.Issues;
+import org.hisp.dhis.lib.expression.spi.ValueType;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
-import static org.hisp.dhis.lib.expression.eval.DescribeConsumer.toNormalisedExpression;
 
-public class TypeCheckingConsumer implements NodeVisitor {
+/**
+ * Performs basic type checking based on the knowledge about the expectations of operators and functions as well as used value literals.
+ *
+ * @author Jan Bernitt
+ */
+@RequiredArgsConstructor
+final class TypeCheckingConsumer implements NodeVisitor {
 
-    static class Violation {
-        final Node<?> node;
-        final String msg;
-
-        Violation(Node<?> node, String msg) {
-            this.node = node;
-            this.msg = msg;
-        }
-
-        @Override
-        public String toString() {
-            return msg+"\nin: "+ toNormalisedExpression(node);
-        }
-    }
-
-    private final List<Violation> violations = new ArrayList<>();
-
-    public List<Violation> getViolations() {
-        return violations;
-    }
+    private final Issues issues;
 
     @Override
     public void visitUnaryOperator(Node<UnaryOperator> operator) {
@@ -44,37 +34,49 @@ public class TypeCheckingConsumer implements NodeVisitor {
         ValueType expected = operator.getValue().getValueType();
         ValueType actual = operand.getValueType();
         if (!actual.isAssignableTo(expected)) {
-            violations.add(new Violation(operator, format("Incompatible type for unary operator %s, expected %s but was: %s", operator.getValue().getSymbol(), expected, actual)));
+            if (isStaticallyDefined(operand)) {
+                checkEvaluateToType(expected, operand, () ->
+                        format("Literal expression `%s` cannot be converted to type %s expected by operator `%s`",
+                                Evaluate.normalise(operand), expected, operator.getRawValue()));
+            } else {
+                issues.addIssue(actual.isMaybeAssignableTo(expected), operator,
+                        format("Incompatible operand type for unary operator `%s`, expected a %s but was: %s",
+                                operator.getRawValue(), expected, actual));
+            }
         }
     }
 
     @Override
     public void visitBinaryOperator(Node<BinaryOperator> operator) {
-        Node<?> left = operator.child(0);
-        Node<?> right = operator.child(1);
-        ValueType leftActual = left.getValueType();
-        ValueType rightActual = right.getValueType();
+        checkBinaryOperatorOperand(operator, operator.child(0), "left");
+        checkBinaryOperatorOperand(operator, operator.child(1), "right");
+    }
+
+    private void checkBinaryOperatorOperand(Node<BinaryOperator> operator, Node<?> operand, String name) {
         ValueType expected = operator.getValue().getOperandsType();
-        boolean validIndividually = true;
+        ValueType leftActual = operand.getValueType();
         if (!leftActual.isAssignableTo(expected)) {
-            validIndividually = false;
-            violations.add(new Violation(operator, format("Incompatible type for left operand of binary operator %s, expected %s but was: %s", operator.getValue().getSymbol(), expected, leftActual)));
-        }
-        if (!rightActual.isAssignableTo(expected)) {
-            validIndividually = false;
-            violations.add(new Violation(operator, format("Incompatible type for right operand of binary operator %s, expected %s but was: %s", operator.getValue().getSymbol(), expected, rightActual)));
-        }
-        if (validIndividually && !ValueType.allSame(List.of(leftActual, rightActual))) {
-            violations.add(new Violation(operator, format("The type of the left and right operand of binary operator %s must be same but were: %s, %s", operator.getValue().getSymbol(), leftActual, rightActual)));
+            if (isStaticallyDefined(operand)) {
+                checkEvaluateToType(expected, operand, () ->
+                        format("Literal expression `%s` cannot be converted to type %s expected by operator `%s`",
+                                Evaluate.normalise(operand), expected, operator.getRawValue()));
+            } else {
+                issues.addIssue(leftActual.isMaybeAssignableTo(expected), operator,
+                        format("Incompatible type for %s operand of binary operator `%s`, expected a %s but was: %s",
+                                name, operator.getRawValue(), expected, leftActual));
+            }
         }
     }
 
     @Override
     public void visitFunction(Node<NamedFunction> function) {
-        if (checkArgumentTypesAreAssignable(function, function.getValue().getParameterTypes()))
-        {
-            checkSameArgumentTypes(function);
-        }
+        checkArgumentTypesAreAssignable(function, function.getValue().getParameterTypes());
+        checkSameArgumentTypes(function);
+    }
+
+    @Override
+    public void visitModifier(Node<DataItemModifier> modifier) {
+        checkArgumentTypesAreAssignable(modifier, modifier.getValue().getParameterTypes());
     }
 
     private void checkSameArgumentTypes(Node<NamedFunction> fn) {
@@ -93,17 +95,20 @@ public class TypeCheckingConsumer implements NodeVisitor {
                 if (same == null) {
                     same = actual;
                 } else if (actual != same) {
-                    String s = IntStream.range(0, expectedTypes.size())
-                            .filter(j -> expectedTypes.get(j).isSame()).mapToObj(j -> (j+1)+".").collect(joining(" and "));
-                    violations.add(new Violation(fn, format("The argument types of parameters %s must be of the same type but were: %s, %s", s, same, arg.getValueType())));
+                    boolean possiblySame = actual.isMaybeAssignableTo(same);
+                    String indexes = IntStream.range(0, expectedTypes.size())
+                            .filter(j -> expectedTypes.get(j).isSame()).mapToObj(j -> (j+1)+".")
+                            .collect(joining(" and "));
+                    issues.addIssue(possiblySame, fn,
+                            format("The argument types of parameters %s must be of the same type but were: %s, %s",
+                                    indexes, same, arg.getValueType()));
                     return;
                 }
             }
         }
     }
 
-    private boolean checkArgumentTypesAreAssignable(Node<?> node, List<ValueType> expectedTypes) {
-        boolean allAssignable = true;
+    private void checkArgumentTypesAreAssignable(Node<?> node, List<ValueType> expectedTypes) {
         for (int i = 0; i < node.size(); i++)
         {
             Node<?> argument = node.child(i);
@@ -111,24 +116,57 @@ public class TypeCheckingConsumer implements NodeVisitor {
             ValueType expected = i >= expectedTypes.size()
                     ? expectedTypes.get(expectedTypes.size()-1)
                     : expectedTypes.get(i);
-            allAssignable &= checkArgumentTypeIsAssignable(node, argument, expected, actual);
+            checkArgumentTypeIsAssignable(node, argument, expected, actual);
         }
-        return allAssignable;
     }
 
-    @Override
-    public void visitModifier(Node<DataItemModifier> modifier) {
-        checkArgumentTypesAreAssignable(modifier, modifier.getValue().getParameterTypes());
-    }
-
-    private boolean checkArgumentTypeIsAssignable(Node<?> called, Node<?> argument, ValueType expected, ValueType actual) {
+    private void checkArgumentTypeIsAssignable(Node<?> called, Node<?> argument, ValueType expected, ValueType actual) {
         if (!actual.isAssignableTo(expected)) {
             Integer value = (Integer) argument.getValue();
-            violations.add(new Violation(called, format("Incompatible type for %d. argument, expected %s but was: %s", (value +1), expected, actual)));
-            return false;
+            if (isStaticallyDefined(argument)) {
+                checkEvaluateToType(expected, argument, () ->
+                        format("Literal expression `%s` cannot be converted to type %s expected by function `%s`",
+                                Evaluate.normalise(argument), expected, called.getRawValue()));
+            } else {
+                boolean possiblyAssignable = actual.isMaybeAssignableTo(expected);
+                issues.addIssue(possiblyAssignable, argument,
+                        format("Incompatible type for %d. argument of %s, expected %s but was: %s",
+                                (value + 1), called.getRawValue(), expected, actual));
+            }
         }
-        //TODO distinguish assign/coerce with error/warning
-        return true;
     }
 
+    private void checkEvaluateToType(ValueType expected, Node<?> actual, Supplier<String> errorMessage) {
+        try {
+            evalTo(expected).accept(actual);
+        } catch (RuntimeException ex) {
+            issues.addError(actual, errorMessage.get());
+        }
+    }
+
+    private Consumer<Node<?>> evalTo(ValueType expected) {
+        EvaluateFunction eval = new EvaluateFunction(null, null);
+        switch (expected) {
+            case STRING: return eval::evalToString;
+            case DATE: return eval::evalToDate;
+            case BOOLEAN: return eval::evalToBoolean;
+            case NUMBER: return eval::evalToNumber;
+            default: return node -> {}; // we can't tell
+        }
+    }
+
+    /**
+     * A statically defined node or expression can be computed to a deterministic result without any context.
+     *
+     * @return true, if the node is either a value literal or a composition of only operators, brackets and value literals, false otherwise.
+     */
+    private static boolean isStaticallyDefined(Node<?> node) {
+        NodeType type = node.getType();
+        if (type.isValueLiteral()) return true;
+        if (type == NodeType.PAR || type == NodeType.ARGUMENT || type == NodeType.UNARY_OPERATOR)
+            return isStaticallyDefined(node.child(0));
+        if (type == NodeType.BINARY_OPERATOR)
+            return isStaticallyDefined(node.child(0)) && isStaticallyDefined(node.child(1));
+        return false;
+    }
 }

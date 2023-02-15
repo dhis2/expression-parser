@@ -1,6 +1,5 @@
 package org.hisp.dhis.lib.expression;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -37,6 +36,6 @@ class DescriptionExpressionTest {
     }
 
     private static String describe(String expression) {
-        return new Expression(expression, Expression.Mode.RULE_ENGINE).describe(Map.of());
+        return new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).describe(Map.of());
     }
 }

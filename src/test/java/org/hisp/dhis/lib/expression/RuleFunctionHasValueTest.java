@@ -41,7 +41,7 @@ class RuleFunctionHasValueTest {
     private void assertHasValue( String expression, Map<String, VariableValue> values, Boolean expected )
     {
         ExpressionData data = ExpressionData.builder().programRuleVariableValues(values).build();
-        Object actual = new Expression(expression, Expression.Mode.RULE_ENGINE).evaluate(name -> null, data);
+        Object actual = new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate(name -> null, data);
         assertEquals(expected, actual);
     }
 }
