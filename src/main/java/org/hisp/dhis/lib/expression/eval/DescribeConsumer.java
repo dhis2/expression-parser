@@ -1,7 +1,5 @@
 package org.hisp.dhis.lib.expression.eval;
 
-import org.hisp.dhis.lib.expression.spi.DataItem;
-import org.hisp.dhis.lib.expression.spi.ID;
 import org.hisp.dhis.lib.expression.ast.BinaryOperator;
 import org.hisp.dhis.lib.expression.ast.DataItemModifier;
 import org.hisp.dhis.lib.expression.ast.NamedFunction;
@@ -11,7 +9,9 @@ import org.hisp.dhis.lib.expression.ast.NodeType;
 import org.hisp.dhis.lib.expression.ast.Tag;
 import org.hisp.dhis.lib.expression.ast.UnaryOperator;
 import org.hisp.dhis.lib.expression.ast.VariableType;
+import org.hisp.dhis.lib.expression.spi.DataItem;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
+import org.hisp.dhis.lib.expression.spi.ID;
 
 import java.time.LocalDate;
 import java.util.Map;

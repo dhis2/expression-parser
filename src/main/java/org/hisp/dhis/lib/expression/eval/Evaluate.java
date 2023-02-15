@@ -1,21 +1,20 @@
 package org.hisp.dhis.lib.expression.eval;
 
-import org.hisp.dhis.lib.expression.spi.DataItem;
-import org.hisp.dhis.lib.expression.spi.ID;
 import org.hisp.dhis.lib.expression.ast.Node;
 import org.hisp.dhis.lib.expression.ast.NodeType;
+import org.hisp.dhis.lib.expression.ast.Nodes;
 import org.hisp.dhis.lib.expression.ast.VariableType;
+import org.hisp.dhis.lib.expression.spi.DataItem;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 import org.hisp.dhis.lib.expression.spi.ExpressionData;
 import org.hisp.dhis.lib.expression.spi.ExpressionFunctions;
+import org.hisp.dhis.lib.expression.spi.ID;
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
-import org.hisp.dhis.lib.expression.spi.Issue;
 import org.hisp.dhis.lib.expression.spi.Issues;
 import org.hisp.dhis.lib.expression.spi.ValueType;
 import org.hisp.dhis.lib.expression.spi.Variable;
 import org.hisp.dhis.lib.expression.spi.VariableValue;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +59,14 @@ public final class Evaluate {
 
     public static void validate(Node<?> root, ExpressionData data, List<NodeValidator> validators, Set<ValueType> resultTypes) {
         Issues issues = new Issues();
+        // enhance AST with variable type information
+        root.visit(NodeType.VARIABLE, variable -> {
+            VariableValue value = data.getProgramRuleVariableValues().get(variable.child(0).getRawValue());
+            if (value != null) {
+                ((Nodes.VariableNode) variable).setActualValueType(value.valueType());
+            }
+        });
+
         // type check
         root.visit(new TypeCheckingConsumer(issues));
 

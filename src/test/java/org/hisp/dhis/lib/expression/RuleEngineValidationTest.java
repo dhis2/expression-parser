@@ -2,9 +2,10 @@ package org.hisp.dhis.lib.expression;
 
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
 import org.hisp.dhis.lib.expression.spi.Issue;
+import org.hisp.dhis.lib.expression.spi.ValueType;
 import org.junit.jupiter.api.Test;
 
-import java.util.Set;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -130,7 +131,9 @@ class RuleEngineValidationTest {
 
     @Test
     void testProgramVariable() {
-        validate("V{due_date}", Set.of("due_date", "enrollment_count"));
+        validate("V{due_date}", Map.of(
+                "due_date", ValueType.DATE,
+                "enrollment_count", ValueType.NUMBER));
     }
 
     @Test
@@ -140,9 +143,10 @@ class RuleEngineValidationTest {
 
     @Test
     void testProgramRuleVariable() {
-        validate("#{abc}", Set.of("abc", "def"));
-        validate("A{abc}", Set.of("abc", "def"));
-        validate("d2:count('abc')", Set.of("abc", "def"));
+        Map<String, ValueType> variables = Map.of("abc", ValueType.STRING);
+        validate("#{abc}", variables);
+        validate("A{abc}", variables);
+        validate("d2:count('abc')", variables);
     }
 
     @Test
@@ -153,8 +157,17 @@ class RuleEngineValidationTest {
     }
 
     @Test
+    void testProgramRuleVariable_Error_ActualType() {
+        assertError("d2:floor(#{due_date})", "#{due_date}",
+                "Incompatible type for 1. argument of d2:floor, expected NUMBER but was: DATE",
+                Map.of("due_date", ValueType.DATE) );
+    }
+
+    @Test
     void testConstant() {
-        validate("C{x1234567890}", Set.of("a1234567890", "x1234567890"));
+        validate("C{x1234567890}", Map.of(
+                "a1234567890", ValueType.NUMBER,
+                "x1234567890", ValueType.NUMBER));
     }
 
     @Test
@@ -172,7 +185,11 @@ class RuleEngineValidationTest {
     }
 
     static void assertError(String expression, String expectedPosition, String expectedWarning) {
-        IllegalExpressionException ex = assertThrows(IllegalExpressionException.class, () -> validate(expression));
+        assertError(expression, expectedPosition, expectedWarning, Map.of());
+    }
+
+    static void assertError(String expression, String expectedPosition, String expectedWarning, Map<String, ValueType> variables) {
+        IllegalExpressionException ex = assertThrows(IllegalExpressionException.class, () -> validate(expression, variables));
         assertEquals(1, ex.getErrors().size());
         assertEquals(0, ex.getWarnings().size());
         Issue error = ex.getErrors().get(0);
@@ -181,11 +198,11 @@ class RuleEngineValidationTest {
     }
 
     static void validate(String expression) {
-        validate(expression, Set.of());
+        validate(expression, Map.of());
     }
 
-    static void validate(String expression, Set<String> variableNames) {
+    static void validate(String expression, Map<String, ValueType> variables) {
         Expression expr = new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION);
-        expr.validate(variableNames);
+        expr.validate(variables);
     }
 }
