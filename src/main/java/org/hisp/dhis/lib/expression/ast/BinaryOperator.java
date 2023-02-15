@@ -8,7 +8,6 @@ import java.util.List;
 
 import static java.lang.Double.isInfinite;
 import static java.lang.Double.isNaN;
-import static java.lang.String.format;
 import static org.hisp.dhis.lib.expression.ast.Typed.toBooleanTypeCoercion;
 import static org.hisp.dhis.lib.expression.ast.Typed.toNumberTypeCoercion;
 
@@ -26,14 +25,14 @@ public enum BinaryOperator implements Typed
     MOD("%", ValueType.NUMBER, ValueType.NUMBER),
     ADD("+", ValueType.NUMBER, ValueType.NUMBER),
     SUB("-", ValueType.NUMBER, ValueType.NUMBER),
-    AND("&&", ValueType.BOOLEAN, ValueType.BOOLEAN),
-    OR("||", ValueType.BOOLEAN, ValueType.BOOLEAN),
-    EQ("==", ValueType.BOOLEAN, ValueType.SAME),
-    NEQ("!=", ValueType.BOOLEAN, ValueType.SAME),
     LT("<", ValueType.BOOLEAN, ValueType.NUMBER),
     GT(">", ValueType.BOOLEAN, ValueType.NUMBER),
     LE("<=", ValueType.BOOLEAN, ValueType.NUMBER),
-    GE(">=", ValueType.BOOLEAN, ValueType.NUMBER);
+    GE(">=", ValueType.BOOLEAN, ValueType.NUMBER),
+    EQ("==", ValueType.BOOLEAN, ValueType.SAME),
+    NEQ("!=", ValueType.BOOLEAN, ValueType.SAME),
+    AND("&&", ValueType.BOOLEAN, ValueType.BOOLEAN),
+    OR("||", ValueType.BOOLEAN, ValueType.BOOLEAN);
 
     private final String symbol;
     private final ValueType returnType;

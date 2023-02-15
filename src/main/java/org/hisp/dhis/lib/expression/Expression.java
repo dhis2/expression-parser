@@ -4,6 +4,7 @@ import org.hisp.dhis.lib.expression.ast.Node;
 import org.hisp.dhis.lib.expression.ast.VariableType;
 import org.hisp.dhis.lib.expression.eval.Evaluate;
 import org.hisp.dhis.lib.expression.eval.NodeValidator;
+import org.hisp.dhis.lib.expression.eval.ValueTypeVariableValue;
 import org.hisp.dhis.lib.expression.spi.DataItem;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 import org.hisp.dhis.lib.expression.spi.ExpressionData;
@@ -23,11 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * Facade API for working with DHIS2 expressions.
@@ -135,9 +131,9 @@ public final class Expression {
         return Evaluate.describe(root, displayNames);
     }
 
-    public void validate(Set<String> displayNamesKeys) {
+    public void validate(Map<String, ValueType> displayNamesKeys) {
         Map<String, VariableValue> programRuleVariableValues = new HashMap<>();
-        displayNamesKeys.forEach(key -> programRuleVariableValues.put(key, null));
+        displayNamesKeys.forEach((key, value) -> programRuleVariableValues.put(key, new ValueTypeVariableValue(value)));
         ExpressionData data = ExpressionData.builder()
                 .programRuleVariableValues(programRuleVariableValues)
                 .build();

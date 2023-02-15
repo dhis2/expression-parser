@@ -355,6 +355,10 @@ public interface Nodes {
     }
 
     final class VariableNode extends ModifiedNode<VariableType> {
+        /**
+         * Might be provided after AST has been constructed to specify more precisely what type a variable has
+         */
+        private ValueType actualValueType;
 
         public VariableNode(NodeType type, String rawValue) {
             super(type, rawValue, VariableType::fromSymbol);
@@ -368,9 +372,14 @@ public interface Nodes {
             return new Variable((ProgramVariable) child(0).getValue(), getQueryModifiers());
         }
 
+        public void setActualValueType(ValueType actualValueType) {
+            this.actualValueType = actualValueType;
+        }
+
         @Override
         public ValueType getValueType() {
-            return isEmpty() ? ValueType.MIXED : child(0).getValueType();
+            // the type of variable value is unknown statically
+            return actualValueType == null ? ValueType.MIXED : actualValueType;
         }
     }
 

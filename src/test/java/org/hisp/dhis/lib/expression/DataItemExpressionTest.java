@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression;
 
 import org.hisp.dhis.lib.expression.spi.DataItem;
-import org.hisp.dhis.lib.expression.spi.QueryModifiers;
 import org.hisp.dhis.lib.expression.spi.ID;
+import org.hisp.dhis.lib.expression.spi.QueryModifiers;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
