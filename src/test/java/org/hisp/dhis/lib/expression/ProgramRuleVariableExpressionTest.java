@@ -25,6 +25,6 @@ class ProgramRuleVariableExpressionTest {
     }
 
     private static Set<String> evaluate(String expression) {
-        return new Expression(expression, Expression.Mode.RULE_ENGINE).collectProgramRuleVariableNames();
+        return new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).collectProgramRuleVariableNames();
     }
 }

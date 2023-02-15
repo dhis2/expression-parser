@@ -64,22 +64,22 @@ class ValueTypeTest {
 
     @Test
     void testAnyTypeIsTypeCoercionToString() {
-        assertIsAssignableTo(type -> assertTrue(type.isTypeCoercionTo(ValueType.STRING)));
+        assertIsAssignableTo(type -> assertTrue(type.isMaybeAssignableTo(ValueType.STRING)));
     }
 
     @Test
     void testStringIsTypeCoercionToNumber() {
-        assertTrue(ValueType.STRING.isTypeCoercionTo(ValueType.NUMBER));
+        assertTrue(ValueType.STRING.isMaybeAssignableTo(ValueType.NUMBER));
     }
 
     @Test
     void testStringIsTypeCoercionToDate() {
-        assertTrue(ValueType.STRING.isTypeCoercionTo(ValueType.DATE));
+        assertTrue(ValueType.STRING.isMaybeAssignableTo(ValueType.DATE));
     }
 
     @Test
     void testNumberIsNoTypeCoercionToDate() {
-        assertFalse(ValueType.NUMBER.isTypeCoercionTo(ValueType.DATE));
+        assertFalse(ValueType.NUMBER.isMaybeAssignableTo(ValueType.DATE));
     }
 
 

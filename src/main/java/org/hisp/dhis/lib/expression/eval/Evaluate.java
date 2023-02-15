@@ -9,13 +9,21 @@ import org.hisp.dhis.lib.expression.spi.DataItemType;
 import org.hisp.dhis.lib.expression.spi.ExpressionData;
 import org.hisp.dhis.lib.expression.spi.ExpressionFunctions;
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
+import org.hisp.dhis.lib.expression.spi.Issue;
+import org.hisp.dhis.lib.expression.spi.Issues;
+import org.hisp.dhis.lib.expression.spi.ValueType;
 import org.hisp.dhis.lib.expression.spi.Variable;
 import org.hisp.dhis.lib.expression.spi.VariableValue;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 /**
  * This is the exposed API of the evaluation package.
@@ -48,6 +56,24 @@ public final class Evaluate {
 
     public static String describe(Node<?> root, Map<String, String> displayNames) {
         return DescribeConsumer.toDisplayExpression(root, displayNames);
+    }
+
+    public static void validate(Node<?> root, ExpressionData data, List<NodeValidator> validators, Set<ValueType> resultTypes) {
+        Issues issues = new Issues();
+        // type check
+        root.visit(new TypeCheckingConsumer(issues));
+
+        // check result type
+        ValueType actualResultType = root.getValueType();
+        if (actualResultType != ValueType.MIXED && actualResultType != ValueType.SAME && !resultTypes.contains(actualResultType)) {
+            issues.addError(root, format("Expression must result in one of the types %s but was: %s",
+                    resultTypes.stream().map(ValueType::name).collect(Collectors.joining(", ")), actualResultType));
+        }
+
+        // AST and data dependent validations
+        validators.forEach(v -> v.validate(root, issues, data));
+
+        issues.throwIfErrorsOrWarnings();
     }
 
     /*

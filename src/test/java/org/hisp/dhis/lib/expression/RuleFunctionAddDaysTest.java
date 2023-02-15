@@ -58,6 +58,6 @@ class RuleFunctionAddDaysTest {
     }
 
     private static LocalDate evaluate(String expression) {
-        return (LocalDate) new Expression(expression, Expression.Mode.RULE_ENGINE).evaluate();
+        return (LocalDate) new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate();
     }
 }

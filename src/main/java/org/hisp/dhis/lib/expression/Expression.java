@@ -3,7 +3,7 @@ package org.hisp.dhis.lib.expression;
 import org.hisp.dhis.lib.expression.ast.Node;
 import org.hisp.dhis.lib.expression.ast.VariableType;
 import org.hisp.dhis.lib.expression.eval.Evaluate;
-import org.hisp.dhis.lib.expression.eval.TypeCheckingConsumer;
+import org.hisp.dhis.lib.expression.eval.NodeValidator;
 import org.hisp.dhis.lib.expression.spi.DataItem;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 import org.hisp.dhis.lib.expression.spi.ExpressionData;
@@ -13,14 +13,21 @@ import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
 import org.hisp.dhis.lib.expression.spi.ParseException;
 import org.hisp.dhis.lib.expression.spi.ValueType;
 import org.hisp.dhis.lib.expression.spi.Variable;
+import org.hisp.dhis.lib.expression.spi.VariableValue;
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar;
 import org.hisp.dhis.lib.expression.syntax.Fragment;
 import org.hisp.dhis.lib.expression.syntax.Parser;
 
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Facade API for working with DHIS2 expressions.
@@ -49,17 +56,24 @@ public final class Expression {
 
         // never SQL (also we need JS)
         // PROGRAM_RULE_EXPRESSION
-        RULE_ENGINE(ExpressionGrammar.RuleEngineMode, ValueType.NUMBER);
+        RULE_ENGINE_CONDITION(ExpressionGrammar.RuleEngineMode, NodeValidator.RuleEngineMode, ValueType.BOOLEAN),
+        RULE_ENGINE_ACTION(ExpressionGrammar.RuleEngineMode, NodeValidator.RuleEngineMode, ValueType.BOOLEAN, ValueType.STRING, ValueType.NUMBER, ValueType.DATE);
 
-        final EnumSet<ValueType> result;
+        final EnumSet<ValueType> resultTypes;
         final List<Fragment> fragments;
+        final List<NodeValidator> validators;
 
         Mode(List<Fragment> fragments, ValueType... resultTypes) {
-            this.result = EnumSet.of(resultTypes[0], resultTypes);
+            this(fragments, List.of(), resultTypes);
+        }
+        Mode(List<Fragment> fragments, List<NodeValidator> validators, ValueType... resultTypes) {
+            this.resultTypes = EnumSet.of(resultTypes[0], resultTypes);
             this.fragments = fragments;
+            this.validators = validators;
         }
     }
 
+    private final Mode mode;
     private final String expression;
     private final Node<?> root;
 
@@ -68,6 +82,7 @@ public final class Expression {
     }
 
     public Expression(String expression, Mode mode) throws ParseException {
+        this.mode = mode;
         this.expression = expression;
         this.root = Parser.parse(expression, mode.fragments);
     }
@@ -120,6 +135,15 @@ public final class Expression {
         return Evaluate.describe(root, displayNames);
     }
 
+    public void validate(Set<String> displayNamesKeys) {
+        Map<String, VariableValue> programRuleVariableValues = new HashMap<>();
+        displayNamesKeys.forEach(key -> programRuleVariableValues.put(key, null));
+        ExpressionData data = ExpressionData.builder()
+                .programRuleVariableValues(programRuleVariableValues)
+                .build();
+        Evaluate.validate(root, data, mode.validators, mode.resultTypes);
+    }
+
     public Set<DataItem> collectDataItemForRegenerate() {
         return Evaluate.collectDataItems(root, DataItemType.CONSTANT, DataItemType.ORG_UNIT_GROUP);
     }
@@ -137,14 +161,6 @@ public final class Expression {
     public String regenerate(Map<DataItem, Number> dataItemValues ) {
         // old: org.hisp.dhis.expression.DefaultExpressionService#regenerateIndicatorExpression (indicator only)
         return Evaluate.regenerate(root, dataItemValues);
-    }
-
-    public List<?> typeCheck() {
-        //TODO use a class that is spi for the violations
-        TypeCheckingConsumer typeCheck = new TypeCheckingConsumer();
-        root.visit(typeCheck);
-        //TODO check that the root returns the expected result type
-        return typeCheck.getViolations();
     }
 
     /**

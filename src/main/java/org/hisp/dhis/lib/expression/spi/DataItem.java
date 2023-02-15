@@ -34,6 +34,11 @@ public class DataItem {
         this(type, uid0, modifiers.apply(QueryModifiers.builder()).build());
     }
 
+    public String getKey() {
+        String diStr = toString();
+        return diStr.substring(2, diStr.length()-1);
+    }
+
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();

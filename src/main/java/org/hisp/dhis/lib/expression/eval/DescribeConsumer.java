@@ -152,10 +152,16 @@ class DescribeConsumer implements NodeVisitor {
                 return;
             }
         }
-        out.append(variable.getRawValue());
-        out.append('{');
+        String symbol = variable.getRawValue();
+        boolean hasSymbol = !symbol.isEmpty();
+        if (hasSymbol) {
+            out.append(symbol);
+            out.append('{');
+        }
         variable.child(0).walk(this);
-        out.append('}');
+        if (hasSymbol) {
+            out.append('}');
+        }
         visitModifiers(variable);
     }
 

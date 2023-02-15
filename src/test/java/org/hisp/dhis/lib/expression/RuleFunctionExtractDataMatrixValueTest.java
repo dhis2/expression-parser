@@ -57,6 +57,6 @@ class RuleFunctionExtractDataMatrixValueTest {
 
     private static String extractDataMatrixValue(String key, String value) {
         String expression = String.format("d2:extractDataMatrixValue('%s', '%s')", key, value);
-        return (String) new Expression(expression, Expression.Mode.RULE_ENGINE).evaluate();
+        return (String) new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate();
     }
 }

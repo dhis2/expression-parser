@@ -52,7 +52,8 @@ public enum ValueType {
      * @return true, if this type (actual) is assignable to the other (required), otherwise false
      */
     public boolean isAssignableTo(ValueType other) {
-        return !isSame() && (this == other || isMixed() || other.isMixed() || other.isSame());
+        return !isSame() && (this == other || isMixed() || other.isMixed() || other.isSame()
+                || this == STRING && other == DATE); // there are no date literals, so strings are used
     }
 
     /**
@@ -64,7 +65,7 @@ public enum ValueType {
      * @param other target type
      * @return true, if this type (actual) is assignable or convertable to the other (required), otherwise false
      */
-    public boolean isTypeCoercionTo(ValueType other) {
+    public boolean isMaybeAssignableTo(ValueType other) {
         if (isAssignableTo(other)) return true;
         switch (other) {
             case STRING: return true;
