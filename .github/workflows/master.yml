@@ -16,7 +16,7 @@ jobs:
           java-version: 11
           distribution: temurin
       - name: Test
-        run: mvn clean install -DskipTests=false --update-snapshots -q
+        run: mvn clean install --update-snapshots -q
 
   artifact:
     name: Publish - Nexus
