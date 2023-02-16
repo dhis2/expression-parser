@@ -30,10 +30,6 @@ public class DataItem {
         this(type, uid0, List.of(), List.of(), modifiers );
     }
 
-    public DataItem(DataItemType type, ID uid0, UnaryOperator<QueryModifiers.QueryModifiersBuilder> modifiers) {
-        this(type, uid0, modifiers.apply(QueryModifiers.builder()).build());
-    }
-
     public String getKey() {
         String diStr = toString();
         return diStr.substring(2, diStr.length()-1);

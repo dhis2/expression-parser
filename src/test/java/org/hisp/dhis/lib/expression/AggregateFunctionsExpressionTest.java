@@ -3,6 +3,7 @@ package org.hisp.dhis.lib.expression;
 import org.hisp.dhis.lib.expression.spi.DataItem;
 import org.hisp.dhis.lib.expression.spi.ExpressionData;
 import org.hisp.dhis.lib.expression.spi.ID;
+import org.hisp.dhis.lib.expression.spi.QueryModifiers;
 import org.junit.jupiter.api.Test;
 
 import java.util.Map;
@@ -64,6 +65,7 @@ class AggregateFunctionsExpressionTest {
     }
 
     private static DataItem newDeDataItem(String u1234567890) {
-        return new DataItem(DATA_ELEMENT, new ID(DataElementUID, u1234567890), b -> b.periodAggregation(true));
+        return new DataItem(DATA_ELEMENT, new ID(DataElementUID, u1234567890),
+                QueryModifiers.builder().periodAggregation(true).build());
     }
 }
