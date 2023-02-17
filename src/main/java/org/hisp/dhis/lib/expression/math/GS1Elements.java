@@ -1,4 +1,4 @@
-package org.hisp.dhis.lib.expression.math;
+package org.hisp.dhis.rules.gs1;
 
 /*
  * Copyright (c) 2004-2018, University of Oslo
@@ -27,6 +27,11 @@ package org.hisp.dhis.lib.expression.math;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 public enum GS1Elements {
     GS1_E0_IDENTIFIER( "]E0" ), // EAN-13, UPC-A, UPC-E
@@ -240,9 +245,24 @@ public enum GS1Elements {
         return element;
     }
 
-    public String format(String value) {
-        return GS1Formatter.format(value, this);
-    }
+    public static Set<String> GS1Identifiers = new HashSet<>(
+            Arrays.asList(
+                    GS1Elements.GS1_E0_IDENTIFIER.element,
+                    GS1Elements.GS1_E1_IDENTIFIER.element,
+                    GS1Elements.GS1_E2_IDENTIFIER.element,
+                    GS1Elements.GS1_E3_IDENTIFIER.element,
+                    GS1Elements.GS1_E4_IDENTIFIER.element,
+                    GS1Elements.GS1_I1_IDENTIFIER.element,
+                    GS1Elements.GS1_C1_IDENTIFIER.element,
+                    GS1Elements.GS1_e0_IDENTIFIER.element,
+                    GS1Elements.GS1_e1_IDENTIFIER.element,
+                    GS1Elements.GS1_e2_IDENTIFIER.element,
+                    GS1Elements.GS1_d2_IDENTIFIER.element,
+                    GS1Elements.GS1_Q3_IDENTIFIER.element,
+                    GS1Elements.GS1_J1_IDENTIFIER.element,
+                    GS1Elements.GS1_d1_IDENTIFIER.element,
+                    GS1Elements.GS1_Q1_IDENTIFIER.element
+            ));
 
     public static GS1Elements fromKey( String key )
     {
@@ -263,13 +283,29 @@ public enum GS1Elements {
             default:
                 for ( GS1Elements gs1Elements : GS1Elements.values() )
                 {
-                    if (gs1Elements.getElement().equals( key ))
+                    boolean keyIsGs1Element = gs1Elements.getElement().equals( key );
+                    boolean keyIsGs1Name = keyIsGs1Name(gs1Elements, key);
+                    if ( keyIsGs1Element || keyIsGs1Name )
                     {
                         return gs1Elements;
                     }
                 }
                 throw new IllegalArgumentException( "invalid or not supported gs1 key" );
         }
+    }
+
+    private static boolean keyIsGs1Name( GS1Elements gs1Element, String key )
+    {
+        String gs1ElementSimplified = simplifiedGS1Key( gs1Element.name() );
+        String keySimplified = simplifiedGS1Key( key );
+        return gs1ElementSimplified.equals( keySimplified );
+    }
+
+    private static String simplifiedGS1Key( String value ){
+        return value.toLowerCase()
+                .replace( " ","" )
+                .replace( "_","" )
+                .replace( "-","" );
     }
 
     public static String getApplicationIdentifier( String gs1Group )
