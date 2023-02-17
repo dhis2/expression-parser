@@ -1,4 +1,4 @@
-package org.hisp.dhis.rules.gs1;
+package org.hisp.dhis.lib.expression.math;
 
 /*
  * Copyright (c) 2004-2018, University of Oslo
@@ -27,11 +27,6 @@ package org.hisp.dhis.rules.gs1;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
 
 public enum GS1Elements {
     GS1_E0_IDENTIFIER( "]E0" ), // EAN-13, UPC-A, UPC-E
@@ -245,24 +240,9 @@ public enum GS1Elements {
         return element;
     }
 
-    public static Set<String> GS1Identifiers = new HashSet<>(
-            Arrays.asList(
-                    GS1Elements.GS1_E0_IDENTIFIER.element,
-                    GS1Elements.GS1_E1_IDENTIFIER.element,
-                    GS1Elements.GS1_E2_IDENTIFIER.element,
-                    GS1Elements.GS1_E3_IDENTIFIER.element,
-                    GS1Elements.GS1_E4_IDENTIFIER.element,
-                    GS1Elements.GS1_I1_IDENTIFIER.element,
-                    GS1Elements.GS1_C1_IDENTIFIER.element,
-                    GS1Elements.GS1_e0_IDENTIFIER.element,
-                    GS1Elements.GS1_e1_IDENTIFIER.element,
-                    GS1Elements.GS1_e2_IDENTIFIER.element,
-                    GS1Elements.GS1_d2_IDENTIFIER.element,
-                    GS1Elements.GS1_Q3_IDENTIFIER.element,
-                    GS1Elements.GS1_J1_IDENTIFIER.element,
-                    GS1Elements.GS1_d1_IDENTIFIER.element,
-                    GS1Elements.GS1_Q1_IDENTIFIER.element
-            ));
+    public String format(String value) {
+        return GS1Formatter.format(value, this);
+    }
 
     public static GS1Elements fromKey( String key )
     {
