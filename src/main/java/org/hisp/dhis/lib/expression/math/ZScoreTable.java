@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Jan Bernitt (imported into expression parser)
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-final class ZScoreTable
+public final class ZScoreTable
 {
     /**
      * @author Zubair Asghar.
@@ -36,12 +36,12 @@ final class ZScoreTable
         List<Float> sortedKeys;
     }
 
-    static final Map<Key, Entry> Z_SCORE_WFA_TABLE_GIRL = newZScoreWFATableGirl();
-    static final Map<Key, Entry> Z_SCORE_WFA_TABLE_BOY = newZScoreWFATableBoy();
-    static final Map<Key, Entry> Z_SCORE_HFA_TABLE_GIRL = newZScoreHFATableGirl();
-    static final Map<Key, Entry> Z_SCORE_HFA_TABLE_BOY = newZScoreHFATableBoy();
-    static final Map<Key, Entry> Z_SCORE_WFH_TABLE_GIRL = newZScoreWFHTableGirl();
-    static final Map<Key, Entry> Z_SCORE_WFH_TABLE_BOY = newZScoreWFHTableBoy();
+    public static final Map<Key, Entry> Z_SCORE_WFA_TABLE_GIRL = newZScoreWFATableGirl();
+    public static final Map<Key, Entry> Z_SCORE_WFA_TABLE_BOY = newZScoreWFATableBoy();
+    public static final Map<Key, Entry> Z_SCORE_HFA_TABLE_GIRL = newZScoreHFATableGirl();
+    public static final Map<Key, Entry> Z_SCORE_HFA_TABLE_BOY = newZScoreHFATableBoy();
+    public static final Map<Key, Entry> Z_SCORE_WFH_TABLE_GIRL = newZScoreWFHTableGirl();
+    public static final Map<Key, Entry> Z_SCORE_WFH_TABLE_BOY = newZScoreWFHTableBoy();
 
     private static Map<Key, Entry> newZScoreWFATableGirl()
     {
