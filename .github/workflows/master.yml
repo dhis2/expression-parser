@@ -34,6 +34,6 @@ jobs:
         with:
           nexus_username: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
           nexus_password: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
-          gpg_private_key: ${{ secrets.gpg_private_key }}
-          gpg_passphrase: ${{ secrets.gpg_passphrase }}
+          gpg_private_key: ${{ secrets.PGP_PRIVATE_KEY }}
+          gpg_passphrase: ${{ secrets.PGP_PASSPHRASE }}
           maven_profiles: "master"
