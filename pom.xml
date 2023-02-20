@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>dhis-expression-parser</artifactId>
+  <artifactId>expression-parser</artifactId>
   <packaging>jar</packaging>
   <name>DHIS Expression Parser</name>
-  <groupId>org.hisp.dhis.parser</groupId>
-  <version>1.0.1-SNAPSHOT</version>
+  <groupId>org.hisp.dhis.lib.expression</groupId>
+  <version>1.0.0-SNAPSHOT</version>
 
   <description>Expression Parser</description>
 
