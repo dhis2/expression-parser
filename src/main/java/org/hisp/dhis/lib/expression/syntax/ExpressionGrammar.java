@@ -229,6 +229,7 @@ public interface ExpressionGrammar
     {
         return ( expr, ctx ) -> {
             expr.expect(start);
+            expr.skipWS();
             ctx.beginNode( type, name );
             for ( int i = 0; i < args.length || args.length > 0 && args[args.length-1].isVarargs(); i++ )
             {
@@ -260,6 +261,7 @@ public interface ExpressionGrammar
                     ctx.endNode(NodeType.ARGUMENT);
             }
             ctx.endNode(type);
+            expr.skipWS();
             expr.expect(end);
         };
     }
