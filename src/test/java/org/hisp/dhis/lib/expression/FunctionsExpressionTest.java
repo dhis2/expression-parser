@@ -136,6 +136,35 @@ class FunctionsExpressionTest {
         assertEquals(42d, evaluate("removeZeros(42.0)"));
     }
 
+    @Test
+    void testBlockWhitespaceSingleArgs() {
+        assertEquals(false, evaluate("isNull(2)"));
+        assertEquals(false, evaluate("isNull( 2)"));
+        assertEquals(false, evaluate("isNull(2 )"));
+        assertEquals(false, evaluate("isNull( 2 )"));
+    }
+
+    @Test
+    void testBlockWhitespaceMultiArgs() {
+        assertEquals(Double.POSITIVE_INFINITY, evaluate("log(2,1)"));
+        assertEquals(Double.POSITIVE_INFINITY, evaluate("log( 2, 1)"));
+        assertEquals(Double.POSITIVE_INFINITY, evaluate("log(2 , 1 )"));
+        assertEquals(Double.POSITIVE_INFINITY, evaluate("log( 2 , 1 )"));
+    }
+
+    @Test
+    void testBlockWhitespaceVaragrs() {
+        assertNull(evaluate("firstNonNull()"));
+        assertEquals(2d, evaluate("firstNonNull(2)"));
+        assertEquals(2d, evaluate("firstNonNull( 2)"));
+        assertEquals(2d, evaluate("firstNonNull(2 )"));
+        assertEquals(2d, evaluate("firstNonNull( 2 )"));
+        assertEquals(2d, evaluate("firstNonNull(2,3)"));
+        assertEquals(2d, evaluate("firstNonNull( 2, 3)"));
+        assertEquals(2d, evaluate("firstNonNull(2 , 3 )"));
+        assertEquals(2d, evaluate("firstNonNull( 2 , 3 )"));
+    }
+
     private static Object evaluate(String expression) {
         return new Expression(expression).evaluate();
     }
