@@ -78,9 +78,13 @@ public final class Expression {
     }
 
     public Expression(String expression, Mode mode) throws ParseException {
+        this(expression, mode, false);
+    }
+
+    public Expression(String expression, Mode mode, boolean annotate) throws ParseException {
         this.mode = mode;
         this.expression = expression;
-        this.root = Parser.parse(expression, mode.fragments);
+        this.root = Parser.parse(expression, mode.fragments, annotate);
     }
 
     public Set<DataItem> collectDataItems() {

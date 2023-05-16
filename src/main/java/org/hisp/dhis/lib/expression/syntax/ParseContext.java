@@ -2,6 +2,7 @@ package org.hisp.dhis.lib.expression.syntax;
 
 import org.hisp.dhis.lib.expression.ast.Node;
 import org.hisp.dhis.lib.expression.ast.NodeType;
+import org.hisp.dhis.lib.expression.ast.Position;
 
 import java.util.function.Function;
 
@@ -19,26 +20,26 @@ public interface ParseContext extends FragmentContext
         Building the AST
      */
 
-    void beginNode(NodeType type, String value, Node.Factory create );
-    void endNode(NodeType type);
+    void beginNode(NodeType type, Position start, String value, Node.Factory create );
+    void endNode(NodeType type, Position end);
 
     /*
         Building the AST convenience methods
      */
 
-    default void beginNode(NodeType type, String value ) {
-        beginNode(type, value, null);
+    default void beginNode(NodeType type, Position start, String value ) {
+        beginNode(type, start, value, null);
     }
 
-    default void addNode(NodeType type, String value )
+    default void addNode(NodeType type, Position start, String value )
     {
-        addNode(type, value, null);
+        addNode(type, start, value, null);
     }
 
-    default void addNode(NodeType type, String value, Node.Factory create )
+    default void addNode(NodeType type, Position start, String value, Node.Factory create )
     {
-        beginNode( type, value, create );
-        endNode(type);
+        beginNode( type,start, value, create );
+        endNode(type, start == null ? null : start.offsetBy(value.length()));
     }
     default void addNode(NodeType type, Expr expr, Function<Expr, String> parse)
     {
@@ -46,9 +47,10 @@ public interface ParseContext extends FragmentContext
     }
     default void addNode(NodeType type, Node.Factory factory, Expr expr, Function<Expr, String> parse)
     {
+        Position start = expr.marker();
         int s = expr.position();
         try {
-            addNode(type, parse.apply(expr), factory);
+            addNode(type, start, parse.apply(expr), factory);
         } catch (RuntimeException ex)
         {
             expr.error(s, ex.getMessage());

@@ -2,13 +2,17 @@ package org.hisp.dhis.lib.expression.syntax;
 
 import org.hisp.dhis.lib.expression.ast.NodeType;
 import org.hisp.dhis.lib.expression.ast.Nodes;
+import org.hisp.dhis.lib.expression.ast.Position;
 import org.hisp.dhis.lib.expression.spi.ParseException;
 import org.hisp.dhis.lib.expression.syntax.Chars.CharPredicate;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.hisp.dhis.lib.expression.syntax.Chars.isUnaryOperator;
+import static org.hisp.dhis.lib.expression.syntax.Chars.isWS;
 
 /**
  * An {@link Expr} is the fundamental building block of the expression grammar.
@@ -57,8 +61,10 @@ public final class Expr implements Serializable
      * @param expr the expression to parse
      * @param ctx the parsing context to use to lookup fragments and build the AST
      */
-    public static void parse(String expr, ParseContext ctx) {
-        expr(new Expr(expr), ctx, true);
+    public static List<String> parse(String expr, ParseContext ctx, boolean annotate) {
+        Expr obj = new Expr(expr, annotate);
+        expr(obj, ctx, true);
+        return obj.wsTokens;
     }
 
     /*
@@ -82,12 +88,12 @@ public final class Expr implements Serializable
             if (c == 'a' && expr.peek("and") && !expr.peek(3, Chars::isIdentifier))
             {
                 expr.gobble(3);
-                ctx.addNode(NodeType.BINARY_OPERATOR, "and");
+                ctx.addNode(NodeType.BINARY_OPERATOR, expr.marker(), "and");
             }
             else if (c == 'o' && expr.peek("or") && !expr.peek(2, Chars::isIdentifier))
             {
                 expr.gobble(2);
-                ctx.addNode(NodeType.BINARY_OPERATOR, "or");
+                ctx.addNode(NodeType.BINARY_OPERATOR, expr.marker(), "or");
             }
             else if (Chars.isBinaryOperator(c))
             {
@@ -110,25 +116,25 @@ public final class Expr implements Serializable
         )
         { // unary operators:
             expr.gobble(c == 'n' ? 3 : 1); // unary op
-            ctx.addNode(NodeType.UNARY_OPERATOR, c == 'n' ? "not" : c+"");
+            ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), c == 'n' ? "not" : c+"");
             expr1(expr, ctx);
             return;
         }
         if (c == 'd' && expr.peek("distinct") && !expr.peek(8, Chars::isIdentifier))
         {
             expr.gobble(8);
-            ctx.addNode(NodeType.UNARY_OPERATOR, "distinct");
+            ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), "distinct");
             expr1(expr, ctx);
             return;
         }
         if ( c == '(' )
         {
-            expr.gobble();
-            ctx.beginNode(NodeType.PAR, "");
+            expr.gobble(); // (
+            ctx.beginNode(NodeType.PAR, expr.marker(-1),"");
             expr( expr, ctx );
-            ctx.endNode(NodeType.PAR);
             expr.skipWS();
             expr.expect( ')' );
+            ctx.endNode(NodeType.PAR, expr.marker());
             expr.skipWS();
             return;
         }
@@ -177,24 +183,24 @@ public final class Expr implements Serializable
         } else if (c == 'V') { // V{<name>}
             expr.gobble(); // V
             expr.expect('{');
-            ctx.beginNode(NodeType.VARIABLE, "V");
+            ctx.beginNode(NodeType.VARIABLE, expr.marker(-2),"V");
             ctx.addNode(NodeType.IDENTIFIER, expr, Literals::parseIdentifier);
-            ctx.endNode(NodeType.VARIABLE);
+            ctx.endNode(NodeType.VARIABLE, expr.marker(1));
             expr.expect('}');
         } else if (c == '"' || c == '\'') {
             // programRuleStringVariableName
-            ctx.beginNode(NodeType.VARIABLE, "");
+            ctx.beginNode(NodeType.VARIABLE, expr.marker(), "");
             ctx.addNode(NodeType.STRING, expr, Literals::parseString);
-            ctx.endNode(NodeType.VARIABLE);
+            ctx.endNode(NodeType.VARIABLE, expr.marker());
         } else if (c == 'P' && expr.peek("PS_EVENTDATE:")) {
             expr.gobble(13);
-            ctx.beginNode(NodeType.DATA_ITEM, "#");
-            ctx.beginNode(NodeType.ARGUMENT,  "0");
-            ctx.addNode(NodeType.IDENTIFIER, "PS_EVENTDATE", Nodes.TagNode::new);
+            ctx.beginNode(NodeType.DATA_ITEM, expr.marker(), "#");
+            ctx.beginNode(NodeType.ARGUMENT, expr.marker(),  "0");
+            ctx.addNode(NodeType.IDENTIFIER, expr.marker(),"PS_EVENTDATE", Nodes.TagNode::new);
             expr.skipWS();
             ctx.addNode(NodeType.UID, expr, Literals::parseUid);
-            ctx.endNode(NodeType.ARGUMENT);
-            ctx.endNode(NodeType.DATA_ITEM);
+            ctx.endNode(NodeType.ARGUMENT, expr.marker());
+            ctx.endNode(NodeType.DATA_ITEM, expr.marker());
         } else {
             expr.error("Incomplete or malformed value");
         }
@@ -224,32 +230,38 @@ public final class Expr implements Serializable
      * At this point the name has been consumed, but it is available from the extra parameter.
      */
     private static void dataItem(Expr expr, ParseContext ctx, char name) {
+        Position itemStart = expr.marker(-1);
         expr.expect('{');
+        Position rawStart = expr.marker();
         String raw = expr.rawMatch("data item", ce -> ce != '}');
         String[] parts = raw.split("\\.");
         if (Stream.of(parts).allMatch(Expr::isTaggedUidGroup)) {
-            ctx.beginNode(NodeType.DATA_ITEM, ""+name);
+            ctx.beginNode(NodeType.DATA_ITEM, itemStart, ""+name);
             // a data item with 1-3 possibly tagged UID groups
             for (int i = 0; i < parts.length; i++)
             {
                 String part = parts[i];
                 int nameEndPos = part.indexOf(':');
-                ctx.beginNode(NodeType.ARGUMENT,  ""+i);
+                ctx.beginNode(NodeType.ARGUMENT, rawStart,  ""+i);
                 if(nameEndPos > 0)
                 {
-                    ctx.addNode(NodeType.IDENTIFIER, Nodes.TagNode::new, expr, e -> part.substring(0, nameEndPos));
+                    String tag = part.substring(0, nameEndPos);
+                    ctx.addNode(NodeType.IDENTIFIER, rawStart, tag, Nodes.TagNode::new);
+                    rawStart = rawStart == null ? null : rawStart.offsetBy(tag.length()+1); //  + :
                 }
-                Stream.of(part.substring(nameEndPos+1).split("&"))
-                        .forEachOrdered(uid -> ctx.addNode(NodeType.UID, uid));
-                ctx.endNode(NodeType.ARGUMENT);
+                for (String uid : part.substring(nameEndPos+1).split("&")) {
+                    ctx.addNode(NodeType.UID, rawStart, uid);
+                    rawStart = rawStart == null ? null : rawStart.offsetBy(uid.length()+1); // + .
+                }
+                ctx.endNode(NodeType.ARGUMENT, expr.marker());
             }
-            ctx.endNode(NodeType.DATA_ITEM);
+            ctx.endNode(NodeType.DATA_ITEM, expr.marker(1)); // }
         } else if (Literals.isVarName(raw) )
         {
             // a programRuleVariableName
-            ctx.beginNode(NodeType.VARIABLE, ""+name);
-            ctx.addNode(NodeType.IDENTIFIER, raw);
-            ctx.endNode(NodeType.VARIABLE);
+            ctx.beginNode(NodeType.VARIABLE, itemStart, ""+name);
+            ctx.addNode(NodeType.IDENTIFIER, rawStart, raw);
+            ctx.endNode(NodeType.VARIABLE, expr.marker(1)); // }
         } else
         {
             expr.error("Invalid value: '"+raw+"'");
@@ -266,14 +278,28 @@ public final class Expr implements Serializable
 
     private int pos;
 
-    public Expr(String expr)
+    // whitespace recording
+    private final boolean annotate;
+    private int wsStart = -1;
+    private int wsEnd = -1;
+    private final List<String> wsTokens = new ArrayList<>();
+
+    public Expr(String expr, boolean annotate)
     {
         this.expr = expr.toCharArray();
+        this.annotate = annotate;
         this.pos = 0;
     }
 
     int position() {
         return pos;
+    }
+
+    Position marker() {
+        return !annotate ? null : marker(0);
+    }
+    Position marker(int offset) {
+        return !annotate ? null : new Position(pos+offset, wsTokens.size());
     }
 
     char peek()
@@ -322,7 +348,28 @@ public final class Expr implements Serializable
 
     void skipWS()
     {
-        skipWhile( Chars::isWS );
+        if (wsStart < 0) wsStart = pos;
+        int skipFrom = -1;
+        while (skipFrom < pos) {
+            while (pos < expr.length && isWS(expr[pos])) pos++;
+            skipFrom = pos;
+            skipComment();
+        }
+        wsEnd = pos;
+    }
+
+    void skipComment() {
+        if (peek() != '/' || !peek("/*")) return;
+        pos+=2; // gobble(2) => /*
+        char c = peek();
+        while (c != Chars.EOF) {
+            if (c == '*' && peek("*/")) {
+                pos+=2; // gobble(2); => */
+                return;
+            }
+            pos++; // gobble(); but without triggering WS tracking
+            c = peek();
+        }
     }
 
     void skipWhile( CharPredicate test )
@@ -333,13 +380,23 @@ public final class Expr implements Serializable
         }
     }
 
+    private void recordWS() {
+        if (annotate && wsStart >= 0) {
+            wsTokens.add(new String(expr, wsStart, wsEnd - wsStart));
+            wsStart = -1;
+            wsEnd = -1;
+        }
+    }
+
     void gobble()
     {
+        recordWS();
         pos++;
     }
 
     void gobble(int n)
     {
+        recordWS();
         pos += n;
     }
 

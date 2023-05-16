@@ -33,7 +33,7 @@ import static java.util.stream.Stream.concat;
  * A {@link Node} AST is a mutable data structure that is initially constructed during the parsing process.
  * Later it can be transformed using {@link #transform(BiFunction)}}.
  */
-public interface Node<T> extends Typed {
+public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * Creates a node of a specific type from a raw input value.
@@ -348,4 +348,47 @@ public interface Node<T> extends Typed {
         });
     }
 
+    /**
+     * Adds whitespace to each node based on the {@link Position} information.
+     *
+     * @param root the node that is the effective root for the provided list of whitespace tokens
+     * @param wsTokens the sequence of whitespace tokens for the entire expression
+     */
+    static void addWsTokens(Node<?> root, List<String> wsTokens) {
+        addWsTokensInternal(root, wsTokens);
+    }
+
+    private static void addWsTokensInternal(Node<?> node, List<String> wsTokens) {
+        Position start = node.getStart();
+        Position end = node.getEnd();
+        if (start == null || end == null) {
+            if (node.size() > 0) node.children().forEachOrdered(child -> addWsTokensInternal(child, wsTokens));
+            return;
+        }
+        int first = start.wsToken;
+        int last = end.wsToken;
+        int size = node.size();
+        if (size == 0) {
+            node.setWsTokens(wsTokens.subList(first, last));
+            return; // no recursion
+        }
+        List<String> nodeWs = new ArrayList<>();
+        // from start to first child:
+        Node<?> c0 = node.child(0);
+        nodeWs.addAll(wsTokens.subList(first, c0.getStart().wsToken));
+        // any between children
+        for (int i = 1; i < size; i++) {
+            Node<?> cn = node.child(i-1);
+            Node<?> cm = node.child(i);
+            nodeWs.addAll(wsTokens.subList(cn.getEnd().wsToken, cm.getStart().wsToken));
+        }
+        // any after last child
+        Node<?> ce = node.child(size-1);
+        nodeWs.addAll(wsTokens.subList(ce.getEnd().wsToken, last));
+
+        node.setWsTokens(nodeWs);
+
+        // then recursively
+        node.children().forEachOrdered(child -> addWsTokensInternal(child, wsTokens));
+    }
 }

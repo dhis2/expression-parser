@@ -128,7 +128,7 @@ public interface Fragment
     }
 
     static Fragment constant(NodeType type, String literal) {
-        Fragment token = (expr, ctx) -> ctx.addNode(type, literal);
+        Fragment token = (expr, ctx) -> ctx.addNode(type, expr.marker(), literal);
         return token.named(literal);
     }
 

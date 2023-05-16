@@ -86,6 +86,10 @@ public interface Nodes {
         final String rawValue;
         final T value;
 
+        private Position start;
+        private Position end;
+        private List<String> wsTokens = List.of();
+
         AbstractNode(NodeType type, String rawValue, Function<String, T> converter) {
             this(type, rawValue, converter, (val, ex) -> ex);
         }
@@ -103,6 +107,36 @@ public interface Nodes {
         static <E extends Enum<E>> BiFunction<String,RuntimeException,RuntimeException> rethrowAs(Class<E> valueType, Function<E,String> toText) {
             return (rawValue, ex) -> new IllegalArgumentException(format("Invalid %s option: '%s'%n\toptions are: %s",
                     valueType.getSimpleName(), rawValue, Stream.of(valueType.getEnumConstants()).map(toText).collect(toList())));
+        }
+
+        @Override
+        public void setStart(Position start) {
+            this.start = start;
+        }
+
+        @Override
+        public void setEnd(Position end) {
+            this.end = end;
+        }
+
+        @Override
+        public final void setWsTokens(List<String> wsTokens) {
+            this.wsTokens = wsTokens;
+        }
+
+        @Override
+        public final List<String> getWsTokens() {
+            return wsTokens;
+        }
+
+        @Override
+        public Position getStart() {
+            return start;
+        }
+
+        @Override
+        public Position getEnd() {
+            return end;
         }
 
         @Override

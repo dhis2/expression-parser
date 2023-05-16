@@ -1,9 +1,6 @@
 package org.hisp.dhis.lib.expression.syntax;
 
-import org.hisp.dhis.lib.expression.ast.DataItemModifier;
-import org.hisp.dhis.lib.expression.ast.NamedFunction;
-import org.hisp.dhis.lib.expression.ast.NodeType;
-import org.hisp.dhis.lib.expression.ast.Nodes;
+import org.hisp.dhis.lib.expression.ast.*;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 
 import java.util.Collection;
@@ -229,8 +226,9 @@ public interface ExpressionGrammar
     {
         return ( expr, ctx ) -> {
             expr.expect(start);
+            Position sPos = expr.marker(-1);
             expr.skipWS();
-            ctx.beginNode( type, name );
+            ctx.beginNode( type, sPos, name );
             for ( int i = 0; i < args.length || args.length > 0 && args[args.length-1].isVarargs(); i++ )
             {
                 expr.skipWS();
@@ -240,8 +238,8 @@ public interface ExpressionGrammar
                 {
                     if ( arg.isMaybe() || args[args.length-1].isVarargs() )
                     {
-                        ctx.endNode(type);
                         expr.expect(end);
+                        ctx.endNode(type, expr.marker());
                         return;
                     }
                     expr.error( "Expected more arguments: "
@@ -255,14 +253,14 @@ public interface ExpressionGrammar
                 }
                 boolean wrapInArgument = type != NodeType.VARIABLE;
                 if (wrapInArgument)
-                    ctx.beginNode( NodeType.ARGUMENT, "" + i );
+                    ctx.beginNode( NodeType.ARGUMENT, expr.marker(), "" + i );
                 arg.parse( expr, ctx );
                 if (wrapInArgument)
-                    ctx.endNode(NodeType.ARGUMENT);
+                    ctx.endNode(NodeType.ARGUMENT, expr.marker());
             }
-            ctx.endNode(type);
             expr.skipWS();
             expr.expect(end);
+            ctx.endNode(type, expr.marker());
         };
     }
 
