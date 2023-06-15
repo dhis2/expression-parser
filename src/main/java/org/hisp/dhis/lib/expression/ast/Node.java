@@ -20,10 +20,10 @@ import static java.util.stream.Stream.concat;
 
 /**
  * A node in the AST of the expression language.
- *
+ * <p>
  * Nodes of the different {@link NodeType}s are implemented in {@link Nodes} by dedicated classes
  * but used through the {@link Node} interface.
- *
+ * <p>
  * Generally there are two kinds of nodes:
  * <ul>
  *     <li>simple nodes with no children, for example numbers, strings, UIDs, ...</li>
@@ -37,7 +37,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * Creates a node of a specific type from a raw input value.
-     *
+     * <p>
      * This is used to customize the result node during the parsing process
      * by attaching a custom factory to a fragment.
      */
@@ -149,7 +149,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * Filtered aggregation.
-     *
+     * <p>
      * In place aggregation of values from the subtree of this node.
      *
      * @param init the initial aggregation value
@@ -182,6 +182,15 @@ public interface Node<T> extends Typed, NodeAnnotations {
      */
     default boolean isEmpty() {
         return size() == 0;
+    }
+
+    /**
+     * Annotated nodes also hold whitespace information.
+     *
+     * @return true, if this node has been annotated with start and end {@link Position}
+     */
+    default boolean isAnnotated() {
+        return getStart() != null && getEnd() != null;
     }
 
     /**
@@ -251,9 +260,9 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * AST transformation can change the children of nodes.
-     *
+     * <p>
      * After that children of this node have been updated the transformation is applied recursively to the remaining (new) children.
-     *
+     * <p>
      * The update function is only called for nodes which can have children.
      * It is called for such nodes even if the currently do not have any children.
      *
@@ -266,7 +275,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * Restructuring the AST by moving the operands of unary and binary operators to become child nodes of the operator.
-     *
+     * <p>
      * The transformation is done in operator precedence to assure a semantically correct result tree.
      *
      * @see #groupUnaryOperators(Node, UnaryOperator)
@@ -282,7 +291,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * Restructuring the AST by moving the affected sibling next to the unary operator into the operator as its only child node.
-     *
+     * <p>
      * If this is done in operator precedence the correct evaluation tree structure is the result.
      *
      * @param root the node to start the transformation from
@@ -314,7 +323,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * Restructures the AST by moving the siblings before and after a binary operator into the binary operator.
-     *
+     * <p>
      * If this is done in operator precedence the correct evaluation tree structure is the result.
      *
      * @param root the node to start the transformation from
@@ -346,49 +355,5 @@ public interface Node<T> extends Typed, NodeAnnotations {
             }
             return grouped;
         });
-    }
-
-    /**
-     * Adds whitespace to each node based on the {@link Position} information.
-     *
-     * @param root the node that is the effective root for the provided list of whitespace tokens
-     * @param wsTokens the sequence of whitespace tokens for the entire expression
-     */
-    static void addWsTokens(Node<?> root, List<String> wsTokens) {
-        addWsTokensInternal(root, wsTokens);
-    }
-
-    private static void addWsTokensInternal(Node<?> node, List<String> wsTokens) {
-        Position start = node.getStart();
-        Position end = node.getEnd();
-        if (start == null || end == null) {
-            if (node.size() > 0) node.children().forEachOrdered(child -> addWsTokensInternal(child, wsTokens));
-            return;
-        }
-        int first = start.wsToken;
-        int last = end.wsToken;
-        int size = node.size();
-        if (size == 0) {
-            node.setWsTokens(wsTokens.subList(first, last));
-            return; // no recursion
-        }
-        List<String> nodeWs = new ArrayList<>();
-        // from start to first child:
-        Node<?> c0 = node.child(0);
-        nodeWs.addAll(wsTokens.subList(first, c0.getStart().wsToken));
-        // any between children
-        for (int i = 1; i < size; i++) {
-            Node<?> cn = node.child(i-1);
-            Node<?> cm = node.child(i);
-            nodeWs.addAll(wsTokens.subList(cn.getEnd().wsToken, cm.getStart().wsToken));
-        }
-        // any after last child
-        Node<?> ce = node.child(size-1);
-        nodeWs.addAll(wsTokens.subList(ce.getEnd().wsToken, last));
-
-        node.setWsTokens(nodeWs);
-
-        // then recursively
-        node.children().forEachOrdered(child -> addWsTokensInternal(child, wsTokens));
     }
 }

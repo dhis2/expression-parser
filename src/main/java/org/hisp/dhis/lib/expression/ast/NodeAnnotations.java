@@ -1,13 +1,28 @@
 package org.hisp.dhis.lib.expression.ast;
 
-import java.util.List;
-
 /**
  * Optional information in a {@link Node} that is provided in a mutable way using setters.
  *
  * @author Jan Bernitt
  */
 public interface NodeAnnotations {
+
+    record Whitespace(String before, String after){
+        public static final Whitespace DEFAULT = new Whitespace("","") ;
+        public static final Whitespace NONE = new Whitespace("","") ;
+
+        public static Whitespace of(String before, String after) {
+            return before.isEmpty() && after.isEmpty() ? NONE : new Whitespace(before, after);
+        }
+
+        public String before(String ifDefault) {
+            return this == DEFAULT ? ifDefault : before();
+        }
+
+        public String after(String ifDefault) {
+            return this == DEFAULT ? ifDefault : after();
+        }
+    }
 
     /**
      * After a node has been created using beginNode and endNode the surrounding
@@ -19,14 +34,14 @@ public interface NodeAnnotations {
      * <p>
      * The whitespace can be used to realign it with generated syntax output by its index.
      *
-     * @param wsTokens list of whitespace for the node. Might contain empty strings but never {@code null}
+     * @param whitespace list of whitespace for the node. Might contain empty strings but never {@code null}
      */
-    void setWsTokens(List<String> wsTokens);
+    void setWhitespace(Whitespace whitespace);
 
     /**
      * @return The whitespace between the syntax elements of this node or an empty list if no whitespace was attached
      */
-    List<String> getWsTokens();
+    Whitespace getWhitespace();
 
     Position getStart();
 

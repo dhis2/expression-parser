@@ -16,7 +16,7 @@ import static org.hisp.dhis.lib.expression.syntax.Chars.isWS;
 
 /**
  * An {@link Expr} is the fundamental building block of the expression grammar.
- *
+ * <p>
  * Aside from the actual {@code expr} block this class also implements the data item parsing
  * as it is too irregular to express it using composition.
  *
@@ -64,6 +64,7 @@ public final class Expr implements Serializable
     public static List<String> parse(String expr, ParseContext ctx, boolean annotate) {
         Expr obj = new Expr(expr, annotate);
         expr(obj, ctx, true);
+        obj.recordWS();
         return obj.wsTokens;
     }
 
@@ -165,7 +166,7 @@ public final class Expr implements Serializable
 
     /**
      * Entry when data items are arguments to a function
-     *
+     * <p>
      * One of these:
      * <pre>
      *     #{...}
@@ -208,7 +209,7 @@ public final class Expr implements Serializable
 
     /**
      * Direct entry point when data items are found by name in/via {@code expr}.
-     *
+     * <p>
      * The name has already been consumed but through the method bound it can be recovered.
      */
     static void dataItemHash(Expr expr, ParseContext ctx) {
@@ -217,7 +218,7 @@ public final class Expr implements Serializable
 
     /**
      * Direct entry point when data items are found by name in/via {@code expr}.
-     *
+     * <p>
      * The name has already been consumed but through the method bound it can be recovered.
      */
     static void dataItemA(Expr expr, ParseContext ctx) {
@@ -226,7 +227,7 @@ public final class Expr implements Serializable
 
     /**
      * Indirect entry either from data items used top level or as function arguments.
-     *
+     * <p>
      * At this point the name has been consumed, but it is available from the extra parameter.
      */
     private static void dataItem(Expr expr, ParseContext ctx, char name) {
@@ -299,7 +300,9 @@ public final class Expr implements Serializable
         return !annotate ? null : marker(0);
     }
     Position marker(int offset) {
-        return !annotate ? null : new Position(pos+offset, wsTokens.size());
+        if (!annotate) return null;
+        recordWS();
+        return new Position(pos+offset, wsTokens.size());
     }
 
     char peek()
@@ -382,7 +385,8 @@ public final class Expr implements Serializable
 
     private void recordWS() {
         if (annotate && wsStart >= 0) {
-            wsTokens.add(new String(expr, wsStart, wsEnd - wsStart));
+            if (wsEnd - wsStart > 0)
+                wsTokens.add(new String(expr, wsStart, wsEnd - wsStart));
             wsStart = -1;
             wsEnd = -1;
         }

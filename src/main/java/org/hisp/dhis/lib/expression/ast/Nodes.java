@@ -88,7 +88,7 @@ public interface Nodes {
 
         private Position start;
         private Position end;
-        private List<String> wsTokens = List.of();
+        private Whitespace whitespace = Whitespace.DEFAULT;
 
         AbstractNode(NodeType type, String rawValue, Function<String, T> converter) {
             this(type, rawValue, converter, (val, ex) -> ex);
@@ -120,13 +120,13 @@ public interface Nodes {
         }
 
         @Override
-        public final void setWsTokens(List<String> wsTokens) {
-            this.wsTokens = wsTokens;
+        public final void setWhitespace(Whitespace whitespace) {
+            this.whitespace = whitespace;
         }
 
         @Override
-        public final List<String> getWsTokens() {
-            return wsTokens;
+        public final Whitespace getWhitespace() {
+            return whitespace;
         }
 
         @Override

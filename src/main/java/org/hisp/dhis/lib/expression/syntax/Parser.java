@@ -55,11 +55,11 @@ public final class Parser implements ParseContext {
         List<String> wsTokens = Expr.parse(expr, parser, annotate);
         Node<?> root = parser.getRoot();
         if (annotate) {
-            Node.addWsTokens(root, wsTokens);
+            Position.addWhitespace(root, wsTokens);
         }
         Nodes.propagateModifiers(root);
         Node.groupOperators(root);
-        return root.getType() == NodeType.PAR && root.size() == 1 ? root.child(0) : root;
+        return root;
     }
 
     private final Map<String, Fragment> fragmentsByName;

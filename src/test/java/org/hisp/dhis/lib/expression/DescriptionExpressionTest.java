@@ -33,9 +33,14 @@ class DescriptionExpressionTest {
     void functionsWithVariableAreRetained() {
         assertEquals("d2:hasValue(#{var})", describe("d2:hasValue(#{var})"));
         assertEquals("d2:hasValue(#{AttributeA})", describe("d2:hasValue(#{AttributeA})"));
+        assertEquals("d2:hasValue(foo)", describe("d2:hasValue(#{AttributeA})", Map.of("AttributeA", "foo")));
     }
 
     private static String describe(String expression) {
-        return new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).describe(Map.of());
+        return describe(expression, Map.of());
+    }
+
+    private static String describe(String expression, Map<String, String> displayNames) {
+        return new Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).describe(displayNames);
     }
 }

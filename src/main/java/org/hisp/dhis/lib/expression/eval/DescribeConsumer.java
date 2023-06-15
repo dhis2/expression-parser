@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 /**
- * Converts an AST back into a "normalised" {@link String} form.
+ * Converts an AST back into a "normalised" or substituted {@link String} form.
  *
  * @author Jan Bernitt
  */
@@ -50,6 +50,8 @@ class DescribeConsumer implements NodeVisitor {
     private DataItem currentDataItem;
     private int currentDataItemIdIndex;
 
+    private boolean wasRoot;
+
     public DescribeConsumer(Map<DataItem, Number> dataItemValues, Map<String, String> displayNames) {
         this.dataItemValues = dataItemValues;
         this.displayNames = displayNames;
@@ -62,21 +64,29 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitParentheses(Node<Void> group) {
-        out.append('(');
+        boolean isRoot = !wasRoot && out.isEmpty();
+        if (isRoot) wasRoot = true;
+        out.append(group.getWhitespace().before());
+        if (!isRoot) out.append('(');
         group.walkChildren(this, null);
-        out.append(')');
+        if (!isRoot) out.append(')');
+        out.append(group.getWhitespace().after());
     }
 
     @Override
     public void visitArgument(Node<Integer> argument) {
+        out.append(argument.getWhitespace().before());
         argument.walkChildren(this,
                 (c1,c2) -> out.append(c1.getType() == NodeType.UID && c2.getType() == NodeType.UID ? "&" : ""));
+        out.append(argument.getWhitespace().after());
     }
 
     @Override
     public void visitBinaryOperator(Node<BinaryOperator> operator) {
         operator.child(0).walk(this);
-        out.append(' ').append(operator.getRawValue()).append(' ');
+        out.append(operator.getWhitespace().before(" "));
+        out.append(operator.getRawValue());
+        out.append(operator.getWhitespace().after(" "));
         operator.child(1).walk(this);
     }
 
@@ -84,24 +94,29 @@ class DescribeConsumer implements NodeVisitor {
     public void visitUnaryOperator(Node<UnaryOperator> operator) {
         String rawValue = operator.getRawValue();
         boolean isWord = Character.isLetter(rawValue.charAt(0));
-        if (isWord) out.append(' ');
+        String ifDefault = isWord ? " " : "";
+        out.append(operator.getWhitespace().before(ifDefault));
         out.append(rawValue);
-        if (isWord) out.append(' ');
+        out.append(operator.getWhitespace().after(ifDefault));
         operator.child(0).walk(this);
     }
 
     @Override
     public void visitFunction(Node<NamedFunction> function) {
+        out.append(function.getWhitespace().before());
         out.append(function.getValue().getName()).append('(');
         function.walkChildren(this, (c1,c2) -> out.append(','));
         out.append(')');
+        out.append(function.getWhitespace().after());
     }
 
     @Override
     public void visitModifier(Node<DataItemModifier> modifier) {
+        out.append(modifier.getWhitespace().before());
         out.append('.').append(modifier.getValue().name()).append('(');
         modifier.walkChildren(this, (c1,c2) -> out.append(','));
         out.append(')');
+        out.append(modifier.getWhitespace().after());
     }
 
     @Override
@@ -109,11 +124,13 @@ class DescribeConsumer implements NodeVisitor {
         currentDataItemCardinality = item.size();
         currentDataItem = item.toDataItem();
         Number value = dataItemValues.get(currentDataItem);
+        out.append(item.getWhitespace().before());
         if (value != null) {
             out.append(value);
         } else {
             describeDataItem(item);
         }
+        out.append(item.getWhitespace().after());
     }
 
     private void describeDataItem(Node<DataItemType> item) {
@@ -145,10 +162,12 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitVariable(Node<VariableType> variable) {
+        out.append(variable.getWhitespace().before());
         if (!displayNames.isEmpty()) {
             String name = displayNames.get(variable.child(0).getRawValue());
             if (name != null) {
                 out.append(name);
+                out.append(variable.getWhitespace().after());
                 return;
             }
         }
@@ -163,60 +182,82 @@ class DescribeConsumer implements NodeVisitor {
             out.append('}');
         }
         visitModifiers(variable);
+        out.append(variable.getWhitespace().after());
     }
 
     @Override
     public void visitNamedValue(Node<NamedValue> value) {
+        out.append(value.getWhitespace().before());
         out.append('[').append(value.getValue().name()).append(']');
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitNumber(Node<Double> value) {
+        out.append(value.getWhitespace().before());
         out.append(value.getRawValue() );
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitInteger(Node<Integer> value) {
+        out.append(value.getWhitespace().before());
         out.append(value.getValue());
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitBoolean(Node<Boolean> value) {
+        out.append(value.getWhitespace().before());
         out.append(value.getValue());
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitNull(Node<Void> value) {
+        out.append(value.getWhitespace().before());
         out.append("null");
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitString(Node<String> value) {
+        out.append(value.getWhitespace().before());
         out.append("'").append(value.getRawValue()).append("'");
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitIdentifier(Node<?> value) {
+        out.append(value.getWhitespace().before());
         out.append(value.getRawValue());
         if (value.getValue() instanceof Tag)
             out.append(':');
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitUid(Node<String> value) {
+        out.append(value.getWhitespace().before());
         if (!displayNames.isEmpty()) {
-            ID id = new ID(currentDataItem.getType().getType(currentDataItemCardinality, currentDataItemIdIndex), value.getValue());
+            ID.Type type = currentDataItem.getType().getType(currentDataItemCardinality, currentDataItemIdIndex);
             String name = displayNames.get(value.getValue());
-            if (name != null) {
+            // FYI: The type is only checked here for consistency
+            // and to remember how the type is computed here should it be needed
+            if (name != null && type != null) {
                 out.append(name);
+                out.append(value.getWhitespace().after());
                 return;
             }
         }
         out.append(value.getValue());
+        out.append(value.getWhitespace().after());
     }
 
     @Override
     public void visitDate(Node<LocalDate> value) {
+        out.append(value.getWhitespace().before());
         out.append(value.getValue());
+        out.append(value.getWhitespace().after());
     }
 }
