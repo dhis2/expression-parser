@@ -12,11 +12,9 @@ import static org.hisp.dhis.lib.expression.ast.Typed.toBooleanTypeCoercion;
 import static org.hisp.dhis.lib.expression.ast.Typed.toNumberTypeCoercion;
 
 /**
- *
  * @author Jan Bernitt
  */
-public enum BinaryOperator implements Typed
-{
+public enum BinaryOperator implements Typed {
     // OBS!!! in order of precedence - highest to lowest
     EXP("^", ValueType.NUMBER, ValueType.NUMBER),
     // unary operators are here precedence wise
@@ -64,9 +62,12 @@ public enum BinaryOperator implements Typed
 
     static BinaryOperator fromSymbol(String symbol) {
         switch (symbol) {
-            case "and": return AND;
-            case "or": return OR;
-            default: return VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
+            case "and":
+                return AND;
+            case "or":
+                return OR;
+            default:
+                return VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
         }
     }
 
@@ -136,8 +137,7 @@ public enum BinaryOperator implements Typed
                 : asBigDecimal(left).multiply(asBigDecimal(right)).doubleValue();
     }
 
-    public static Number divide(Number left, Number right)
-    {
+    public static Number divide(Number left, Number right) {
         return isSpecialDouble(left) || isSpecialDouble(right) || right.doubleValue() == 0d
                 ? left.doubleValue() / right.doubleValue()
                 : asBigDecimal(left).divide(asBigDecimal(right), MathContext.DECIMAL64).doubleValue();
@@ -145,8 +145,8 @@ public enum BinaryOperator implements Typed
 
     public static Number modulo(Number left, Number right) {
         return isSpecialDouble(left) || isSpecialDouble(right) || right.doubleValue() == 0d
-                        ? left.doubleValue() % right.doubleValue()
-                        : asBigDecimal(left).remainder(asBigDecimal(right)).doubleValue();
+                ? left.doubleValue() % right.doubleValue()
+                : asBigDecimal(left).remainder(asBigDecimal(right)).doubleValue();
     }
 
     public static Number exp(Number base, Number exponent) {
@@ -171,7 +171,7 @@ public enum BinaryOperator implements Typed
     /**
      * Any true with null is true, any false/null mix is null.
      *
-     * @param left left-hand side of the operator, maybe null
+     * @param left  left-hand side of the operator, maybe null
      * @param right right-hand side of the operator, maybe null
      * @return arguments combined with OR, maybe null
      */
@@ -179,44 +179,39 @@ public enum BinaryOperator implements Typed
         if (left == null) {
             return right == Boolean.TRUE ? true : null;
         }
-        if (right == null)
-        {
+        if (right == null) {
             return left == Boolean.TRUE ? true : null;
         }
         return left || right;
     }
 
     public static Boolean and(Boolean left, Boolean right) {
-        return left == null || right == null ? null :  left && right;
+        return left == null || right == null ? null : left && right;
     }
 
     /*
     Comparison Operations
      */
 
-    public static boolean lessThan(Object left, Object right)
-    {
+    public static boolean lessThan(Object left, Object right) {
         return left instanceof String && right instanceof String
                 ? ((String) left).compareTo((String) right) < 0
                 : toNumberTypeCoercion(left) < toNumberTypeCoercion(right);
     }
 
-    public static boolean lessThanOrEqual(Object left, Object right)
-    {
+    public static boolean lessThanOrEqual(Object left, Object right) {
         return left instanceof String && right instanceof String
                 ? ((String) left).compareTo((String) right) <= 0
                 : toNumberTypeCoercion(left) <= toNumberTypeCoercion(right);
     }
 
-    public static boolean greaterThan(Object left, Object right)
-    {
+    public static boolean greaterThan(Object left, Object right) {
         return left instanceof String && right instanceof String
                 ? ((String) left).compareTo((String) right) > 0
                 : toNumberTypeCoercion(left) > toNumberTypeCoercion(right);
     }
 
-    public static boolean greaterThanOrEqual(Object left, Object right)
-    {
+    public static boolean greaterThanOrEqual(Object left, Object right) {
         return left instanceof String && right instanceof String
                 ? ((String) left).compareTo((String) right) >= 0
                 : toNumberTypeCoercion(left) >= toNumberTypeCoercion(right);
@@ -227,12 +222,10 @@ public enum BinaryOperator implements Typed
      */
 
     public static boolean equal(Object left, Object right) {
-        if (left == null || right == null)
-        {
+        if (left == null || right == null) {
             return left == null && right == null;
         }
-        if (left instanceof Boolean || right instanceof Boolean)
-        {
+        if (left instanceof Boolean || right instanceof Boolean) {
             return toBooleanTypeCoercion(left).equals(toBooleanTypeCoercion(right));
         }
         if (left instanceof Number || right instanceof Number) {

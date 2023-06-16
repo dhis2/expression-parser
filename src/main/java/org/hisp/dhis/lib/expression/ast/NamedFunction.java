@@ -5,8 +5,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType;
 import java.util.List;
 
 @SuppressWarnings("java:S115")
-public enum NamedFunction implements Typed
-{
+public enum NamedFunction implements Typed {
     // Base Functions
     firstNonNull("firstNonNull", ValueType.SAME, true, ValueType.SAME),
     greatest("greatest", ValueType.NUMBER, true, ValueType.NUMBER),
@@ -79,14 +78,14 @@ public enum NamedFunction implements Typed
     private final boolean isVarargs;
     private final List<ValueType> parameterTypes;
 
-    NamedFunction(String name, ValueType returnType, boolean isVarargs, ValueType...parameterTypes) {
+    NamedFunction(String name, ValueType returnType, boolean isVarargs, ValueType... parameterTypes) {
         this.name = name;
         this.returnType = returnType;
         this.isVarargs = isVarargs;
         this.parameterTypes = List.of(parameterTypes);
     }
 
-    NamedFunction(String name, ValueType returnType, ValueType...parameterTypes) {
+    NamedFunction(String name, ValueType returnType, ValueType... parameterTypes) {
         this(name, returnType, false, parameterTypes);
     }
 

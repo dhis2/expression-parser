@@ -100,9 +100,8 @@ public final class Parser implements ParseContext {
     @Override
     public void beginNode(NodeType type, Position start, String value, Node.Factory create) {
         Node.Factory f = create != null ? create : factoriesByType.get(type);
-        if (f == null)
-        {
-            throw new UnsupportedOperationException("No factory for type: "+type);
+        if (f == null) {
+            throw new UnsupportedOperationException("No factory for type: " + type);
         }
         Node<?> node = f.create(type, value);
         node.setStart(start);

@@ -24,10 +24,14 @@ public class RuleVariableValue implements VariableValue {
     @Override
     public Object valueOrDefault() {
         switch (valueType) {
-            case NUMBER: return 0d;
-            case DATE: return "2010-01-01";
-            case BOOLEAN: return false;
-            default: return "";
+            case NUMBER:
+                return 0d;
+            case DATE:
+                return "2010-01-01";
+            case BOOLEAN:
+                return false;
+            default:
+                return "";
         }
     }
 

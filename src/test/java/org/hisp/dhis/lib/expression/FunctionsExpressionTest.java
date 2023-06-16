@@ -32,7 +32,7 @@ class FunctionsExpressionTest {
 
     @Test
     void testGreatest() {
-        assertEquals(5d, evaluate("greatest(3,2.2,5.0,0.4)") );
+        assertEquals(5d, evaluate("greatest(3,2.2,5.0,0.4)"));
     }
 
     @Test
@@ -106,7 +106,7 @@ class FunctionsExpressionTest {
 
     @Test
     void testLeast() {
-        assertEquals(0.4d, evaluate("least(3,2.2,5.0,0.4)") );
+        assertEquals(0.4d, evaluate("least(3,2.2,5.0,0.4)"));
     }
 
     @Test

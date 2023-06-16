@@ -9,8 +9,7 @@ import org.hisp.dhis.lib.expression.spi.ID;
  * </pre>
  */
 @SuppressWarnings("java:S115")
-public enum Tag
-{
+public enum Tag {
     deGroup(ID.Type.DateElementGroupUID),
     coGroup(ID.Type.CategoryOptionGroupUID),
     co(ID.Type.CategoryOptionUID),

@@ -34,7 +34,7 @@ public class TNode {
         return new TNode(type, new ArrayList<>());
     }
 
-    public static TNode of (Node<?> root) {
+    public static TNode of(Node<?> root) {
         return root.map(Node::getType, TNode::new);
     }
 

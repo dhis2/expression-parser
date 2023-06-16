@@ -18,34 +18,68 @@ import java.util.function.Consumer;
  *
  * @author Jan Bernitt
  */
-public interface NodeVisitor extends Consumer<Node<?>>
-{
+public interface NodeVisitor extends Consumer<Node<?>> {
     @Override
     @SuppressWarnings("unchecked")
     default void accept(Node<?> node) {
-        switch(node.getType()) {
+        switch (node.getType()) {
             // complex nodes
-            case UNARY_OPERATOR: visitUnaryOperator((Node<UnaryOperator>) node); break;
-            case BINARY_OPERATOR: visitBinaryOperator((Node<BinaryOperator>) node); break;
-            case ARGUMENT: visitArgument((Node<Integer>) node); break;
-            case PAR: visitParentheses((Node<Void>) node); break;
-            case FUNCTION: visitFunction((Node<NamedFunction>) node); break;
-            case MODIFIER: visitModifier((Node<DataItemModifier>) node); break;
-            case DATA_ITEM: visitDataItem((Node<DataItemType>) node); break;
-            case VARIABLE: visitVariable((Node<VariableType>) node); break;
+            case UNARY_OPERATOR:
+                visitUnaryOperator((Node<UnaryOperator>) node);
+                break;
+            case BINARY_OPERATOR:
+                visitBinaryOperator((Node<BinaryOperator>) node);
+                break;
+            case ARGUMENT:
+                visitArgument((Node<Integer>) node);
+                break;
+            case PAR:
+                visitParentheses((Node<Void>) node);
+                break;
+            case FUNCTION:
+                visitFunction((Node<NamedFunction>) node);
+                break;
+            case MODIFIER:
+                visitModifier((Node<DataItemModifier>) node);
+                break;
+            case DATA_ITEM:
+                visitDataItem((Node<DataItemType>) node);
+                break;
+            case VARIABLE:
+                visitVariable((Node<VariableType>) node);
+                break;
 
             // simple nodes
-            case BOOLEAN: visitBoolean((Node<Boolean>) node); break;
-            case UID: visitUid((Node<String>) node); break;
-            case DATE: visitDate((Node<LocalDate>) node); break;
-            case NULL: visitNull((Node<Void>) node); break;
-            case NUMBER: visitNumber((Node<Double>) node); break;
-            case STRING: visitString((Node<String>) node); break;
-            case INTEGER: visitInteger((Node<Integer>) node); break;
-            case IDENTIFIER: visitIdentifier(node); break;
-            case NAMED_VALUE: visitNamedValue((Node<NamedValue>) node); break;
+            case BOOLEAN:
+                visitBoolean((Node<Boolean>) node);
+                break;
+            case UID:
+                visitUid((Node<String>) node);
+                break;
+            case DATE:
+                visitDate((Node<LocalDate>) node);
+                break;
+            case NULL:
+                visitNull((Node<Void>) node);
+                break;
+            case NUMBER:
+                visitNumber((Node<Double>) node);
+                break;
+            case STRING:
+                visitString((Node<String>) node);
+                break;
+            case INTEGER:
+                visitInteger((Node<Integer>) node);
+                break;
+            case IDENTIFIER:
+                visitIdentifier(node);
+                break;
+            case NAMED_VALUE:
+                visitNamedValue((Node<NamedValue>) node);
+                break;
 
-            default: throw new UnsupportedOperationException("Not type not supported yet: "+node.getType());
+            default:
+                throw new UnsupportedOperationException("Not type not supported yet: " + node.getType());
         }
     }
 
@@ -84,8 +118,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
     Simple nodes:
      */
 
-    default void visitNamedValue(Node<NamedValue> value)
-    {
+    default void visitNamedValue(Node<NamedValue> value) {
 
     }
 
@@ -97,23 +130,19 @@ public interface NodeVisitor extends Consumer<Node<?>>
 
     }
 
-    default void visitBoolean(Node<Boolean> value)
-    {
+    default void visitBoolean(Node<Boolean> value) {
 
     }
 
-    default void visitNull(Node<Void> value)
-    {
+    default void visitNull(Node<Void> value) {
 
     }
 
-    default void visitString(Node<String> value)
-    {
+    default void visitString(Node<String> value) {
 
     }
 
-    default void visitIdentifier(Node<?> value)
-    {
+    default void visitIdentifier(Node<?> value) {
         // identifier nodes use both enums or String values so at this point we can't say what value we got
     }
 
@@ -121,8 +150,7 @@ public interface NodeVisitor extends Consumer<Node<?>>
 
     }
 
-    default void visitDate(Node<LocalDate> value)
-    {
+    default void visitDate(Node<LocalDate> value) {
 
     }
 }

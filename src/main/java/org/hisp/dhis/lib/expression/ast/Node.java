@@ -29,7 +29,7 @@ import static java.util.stream.Stream.concat;
  *     <li>simple nodes with no children, for example numbers, strings, UIDs, ...</li>
  *     <li>complex nodes with can have children, for example operators, data items, functions, arguments</li>
  * </ul>
- *
+ * <p>
  * A {@link Node} AST is a mutable data structure that is initially constructed during the parsing process.
  * Later it can be transformed using {@link #transform(BiFunction)}}.
  */
@@ -66,7 +66,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * This node first, then its children in order recursively.
      *
      * @param visitor visitor to call for each matching node in the subtree
-     * @param filter filter to restrict visitation to subset of nodes, filtered nodes are just not passed to the provided visitor
+     * @param filter  filter to restrict visitation to subset of nodes, filtered nodes are just not passed to the provided visitor
      */
     void visit(Consumer<Node<?>> visitor, Predicate<Node<?>> filter);
 
@@ -74,7 +74,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
     /**
      * Visit a subtree but only nodes of the given {@link NodeType}.
      *
-     * @param type the type of nodes to visit in the subtree including this node
+     * @param type    the type of nodes to visit in the subtree including this node
      * @param visitor visitor to call for matching nodes
      */
     default void visit(NodeType type, Consumer<Node<?>> visitor) {
@@ -103,8 +103,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     default void walkChildren(Consumer<Node<?>> walker, BiConsumer<Node<?>, Node<?>> separator) {
         Node<?> last = null;
-        for (int i = 0; i < size(); i++)
-        {
+        for (int i = 0; i < size(); i++) {
             Node<?> child = child(i);
             if (separator != null && last != null) {
                 separator.accept(last, child);
@@ -118,8 +117,8 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * Interpretation of this node (subtree) using dynamic dispatch pattern.
      *
      * @param interpreter a interpreter function that converts this the subtree starting from this node to a value
+     * @param <R>         type of the result value
      * @return result of the node interpretation
-     * @param <R> type of the result value
      */
     default <R> R eval(Function<Node<?>, R> interpreter) {
         return interpreter.apply(this);
@@ -130,11 +129,11 @@ public interface Node<T> extends Typed, NodeAnnotations {
      *
      * @param nodeMap maps a node to the value of the target node replacement
      * @param newNode creates a new node from a value and the mapped list of children
+     * @param <N>     type of the nodes in the target tree structure
+     * @param <V>     type of the values in each node in the target tree structure
      * @return root of the mapped tree
-     * @param <N> type of the nodes in the target tree structure
-     * @param <V> type of the values in each node in the target tree structure
      */
-    default <N,V> N map(Function<Node<?>, V> nodeMap, BiFunction<V, List<N>, N> newNode ) {
+    default <N, V> N map(Function<Node<?>, V> nodeMap, BiFunction<V, List<N>, N> newNode) {
         return eval(node -> newNode.apply(nodeMap.apply(node), node.children().map(n -> n.map(nodeMap, newNode)).collect(toList())));
     }
 
@@ -152,13 +151,13 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * <p>
      * In place aggregation of values from the subtree of this node.
      *
-     * @param init the initial aggregation value
-     * @param eval evaluates each node of the subtree to a value for aggregation
-     * @param agg the function to add a non-null value to the aggregation state
+     * @param init   the initial aggregation value
+     * @param eval   evaluates each node of the subtree to a value for aggregation
+     * @param agg    the function to add a non-null value to the aggregation state
      * @param filter filter to restrict visitation to subset of nodes, filtered nodes are not evaluated nor aggregated
+     * @param <A>    type of aggregation state (result)
+     * @param <E>    type of the elements added to the aggregation state
      * @return the initial aggregation value after the aggregation, this is the same instance that probably changed internally
-     * @param <A> type of aggregation state (result)
-     * @param <E> type of the elements added to the aggregation state
      */
     default <A, E> A aggregate(A init, Function<Node<?>, E> eval, BiConsumer<A, E> agg, Predicate<Node<?>> filter) {
         visit(node -> {
@@ -198,11 +197,11 @@ public interface Node<T> extends Typed, NodeAnnotations {
      *
      * @param index the index to access
      * @return the child node at the given index
-     * @throws IndexOutOfBoundsException when there is no child at the given index
+     * @throws IndexOutOfBoundsException     when there is no child at the given index
      * @throws UnsupportedOperationException when this node cannot have children
      */
     default Node<?> child(int index) throws IndexOutOfBoundsException {
-        throw new UnsupportedOperationException("Node of type "+getType()+" cannot have children.");
+        throw new UnsupportedOperationException("Node of type " + getType() + " cannot have children.");
     }
 
     /**
@@ -216,11 +215,12 @@ public interface Node<T> extends Typed, NodeAnnotations {
 
     /**
      * Adds a child to this node.
+     *
      * @param child the child to add
      * @throws UnsupportedOperationException when this node does not support children
      */
     default Node<T> addChild(Node<?> child) {
-        throw new UnsupportedOperationException("Node of type "+getType()+" cannot have children.");
+        throw new UnsupportedOperationException("Node of type " + getType() + " cannot have children.");
     }
 
     /**
@@ -230,7 +230,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * @throws UnsupportedOperationException when this node does not support modifiers
      */
     default Node<T> addModifier(Node<?> modifier) {
-        throw new UnsupportedOperationException("Node of type "+getType()+" cannot have modifiers.");
+        throw new UnsupportedOperationException("Node of type " + getType() + " cannot have modifiers.");
     }
 
     /**
@@ -247,7 +247,9 @@ public interface Node<T> extends Typed, NodeAnnotations {
                 : concat(concat(Stream.of(item.getUid0()), item.getUid1().stream()), item.getUid2().stream());
     }
 
-    default Variable toVariable() { return null; }
+    default Variable toVariable() {
+        return null;
+    }
 
     /**
      * Iterate this node's modifiers.
@@ -268,8 +270,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
      *
      * @param transformer the children update function applied to all nodes with children
      */
-    default void transform(BiFunction<Node<?>,List<Node<?>>,List<Node<?>>> transformer)
-    {
+    default void transform(BiFunction<Node<?>, List<Node<?>>, List<Node<?>>> transformer) {
         // by default: nothing to do assuming no children exist
     }
 
@@ -278,10 +279,9 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * <p>
      * The transformation is done in operator precedence to assure a semantically correct result tree.
      *
+     * @param root the node to start the transformation from
      * @see #groupUnaryOperators(Node, UnaryOperator)
      * @see #groupBinaryOperators(Node, BinaryOperator)
-     *
-     * @param root the node to start the transformation from
      */
     static void groupOperators(Node<?> root) {
         groupBinaryOperators(root, BinaryOperator.EXP);
@@ -295,19 +295,17 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * If this is done in operator precedence the correct evaluation tree structure is the result.
      *
      * @param root the node to start the transformation from
-     * @param op the operator to transform
+     * @param op   the operator to transform
      */
-    static void groupUnaryOperators(Node<?> root, UnaryOperator op)
-    {
+    static void groupUnaryOperators(Node<?> root, UnaryOperator op) {
         root.transform((node, children) -> {
             Predicate<Node<?>> isUnary = child -> child.getValue() == op && child.isEmpty();
             if (children.stream().noneMatch(isUnary)) {
                 return children;
             }
             LinkedList<Node<?>> grouped = new LinkedList<>();
-            Node<?> operand = children.get(children.size()-1);
-            for (int i = children.size()-2; i >= 0; i--)
-            {
+            Node<?> operand = children.get(children.size() - 1);
+            for (int i = children.size() - 2; i >= 0; i--) {
                 Node<?> operator = children.get(i);
                 if (isUnary.test(operator)) {
                     operator.addChild(operand);
@@ -327,13 +325,12 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * If this is done in operator precedence the correct evaluation tree structure is the result.
      *
      * @param root the node to start the transformation from
-     * @param op the operator to transform
+     * @param op   the operator to transform
      */
     static void groupBinaryOperators(Node<?> root, BinaryOperator op) {
         root.transform((node, children) -> {
             Predicate<Node<?>> isBinary = child -> child.getValue() == op && child.isEmpty();
-            if (children.stream().noneMatch(isBinary))
-            {
+            if (children.stream().noneMatch(isBinary)) {
                 return children;
             }
             List<Node<?>> grouped = new ArrayList<>(children.size());
@@ -341,7 +338,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
             for (int i = 1; i < children.size(); i++) {
                 Node<?> operator = children.get(i);
                 if (isBinary.test(operator)) {
-                    operator.addChild(grouped.remove(grouped.size()-1)); // left
+                    operator.addChild(grouped.remove(grouped.size() - 1)); // left
                     Node<?> right = children.get(++i);
                     while (op == BinaryOperator.EXP && right.getType() == NodeType.UNARY_OPERATOR) {
                         operator.addChild(right);

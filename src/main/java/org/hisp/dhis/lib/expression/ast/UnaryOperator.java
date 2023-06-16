@@ -6,7 +6,7 @@ import java.util.List;
 
 import static java.lang.Math.negateExact;
 
-public enum UnaryOperator implements Typed{
+public enum UnaryOperator implements Typed {
 
     PLUS("+", ValueType.NUMBER),
     MINUS("-", ValueType.NUMBER),
@@ -42,8 +42,7 @@ public enum UnaryOperator implements Typed{
     }
 
     public static Number negate(Number value) {
-        if (value == null)
-        {
+        if (value == null) {
             return null;
         }
         return value instanceof Integer ? negateExact(value.intValue()) : -value.doubleValue();

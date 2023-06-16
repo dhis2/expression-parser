@@ -7,9 +7,9 @@ package org.hisp.dhis.lib.expression.ast;
  */
 public interface NodeAnnotations {
 
-    record Whitespace(String before, String after){
-        public static final Whitespace DEFAULT = new Whitespace("","") ;
-        public static final Whitespace NONE = new Whitespace("","") ;
+    record Whitespace(String before, String after) {
+        public static final Whitespace DEFAULT = new Whitespace("", "");
+        public static final Whitespace NONE = new Whitespace("", "");
 
         public static Whitespace of(String before, String after) {
             return before.isEmpty() && after.isEmpty() ? NONE : new Whitespace(before, after);

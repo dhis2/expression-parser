@@ -23,20 +23,17 @@ import java.util.Map;
  */
 class DescribeConsumer implements NodeVisitor {
 
-    public static String toNormalisedExpression(Node<?> root)
-    {
+    public static String toNormalisedExpression(Node<?> root) {
         return toValueExpression(root, Map.of());
     }
 
-    public static String toValueExpression(Node<?> root, Map<DataItem, Number> dataItemValues)
-    {
+    public static String toValueExpression(Node<?> root, Map<DataItem, Number> dataItemValues) {
         DescribeConsumer walker = new DescribeConsumer(dataItemValues, Map.of());
         root.walk(walker);
         return walker.toString();
     }
 
-    public static String toDisplayExpression(Node<?> root, Map<String, String> displayNames)
-    {
+    public static String toDisplayExpression(Node<?> root, Map<String, String> displayNames) {
         DescribeConsumer walker = new DescribeConsumer(Map.of(), displayNames);
         root.walk(walker);
         return walker.toString();
@@ -77,7 +74,7 @@ class DescribeConsumer implements NodeVisitor {
     public void visitArgument(Node<Integer> argument) {
         out.append(argument.getWhitespace().before());
         argument.walkChildren(this,
-                (c1,c2) -> out.append(c1.getType() == NodeType.UID && c2.getType() == NodeType.UID ? "&" : ""));
+                (c1, c2) -> out.append(c1.getType() == NodeType.UID && c2.getType() == NodeType.UID ? "&" : ""));
         out.append(argument.getWhitespace().after());
     }
 
@@ -105,7 +102,7 @@ class DescribeConsumer implements NodeVisitor {
     public void visitFunction(Node<NamedFunction> function) {
         out.append(function.getWhitespace().before());
         out.append(function.getValue().getName()).append('(');
-        function.walkChildren(this, (c1,c2) -> out.append(','));
+        function.walkChildren(this, (c1, c2) -> out.append(','));
         out.append(')');
         out.append(function.getWhitespace().after());
     }
@@ -114,7 +111,7 @@ class DescribeConsumer implements NodeVisitor {
     public void visitModifier(Node<DataItemModifier> modifier) {
         out.append(modifier.getWhitespace().before());
         out.append('.').append(modifier.getValue().name()).append('(');
-        modifier.walkChildren(this, (c1,c2) -> out.append(','));
+        modifier.walkChildren(this, (c1, c2) -> out.append(','));
         out.append(')');
         out.append(modifier.getWhitespace().after());
     }
@@ -140,8 +137,7 @@ class DescribeConsumer implements NodeVisitor {
             out.append(item.getValue().getSymbol());
             out.append('{');
         }
-        for (int i = 0; i < item.size(); i++)
-        {
+        for (int i = 0; i < item.size(); i++) {
             if (i > 0) out.append('.');
             currentDataItemIdIndex = i;
             item.child(i).walk(this);
@@ -187,44 +183,32 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitNamedValue(Node<NamedValue> value) {
-        out.append(value.getWhitespace().before());
-        out.append('[').append(value.getValue().name()).append(']');
-        out.append(value.getWhitespace().after());
+        appendValue(value, "[" + value.getRawValue() + "]");
     }
 
     @Override
     public void visitNumber(Node<Double> value) {
-        out.append(value.getWhitespace().before());
-        out.append(value.getRawValue() );
-        out.append(value.getWhitespace().after());
+        appendValue(value, value.getRawValue());
     }
 
     @Override
     public void visitInteger(Node<Integer> value) {
-        out.append(value.getWhitespace().before());
-        out.append(value.getValue());
-        out.append(value.getWhitespace().after());
+        appendValue(value, value.getRawValue());
     }
 
     @Override
     public void visitBoolean(Node<Boolean> value) {
-        out.append(value.getWhitespace().before());
-        out.append(value.getValue());
-        out.append(value.getWhitespace().after());
+        appendValue(value, value.getRawValue());
     }
 
     @Override
     public void visitNull(Node<Void> value) {
-        out.append(value.getWhitespace().before());
-        out.append("null");
-        out.append(value.getWhitespace().after());
+        appendValue(value, "null");
     }
 
     @Override
     public void visitString(Node<String> value) {
-        out.append(value.getWhitespace().before());
-        out.append("'").append(value.getRawValue()).append("'");
-        out.append(value.getWhitespace().after());
+        appendValue(value, "'" + value.getRawValue() + "'");
     }
 
     @Override
@@ -256,8 +240,12 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitDate(Node<LocalDate> value) {
-        out.append(value.getWhitespace().before());
-        out.append(value.getValue());
-        out.append(value.getWhitespace().after());
+        appendValue(value, value.getRawValue());
+    }
+
+    private void appendValue(Node<?> node, String value) {
+        out.append(node.getWhitespace().before());
+        out.append(value);
+        out.append(node.getWhitespace().after());
     }
 }

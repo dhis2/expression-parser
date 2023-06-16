@@ -11,8 +11,7 @@ import static java.lang.String.format;
 
 public interface Typed {
 
-    static Double toNumberTypeCoercion(Object value)
-    {
+    static Double toNumberTypeCoercion(Object value) {
         if (value == null) return null;
         if (value instanceof VariableValue) return toNumberTypeCoercion(((VariableValue) value).valueOrDefault());
         if (value instanceof Boolean) return value == Boolean.TRUE ? 1d : 0d;
@@ -20,8 +19,7 @@ public interface Typed {
         return Double.valueOf(value.toString());
     }
 
-    static Boolean toBooleanTypeCoercion(Object value)
-    {
+    static Boolean toBooleanTypeCoercion(Object value) {
         if (value == null) return null;
         if (value instanceof VariableValue) return toBooleanTypeCoercion(((VariableValue) value).valueOrDefault());
         if (value instanceof Boolean) return (Boolean) value;
@@ -39,7 +37,7 @@ public interface Typed {
         if (value instanceof VariableValue) return toDateTypeCoercion(((VariableValue) value).valueOrDefault());
         if (value instanceof LocalDate) return (LocalDate) value;
         if (value instanceof String) return LocalDate.parse((String) value);
-        if (value instanceof Date) return LocalDate.ofInstant (((Date) value).toInstant(), ZoneId.systemDefault());
+        if (value instanceof Date) return LocalDate.ofInstant(((Date) value).toInstant(), ZoneId.systemDefault());
         throw new IllegalArgumentException(format("Count not coerce to date: '%s'", value));
     }
 
@@ -54,10 +52,14 @@ public interface Typed {
         if (value instanceof VariableValue) {
             VariableValue varValue = (VariableValue) value;
             switch (varValue.valueType()) {
-                case NUMBER: return toNumberTypeCoercion(varValue.valueOrDefault());
-                case BOOLEAN: return toBooleanTypeCoercion(varValue.valueOrDefault());
-                case DATE: return toDateTypeCoercion(varValue.valueOrDefault());
-                default: return toStringTypeCoercion(varValue.valueOrDefault());
+                case NUMBER:
+                    return toNumberTypeCoercion(varValue.valueOrDefault());
+                case BOOLEAN:
+                    return toBooleanTypeCoercion(varValue.valueOrDefault());
+                case DATE:
+                    return toDateTypeCoercion(varValue.valueOrDefault());
+                default:
+                    return toStringTypeCoercion(varValue.valueOrDefault());
             }
         }
         return value;

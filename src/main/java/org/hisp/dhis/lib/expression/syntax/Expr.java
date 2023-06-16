@@ -22,20 +22,16 @@ import static org.hisp.dhis.lib.expression.syntax.Chars.isWS;
  *
  * @author Jan Bernitt
  */
-public final class Expr implements Serializable
-{
-    public void error( String desc )
-    {
+public final class Expr implements Serializable {
+    public void error(String desc) {
         error(position(), desc);
     }
 
-    public void error( int pos0, String desc )
-    {
-        throw new ParseException( formatError(pos0, this, desc) );
+    public void error(int pos0, String desc) {
+        throw new ParseException(formatError(pos0, this, desc));
     }
 
-    private static String formatError(int pos0, Expr expr, String desc )
-    {
+    private static String formatError(int pos0, Expr expr, String desc) {
         int line = 1;
         int posLine0 = 0;
         for (int p = 0; p < pos0; p++)
@@ -48,10 +44,10 @@ public final class Expr implements Serializable
         int posLineEnd = expr.pos;
         while (posLineEnd < expr.expr.length && expr.expr[posLineEnd] != '\n') posLineEnd++;
         int cutoutLength = posLineEnd - posLine0;
-        String exprCutout = new String(expr.expr, posLine0, cutoutLength );
+        String exprCutout = new String(expr.expr, posLine0, cutoutLength);
         String pointer = markLen <= 1
-                ? " ".repeat(offset0)+"^"
-                : " ".repeat(offset0)+"^"+"-".repeat(Math.max(0, markLen-2))+"^";
+                ? " ".repeat(offset0) + "^"
+                : " ".repeat(offset0) + "^" + "-".repeat(Math.max(0, markLen - 2)) + "^";
         return String.format("%s%n\tat line:%d character:%d%n\t%s%n\t%s", desc, line, offset0, exprCutout, pointer);
     }
 
@@ -59,7 +55,7 @@ public final class Expr implements Serializable
      * The root entry point to parse an expression.
      *
      * @param expr the expression to parse
-     * @param ctx the parsing context to use to lookup fragments and build the AST
+     * @param ctx  the parsing context to use to lookup fragments and build the AST
      */
     public static List<String> parse(String expr, ParseContext ctx, boolean annotate) {
         Expr obj = new Expr(expr, annotate);
@@ -79,88 +75,74 @@ public final class Expr implements Serializable
     private static void expr(Expr expr, ParseContext ctx, boolean root) {
         while (true) {
             expr1(expr, ctx);
-            while (expr.peek() == '.' && expr.peek(1, Chars::isLetter))
-            { // a dot modifier:
+            while (expr.peek() == '.' && expr.peek(1, Chars::isLetter)) { // a dot modifier:
                 expr.gobble(); // .
                 FragmentContext.lookup(expr, Literals::parseName, ctx::fragment).parse(expr, ctx);
                 expr.skipWS();
             }
             char c = expr.peek();
-            if (c == 'a' && expr.peek("and") && !expr.peek(3, Chars::isIdentifier))
-            {
+            if (c == 'a' && expr.peek("and") && !expr.peek(3, Chars::isIdentifier)) {
                 expr.gobble(3);
                 ctx.addNode(NodeType.BINARY_OPERATOR, expr.marker(), "and");
-            }
-            else if (c == 'o' && expr.peek("or") && !expr.peek(2, Chars::isIdentifier))
-            {
+            } else if (c == 'o' && expr.peek("or") && !expr.peek(2, Chars::isIdentifier)) {
                 expr.gobble(2);
                 ctx.addNode(NodeType.BINARY_OPERATOR, expr.marker(), "or");
-            }
-            else if (Chars.isBinaryOperator(c))
-            {
+            } else if (Chars.isBinaryOperator(c)) {
                 ctx.addNode(NodeType.BINARY_OPERATOR, expr, Literals::parseBinaryOp);
-            } else
-            {
+            } else {
                 if (root && expr.pos < expr.expr.length)
-                    expr.error("Unexpected input character: '"+expr.peek()+"'");
+                    expr.error("Unexpected input character: '" + expr.peek() + "'");
                 return; // no more binary operators => exit loop
             }
         }
     }
 
-    static void expr1( Expr expr, ParseContext ctx )
-    {
+    static void expr1(Expr expr, ParseContext ctx) {
         expr.skipWS();
         char c = expr.peek();
-        if ( isUnaryOperator( c ) && expr.peek(1, p -> p != '=')
+        if (isUnaryOperator(c) && expr.peek(1, p -> p != '=')
                 || c == 'n' && expr.peek("not") && !expr.peek(3, Chars::isIdentifier)
-        )
-        { // unary operators:
+        ) { // unary operators:
             expr.gobble(c == 'n' ? 3 : 1); // unary op
-            ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), c == 'n' ? "not" : c+"");
+            ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), c == 'n' ? "not" : c + "");
             expr1(expr, ctx);
             return;
         }
-        if (c == 'd' && expr.peek("distinct") && !expr.peek(8, Chars::isIdentifier))
-        {
+        if (c == 'd' && expr.peek("distinct") && !expr.peek(8, Chars::isIdentifier)) {
             expr.gobble(8);
             ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), "distinct");
             expr1(expr, ctx);
             return;
         }
-        if ( c == '(' )
-        {
+        if (c == '(') {
             expr.gobble(); // (
-            ctx.beginNode(NodeType.PAR, expr.marker(-1),"");
-            expr( expr, ctx );
+            ctx.beginNode(NodeType.PAR, expr.marker(-1), "");
+            expr(expr, ctx);
             expr.skipWS();
-            expr.expect( ')' );
+            expr.expect(')');
             ctx.endNode(NodeType.PAR, expr.marker());
             expr.skipWS();
             return;
         }
-        if (c == '[')
-        {
+        if (c == '[') {
             expr.gobble();
             ctx.addNode(NodeType.NAMED_VALUE, Nodes.NamedValueNode::new, expr, Literals::parseIdentifier);
             expr.expect(']');
             expr.skipWS();
             return;
         }
-        if (c == '\'' || c == '"')
-        { // string literal:
+        if (c == '\'' || c == '"') { // string literal:
             ctx.addNode(NodeType.STRING, expr, Literals::parseString);
             expr.skipWS();
             return;
         }
-        if (c == '.' && expr.peek(1, Chars::isDigit) || Chars.isDigit(c))
-        { // numeric literal
+        if (c == '.' && expr.peek(1, Chars::isDigit) || Chars.isDigit(c)) { // numeric literal
             ctx.addNode(NodeType.NUMBER, expr, Literals::parseNumeric);
             expr.skipWS();
             return;
         }
         // should be a named fragment then...
-        FragmentContext.lookup(expr, Literals::parseName, ctx::fragment).parse( expr, ctx );
+        FragmentContext.lookup(expr, Literals::parseName, ctx::fragment).parse(expr, ctx);
         expr.skipWS();
     }
 
@@ -184,7 +166,7 @@ public final class Expr implements Serializable
         } else if (c == 'V') { // V{<name>}
             expr.gobble(); // V
             expr.expect('{');
-            ctx.beginNode(NodeType.VARIABLE, expr.marker(-2),"V");
+            ctx.beginNode(NodeType.VARIABLE, expr.marker(-2), "V");
             ctx.addNode(NodeType.IDENTIFIER, expr, Literals::parseIdentifier);
             ctx.endNode(NodeType.VARIABLE, expr.marker(1));
             expr.expect('}');
@@ -196,8 +178,8 @@ public final class Expr implements Serializable
         } else if (c == 'P' && expr.peek("PS_EVENTDATE:")) {
             expr.gobble(13);
             ctx.beginNode(NodeType.DATA_ITEM, expr.marker(), "#");
-            ctx.beginNode(NodeType.ARGUMENT, expr.marker(),  "0");
-            ctx.addNode(NodeType.IDENTIFIER, expr.marker(),"PS_EVENTDATE", Nodes.TagNode::new);
+            ctx.beginNode(NodeType.ARGUMENT, expr.marker(), "0");
+            ctx.addNode(NodeType.IDENTIFIER, expr.marker(), "PS_EVENTDATE", Nodes.TagNode::new);
             expr.skipWS();
             ctx.addNode(NodeType.UID, expr, Literals::parseUid);
             ctx.endNode(NodeType.ARGUMENT, expr.marker());
@@ -237,43 +219,39 @@ public final class Expr implements Serializable
         String raw = expr.rawMatch("data item", ce -> ce != '}');
         String[] parts = raw.split("\\.");
         if (Stream.of(parts).allMatch(Expr::isTaggedUidGroup)) {
-            ctx.beginNode(NodeType.DATA_ITEM, itemStart, ""+name);
+            ctx.beginNode(NodeType.DATA_ITEM, itemStart, "" + name);
             // a data item with 1-3 possibly tagged UID groups
-            for (int i = 0; i < parts.length; i++)
-            {
+            for (int i = 0; i < parts.length; i++) {
                 String part = parts[i];
                 int nameEndPos = part.indexOf(':');
-                ctx.beginNode(NodeType.ARGUMENT, rawStart,  ""+i);
-                if(nameEndPos > 0)
-                {
+                ctx.beginNode(NodeType.ARGUMENT, rawStart, "" + i);
+                if (nameEndPos > 0) {
                     String tag = part.substring(0, nameEndPos);
                     ctx.addNode(NodeType.IDENTIFIER, rawStart, tag, Nodes.TagNode::new);
-                    rawStart = rawStart == null ? null : rawStart.offsetBy(tag.length()+1); //  + :
+                    rawStart = rawStart == null ? null : rawStart.offsetBy(tag.length() + 1); //  + :
                 }
-                for (String uid : part.substring(nameEndPos+1).split("&")) {
+                for (String uid : part.substring(nameEndPos + 1).split("&")) {
                     ctx.addNode(NodeType.UID, rawStart, uid);
-                    rawStart = rawStart == null ? null : rawStart.offsetBy(uid.length()+1); // + .
+                    rawStart = rawStart == null ? null : rawStart.offsetBy(uid.length() + 1); // + .
                 }
                 ctx.endNode(NodeType.ARGUMENT, expr.marker());
             }
             ctx.endNode(NodeType.DATA_ITEM, expr.marker(1)); // }
-        } else if (Literals.isVarName(raw) )
-        {
+        } else if (Literals.isVarName(raw)) {
             // a programRuleVariableName
-            ctx.beginNode(NodeType.VARIABLE, itemStart, ""+name);
+            ctx.beginNode(NodeType.VARIABLE, itemStart, "" + name);
             ctx.addNode(NodeType.IDENTIFIER, rawStart, raw);
             ctx.endNode(NodeType.VARIABLE, expr.marker(1)); // }
-        } else
-        {
-            expr.error("Invalid value: '"+raw+"'");
+        } else {
+            expr.error("Invalid value: '" + raw + "'");
         }
         expr.expect('}');
     }
 
     private static boolean isTaggedUidGroup(String str) {
-        str = str.substring(str.indexOf(':')+1); // strip tag
+        str = str.substring(str.indexOf(':') + 1); // strip tag
         return Stream.of(str.split("&")).allMatch(s -> s.equals("*") || Literals.isUid(s));
-   }
+    }
 
     private final char[] expr;
 
@@ -285,8 +263,7 @@ public final class Expr implements Serializable
     private int wsEnd = -1;
     private final List<String> wsTokens = new ArrayList<>();
 
-    public Expr(String expr, boolean annotate)
-    {
+    public Expr(String expr, boolean annotate) {
         this.expr = expr.toCharArray();
         this.annotate = annotate;
         this.pos = 0;
@@ -299,58 +276,48 @@ public final class Expr implements Serializable
     Position marker() {
         return !annotate ? null : marker(0);
     }
+
     Position marker(int offset) {
         if (!annotate) return null;
         recordWS();
-        return new Position(pos+offset, wsTokens.size());
+        return new Position(pos + offset, wsTokens.size());
     }
 
-    char peek()
-    {
+    char peek() {
         return pos >= expr.length ? Chars.EOF : expr[pos];
     }
 
-    boolean peek(int ahead, CharPredicate test)
-    {
-        return pos + ahead < expr.length && test.matches(expr[pos+ahead]);
+    boolean peek(int ahead, CharPredicate test) {
+        return pos + ahead < expr.length && test.matches(expr[pos + ahead]);
     }
 
-    boolean peek( String ahead )
-    {
-        if ( peek() != ahead.charAt( 0 ) )
-        {
+    boolean peek(String ahead) {
+        if (peek() != ahead.charAt(0)) {
             return false;
         }
-        for ( int i = 1; i < ahead.length(); i++ )
-        {
-            if ( pos + i >= expr.length || expr[pos + i] != ahead.charAt( i ) )
-            {
+        for (int i = 1; i < ahead.length(); i++) {
+            if (pos + i >= expr.length || expr[pos + i] != ahead.charAt(i)) {
                 return false;
             }
         }
         return true;
     }
 
-    void expect( char c )
-    {
-        if ( c != peek() )
-        {
-            error( "expected " + c );
+    void expect(char c) {
+        if (c != peek()) {
+            error("expected " + c);
         }
         gobble();
     }
 
-    void expect( String desc, CharPredicate test )
-    {
-        if ( !test.matches( peek() ) )
-        {
-            error( "expected " + desc );
+    void expect(String desc, CharPredicate test) {
+        if (!test.matches(peek())) {
+            error("expected " + desc);
         }
         gobble();
     }
 
-    void skipWS()
-    {
+    void skipWS() {
         if (wsStart < 0) wsStart = pos;
         int skipFrom = -1;
         while (skipFrom < pos) {
@@ -363,11 +330,11 @@ public final class Expr implements Serializable
 
     void skipComment() {
         if (peek() != '/' || !peek("/*")) return;
-        pos+=2; // gobble(2) => /*
+        pos += 2; // gobble(2) => /*
         char c = peek();
         while (c != Chars.EOF) {
             if (c == '*' && peek("*/")) {
-                pos+=2; // gobble(2); => */
+                pos += 2; // gobble(2); => */
                 return;
             }
             pos++; // gobble(); but without triggering WS tracking
@@ -375,10 +342,8 @@ public final class Expr implements Serializable
         }
     }
 
-    void skipWhile( CharPredicate test )
-    {
-        while ( peek() != Chars.EOF && test.matches( peek() ) )
-        {
+    void skipWhile(CharPredicate test) {
+        while (peek() != Chars.EOF && test.matches(peek())) {
             gobble();
         }
     }
@@ -392,22 +357,18 @@ public final class Expr implements Serializable
         }
     }
 
-    void gobble()
-    {
+    void gobble() {
         recordWS();
         pos++;
     }
 
-    void gobble(int n)
-    {
+    void gobble(int n) {
         recordWS();
         pos += n;
     }
 
-    void gobbleIf(CharPredicate test)
-    {
-        if (test.matches(peek()))
-        {
+    void gobbleIf(CharPredicate test) {
+        if (test.matches(peek())) {
             gobble();
         }
     }
@@ -419,46 +380,38 @@ public final class Expr implements Serializable
 
     /**
      * Returns the raw input between given start position and the current position
+     *
      * @param start start, equal to or before current position
      * @return raw input as string
      */
-    String raw(int start )
-    {
-        return new String( expr, start, pos - start );
+    String raw(int start) {
+        return new String(expr, start, pos - start);
     }
 
-    String rawMatch(String desc, CharPredicate test )
-    {
+    String rawMatch(String desc, CharPredicate test) {
         int s = pos;
-        skipWhile( test );
-        if ( pos == s )
-        {
-            error( "expected " + desc );
+        skipWhile(test);
+        if (pos == s) {
+            error("expected " + desc);
         }
-        return raw( s );
+        return raw(s);
     }
 
-    String rawMatch(String desc, CharPredicate... seq)
-    {
+    String rawMatch(String desc, CharPredicate... seq) {
         int s = pos;
-        for ( CharPredicate test : seq )
-        {
-            if ( !test.matches( peek() ) )
-            {
-                error( "expected " + desc );
+        for (CharPredicate test : seq) {
+            if (!test.matches(peek())) {
+                error("expected " + desc);
             }
             gobble();
         }
-        return raw( s );
+        return raw(s);
     }
 
-    String rawMatch(String desc, String expected )
-    {
-        for ( int i = 0; i < expected.length(); i++ )
-        {
-            if ( peek() != expected.charAt( i ) )
-            {
-                error( "expected " + desc );
+    String rawMatch(String desc, String expected) {
+        for (int i = 0; i < expected.length(); i++) {
+            if (peek() != expected.charAt(i)) {
+                error("expected " + desc);
             }
             gobble();
         }

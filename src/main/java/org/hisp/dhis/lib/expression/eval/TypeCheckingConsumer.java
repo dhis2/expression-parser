@@ -86,9 +86,8 @@ final class TypeCheckingConsumer implements NodeVisitor {
             return; // has no SAME in the signature
         }
         ValueType same = null;
-        for (int i = 0; i < fn.size(); i++)
-        {
-            ValueType expected = expectedTypes.get(Math.min(expectedTypes.size()-1, i));
+        for (int i = 0; i < fn.size(); i++) {
+            ValueType expected = expectedTypes.get(Math.min(expectedTypes.size() - 1, i));
             if (expected.isSame()) {
                 Node<?> arg = fn.child(i);
                 ValueType actual = arg.getValueType();
@@ -97,7 +96,7 @@ final class TypeCheckingConsumer implements NodeVisitor {
                 } else if (actual != same) {
                     boolean possiblySame = actual.isMaybeAssignableTo(same);
                     String indexes = IntStream.range(0, expectedTypes.size())
-                            .filter(j -> expectedTypes.get(j).isSame()).mapToObj(j -> (j+1)+".")
+                            .filter(j -> expectedTypes.get(j).isSame()).mapToObj(j -> (j + 1) + ".")
                             .collect(joining(" and "));
                     issues.addIssue(possiblySame, fn,
                             format("The argument types of parameters %s must be of the same type but were: %s, %s",
@@ -109,12 +108,11 @@ final class TypeCheckingConsumer implements NodeVisitor {
     }
 
     private void checkArgumentTypesAreAssignable(Node<?> node, List<ValueType> expectedTypes) {
-        for (int i = 0; i < node.size(); i++)
-        {
+        for (int i = 0; i < node.size(); i++) {
             Node<?> argument = node.child(i);
             ValueType actual = argument.getValueType();
             ValueType expected = i >= expectedTypes.size()
-                    ? expectedTypes.get(expectedTypes.size()-1)
+                    ? expectedTypes.get(expectedTypes.size() - 1)
                     : expectedTypes.get(i);
             checkArgumentTypeIsAssignable(node, argument, expected, actual);
         }
@@ -147,11 +145,17 @@ final class TypeCheckingConsumer implements NodeVisitor {
     private Consumer<Node<?>> evalTo(ValueType expected) {
         EvaluateFunction eval = new EvaluateFunction(null, null);
         switch (expected) {
-            case STRING: return eval::evalToString;
-            case DATE: return eval::evalToDate;
-            case BOOLEAN: return eval::evalToBoolean;
-            case NUMBER: return eval::evalToNumber;
-            default: return node -> {}; // we can't tell
+            case STRING:
+                return eval::evalToString;
+            case DATE:
+                return eval::evalToDate;
+            case BOOLEAN:
+                return eval::evalToBoolean;
+            case NUMBER:
+                return eval::evalToNumber;
+            default:
+                return node -> {
+                }; // we can't tell
         }
     }
 

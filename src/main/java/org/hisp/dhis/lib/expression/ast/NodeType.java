@@ -1,7 +1,6 @@
 package org.hisp.dhis.lib.expression.ast;
 
-public enum NodeType
-{
+public enum NodeType {
     // complex nodes
     PAR,
     ARGUMENT,
@@ -20,7 +19,7 @@ public enum NodeType
      * <pre>
      * VARIABLE => IDENTIFIER
      * </pre>
-     *
+     * <p>
      * 2. A program rule variable name string
      * <pre>
      * VARIABLE => STRING

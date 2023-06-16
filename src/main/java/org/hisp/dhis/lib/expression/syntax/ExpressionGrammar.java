@@ -1,6 +1,10 @@
 package org.hisp.dhis.lib.expression.syntax;
 
-import org.hisp.dhis.lib.expression.ast.*;
+import org.hisp.dhis.lib.expression.ast.DataItemModifier;
+import org.hisp.dhis.lib.expression.ast.NamedFunction;
+import org.hisp.dhis.lib.expression.ast.NodeType;
+import org.hisp.dhis.lib.expression.ast.Nodes;
+import org.hisp.dhis.lib.expression.ast.Position;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 
 import java.util.Collection;
@@ -13,24 +17,23 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 
 /**
  * Declaration of the DHIS2 expression language.
- *
+ * <p>
  * The language is composed out of {@link Terminal}s and named {@link Fragment}s.
  *
  * @author Jan Bernitt
  */
 @SuppressWarnings("java:S2386")
-public interface ExpressionGrammar
-{
+public interface ExpressionGrammar {
     /*
     Terminals (simple building blocks)
      */
 
     Terminal
-            STRING     = () -> NodeType.STRING,
-            INTEGER    = () -> NodeType.INTEGER,
-            UID        = () -> NodeType.UID,
+            STRING = () -> NodeType.STRING,
+            INTEGER = () -> NodeType.INTEGER,
+            UID = () -> NodeType.UID,
             IDENTIFIER = () -> NodeType.IDENTIFIER,
-            DATE       = () -> NodeType.DATE;
+            DATE = () -> NodeType.DATE;
 
     /*
     Essential composed building blocks
@@ -46,94 +49,94 @@ public interface ExpressionGrammar
     Production Rules
      */
 
-    Fragment STAGE_OFFSET = mod( DataItemModifier.stageOffset, INTEGER);
-    Fragment MAX_DATE = mod( DataItemModifier.maxDate, DATE);
-    Fragment MIN_DATE = mod( DataItemModifier.minDate, DATE);
-    Fragment AGGREGATION_TYPE = mod( DataItemModifier.aggregationType, IDENTIFIER.as(Nodes.AggregationTypeNode::new) );
-    Fragment PERIOD_OFFSET = mod( DataItemModifier.periodOffset, INTEGER);
-    Fragment YEAR_TO_DATE = mod( DataItemModifier.yearToDate);
+    Fragment STAGE_OFFSET = mod(DataItemModifier.stageOffset, INTEGER);
+    Fragment MAX_DATE = mod(DataItemModifier.maxDate, DATE);
+    Fragment MIN_DATE = mod(DataItemModifier.minDate, DATE);
+    Fragment AGGREGATION_TYPE = mod(DataItemModifier.aggregationType, IDENTIFIER.as(Nodes.AggregationTypeNode::new));
+    Fragment PERIOD_OFFSET = mod(DataItemModifier.periodOffset, INTEGER);
+    Fragment YEAR_TO_DATE = mod(DataItemModifier.yearToDate);
 
-    Fragment SUB_EXPRESSION = fn( NamedFunction.subExpression , expr );
+    Fragment SUB_EXPRESSION = fn(NamedFunction.subExpression, expr);
 
     List<Fragment> CommonFunctions = List.of( // (alphabetical)
-            fn( NamedFunction.firstNonNull , expr.plus() ),
-            fn( NamedFunction.greatest , expr.plus() ),
-            fn( NamedFunction.ifThenElse , expr, expr, expr ),
-            fn( NamedFunction.isNotNull , expr ),
-            fn( NamedFunction.isNull , expr ),
-            fn( NamedFunction.least , expr.plus() ),
-            fn( NamedFunction.log , expr, expr.maybe() ),
-            fn( NamedFunction.log10 , expr ),
-            fn( NamedFunction.removeZeros , expr )
+            fn(NamedFunction.firstNonNull, expr.plus()),
+            fn(NamedFunction.greatest, expr.plus()),
+            fn(NamedFunction.ifThenElse, expr, expr, expr),
+            fn(NamedFunction.isNotNull, expr),
+            fn(NamedFunction.isNull, expr),
+            fn(NamedFunction.least, expr.plus()),
+            fn(NamedFunction.log, expr, expr.maybe()),
+            fn(NamedFunction.log10, expr),
+            fn(NamedFunction.removeZeros, expr)
     );
 
     List<Fragment> ValidationRuleFunctions = List.of(
-            fn( NamedFunction.orgUnit_ancestor , UID.plus() ),
-            fn( NamedFunction.orgUnit_dataSet , UID.plus() ),
-            fn( NamedFunction.orgUnit_group , UID.plus() ),
-            fn( NamedFunction.orgUnit_program , UID.plus() )
+            fn(NamedFunction.orgUnit_ancestor, UID.plus()),
+            fn(NamedFunction.orgUnit_dataSet, UID.plus()),
+            fn(NamedFunction.orgUnit_group, UID.plus()),
+            fn(NamedFunction.orgUnit_program, UID.plus())
     );
 
     List<Fragment> CommonAggregationFunctions = List.of(
-            fn( NamedFunction.avg, expr ),
-            fn( NamedFunction.count, expr),
-            fn( NamedFunction.max , expr ),
-            fn( NamedFunction.min , expr ),
-            fn( NamedFunction.stddev , expr ),
-            fn( NamedFunction.sum , expr )
+            fn(NamedFunction.avg, expr),
+            fn(NamedFunction.count, expr),
+            fn(NamedFunction.max, expr),
+            fn(NamedFunction.min, expr),
+            fn(NamedFunction.stddev, expr),
+            fn(NamedFunction.sum, expr)
     );
 
     List<Fragment> PredictorAggregationFunctions = List.of( // (alphabetical)
-            fn( NamedFunction.median , expr ),
-            fn( NamedFunction.percentileCont , expr, expr ),
-            fn( NamedFunction.stddevPop , expr ),
-            fn( NamedFunction.stddevSamp , expr ),
-            fn( NamedFunction.variance , expr )
+            fn(NamedFunction.median, expr),
+            fn(NamedFunction.percentileCont, expr, expr),
+            fn(NamedFunction.stddevPop, expr),
+            fn(NamedFunction.stddevSamp, expr),
+            fn(NamedFunction.variance, expr)
     );
 
     List<Fragment> CommonD2Functions = List.of( // (alphabetical)
-            fn( NamedFunction.d2_count , dataItem),
-            fn( NamedFunction.d2_countIfValue , dataItem, expr ),
-            fn( NamedFunction.d2_daysBetween , expr, expr ),
-            fn( NamedFunction.d2_hasValue , dataItem),
-            fn( NamedFunction.d2_maxValue , dataItem),
-            fn( NamedFunction.d2_minValue , dataItem),
-            fn( NamedFunction.d2_monthsBetween , expr, expr ),
-            fn( NamedFunction.d2_oizp , expr ),
-            fn( NamedFunction.d2_weeksBetween , expr, expr ),
-            fn( NamedFunction.d2_yearsBetween , expr, expr ),
-            fn( NamedFunction.d2_zing , expr ),
-            fn( NamedFunction.d2_zpvc , expr.plus() )
+            fn(NamedFunction.d2_count, dataItem),
+            fn(NamedFunction.d2_countIfValue, dataItem, expr),
+            fn(NamedFunction.d2_daysBetween, expr, expr),
+            fn(NamedFunction.d2_hasValue, dataItem),
+            fn(NamedFunction.d2_maxValue, dataItem),
+            fn(NamedFunction.d2_minValue, dataItem),
+            fn(NamedFunction.d2_monthsBetween, expr, expr),
+            fn(NamedFunction.d2_oizp, expr),
+            fn(NamedFunction.d2_weeksBetween, expr, expr),
+            fn(NamedFunction.d2_yearsBetween, expr, expr),
+            fn(NamedFunction.d2_zing, expr),
+            fn(NamedFunction.d2_zpvc, expr.plus())
     );
 
     List<Fragment> RuleEngineD2Functions = List.of(
-            fn( NamedFunction.d2_addDays , expr, expr ),
-            fn( NamedFunction.d2_ceil , expr ),
-            fn( NamedFunction.d2_concatenate , expr.plus() ),
-            fn( NamedFunction.d2_countIfZeroPos , dataItem),
-            fn( NamedFunction.d2_extractDataMatrixValue , expr, expr ),
-            fn( NamedFunction.d2_floor, expr ),
-            fn( NamedFunction.d2_hasUserRole , expr ),
-            fn( NamedFunction.d2_inOrgUnitGroup , expr ),
-            fn( NamedFunction.d2_lastEventDate , expr ),
-            fn( NamedFunction.d2_left , expr, expr ),
-            fn( NamedFunction.d2_length , expr ),
-            fn( NamedFunction.d2_modulus , expr, expr ),
-            fn( NamedFunction.d2_right , expr, expr ),
-            fn( NamedFunction.d2_round , expr, INTEGER.maybe() ),
-            fn( NamedFunction.d2_split , expr, expr, expr ),
-            fn( NamedFunction.d2_substring , expr, expr, expr ),
-            fn( NamedFunction.d2_validatePattern , expr, expr ),
-            fn( NamedFunction.d2_zScoreHFA , expr, expr, expr ),
-            fn( NamedFunction.d2_zScoreWFA , expr, expr, expr ),
-            fn( NamedFunction.d2_zScoreWFH , expr, expr, expr )
+            fn(NamedFunction.d2_addDays, expr, expr),
+            fn(NamedFunction.d2_ceil, expr),
+            fn(NamedFunction.d2_concatenate, expr.plus()),
+            fn(NamedFunction.d2_countIfZeroPos, dataItem),
+            fn(NamedFunction.d2_extractDataMatrixValue, expr, expr),
+            fn(NamedFunction.d2_floor, expr),
+            fn(NamedFunction.d2_hasUserRole, expr),
+            fn(NamedFunction.d2_inOrgUnitGroup, expr),
+            fn(NamedFunction.d2_lastEventDate, expr),
+            fn(NamedFunction.d2_left, expr, expr),
+            fn(NamedFunction.d2_length, expr),
+            fn(NamedFunction.d2_modulus, expr, expr),
+            fn(NamedFunction.d2_right, expr, expr),
+            fn(NamedFunction.d2_round, expr, INTEGER.maybe()),
+            fn(NamedFunction.d2_split, expr, expr, expr),
+            fn(NamedFunction.d2_substring, expr, expr, expr),
+            fn(NamedFunction.d2_validatePattern, expr, expr),
+            fn(NamedFunction.d2_zScoreHFA, expr, expr, expr),
+            fn(NamedFunction.d2_zScoreWFA, expr, expr, expr),
+            fn(NamedFunction.d2_zScoreWFH, expr, expr, expr)
     );
 
     List<Fragment> ProgramIndicatorD2Functions = List.of(
-            fn( NamedFunction.d2_condition , STRING, expr, expr ),
-            fn( NamedFunction.d2_countIfCondition , expr, STRING),
-            fn( NamedFunction.d2_minutesBetween , expr, expr ),
-            fn( NamedFunction.d2_relationshipCount , UID.quoted().maybe() )
+            fn(NamedFunction.d2_condition, STRING, expr, expr),
+            fn(NamedFunction.d2_countIfCondition, expr, STRING),
+            fn(NamedFunction.d2_minutesBetween, expr, expr),
+            fn(NamedFunction.d2_relationshipCount, UID.quoted().maybe())
     );
 
     List<Fragment> CommonConstants = List.of(
@@ -152,7 +155,7 @@ public interface ExpressionGrammar
     Fragment N_BRACE = item(DataItemType.INDICATOR, UID);
     Fragment V_BRACE = variable(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.as(Nodes.ProgramVariableNode::new));
 
-    List<Fragment> CommonDataItems = List.of( HASH_BRACE, A_BRACE, C_BRACE, D_BRACE, I_BRACE, R_BRACE, OUG_BRACE );
+    List<Fragment> CommonDataItems = List.of(HASH_BRACE, A_BRACE, C_BRACE, D_BRACE, I_BRACE, R_BRACE, OUG_BRACE);
 
     /*
     Modes
@@ -198,52 +201,44 @@ public interface ExpressionGrammar
     Block expressions
      */
 
-    static Fragment mod(DataItemModifier modifier, Fragment... args )
-    {
+    static Fragment mod(DataItemModifier modifier, Fragment... args) {
         String name = modifier.name();
-        return block( NodeType.MODIFIER, name, '(',',', ')', args ).named(name);
+        return block(NodeType.MODIFIER, name, '(', ',', ')', args).named(name);
     }
 
-    static Fragment fn(NamedFunction function, Fragment... args )
-    {
+    static Fragment fn(NamedFunction function, Fragment... args) {
         String name = function.getName();
-        return block( NodeType.FUNCTION, name, '(',',', ')', args ).named(name);
+        return block(NodeType.FUNCTION, name, '(', ',', ')', args).named(name);
     }
 
-    static Fragment item(DataItemType value, Fragment... args)
-    {
+    static Fragment item(DataItemType value, Fragment... args) {
         String symbol = value.getSymbol();
-        return block(NodeType.DATA_ITEM, symbol, '{', '.','}', args).named(symbol);
+        return block(NodeType.DATA_ITEM, symbol, '{', '.', '}', args).named(symbol);
     }
 
-    static Fragment variable(DataItemType value, Fragment... args)
-    {
+    static Fragment variable(DataItemType value, Fragment... args) {
         String symbol = value.getSymbol();
-        return block(NodeType.VARIABLE, symbol, '{', '.','}', args).named(symbol);
+        return block(NodeType.VARIABLE, symbol, '{', '.', '}', args).named(symbol);
     }
 
-    static Fragment block(NodeType type, String name, char start, char argsSeparator, char end, Fragment... args )
-    {
-        return ( expr, ctx ) -> {
+    static Fragment block(NodeType type, String name, char start, char argsSeparator, char end, Fragment... args) {
+        return (expr, ctx) -> {
             expr.expect(start);
             Position sPos = expr.marker(-1);
             expr.skipWS();
-            ctx.beginNode( type, sPos, name );
-            for ( int i = 0; i < args.length || args.length > 0 && args[args.length-1].isVarargs(); i++ )
-            {
+            ctx.beginNode(type, sPos, name);
+            for (int i = 0; i < args.length || args.length > 0 && args[args.length - 1].isVarargs(); i++) {
                 expr.skipWS();
-                Fragment arg = args[Math.min(i, args.length-1)];
+                Fragment arg = args[Math.min(i, args.length - 1)];
                 char c = expr.peek();
-                if ( c == end )
-                {
-                    if ( arg.isMaybe() || args[args.length-1].isVarargs() )
-                    {
+                if (c == end) {
+                    if (arg.isMaybe() || args[args.length - 1].isVarargs()) {
                         expr.expect(end);
                         ctx.endNode(type, expr.marker());
                         return;
                     }
-                    expr.error( "Expected more arguments: "
-                            + Stream.of(args).skip(i).map(a -> a.name() == null ? "?" : a.name()).collect(joining(",")) );
+                    expr.error("Expected more arguments: "
+                            + Stream.of(args).skip(i).map(a -> a.name() == null ? "?" : a.name()).collect(joining(",")));
                 }
                 if (i > 0) {
                     if (c != argsSeparator)
@@ -253,8 +248,8 @@ public interface ExpressionGrammar
                 }
                 boolean wrapInArgument = type != NodeType.VARIABLE;
                 if (wrapInArgument)
-                    ctx.beginNode( NodeType.ARGUMENT, expr.marker(), "" + i );
-                arg.parse( expr, ctx );
+                    ctx.beginNode(NodeType.ARGUMENT, expr.marker(), "" + i);
+                arg.parse(expr, ctx);
                 if (wrapInArgument)
                     ctx.endNode(NodeType.ARGUMENT, expr.marker());
             }

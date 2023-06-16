@@ -32,10 +32,10 @@ public interface Nodes {
     static void supplySubExpressionSQL(Node<?> root) {
         root.transform((node, children) -> {
             if (node.getValue() == NamedFunction.subExpression) {
-                children.forEach(child -> child.visit(NodeType.DATA_ITEM, modified ->  modified
+                children.forEach(child -> child.visit(NodeType.DATA_ITEM, modified -> modified
                         .addModifier(new ModifierNode(NodeType.MODIFIER, DataItemModifier.subExpression.name())
                                 .addChild(new ArgumentNode(NodeType.ARGUMENT, "0")
-                                        .addChild(new TextNode(NodeType.STRING,"@"+System.identityHashCode(node)))))));
+                                        .addChild(new TextNode(NodeType.STRING, "@" + System.identityHashCode(node)))))));
             }
             return children;
         });
@@ -66,7 +66,7 @@ public interface Nodes {
                 Node<?> maybeModifier = children.get(i);
                 if (maybeModifier.getType() == NodeType.MODIFIER) {
                     // go back 1 (or more if node before is a modifier)
-                    int target = i-1;
+                    int target = i - 1;
                     while (target >= 0 && children.get(target).getType() == NodeType.MODIFIER) target--;
                     if (target >= 0) {
                         Consumer<Node<?>> addModifier = modified -> modified.addModifier(maybeModifier);
@@ -94,17 +94,17 @@ public interface Nodes {
             this(type, rawValue, converter, (val, ex) -> ex);
         }
 
-        AbstractNode(NodeType type, String rawValue, Function<String, T> converter, BiFunction<String,RuntimeException,RuntimeException> rethrowAs) {
+        AbstractNode(NodeType type, String rawValue, Function<String, T> converter, BiFunction<String, RuntimeException, RuntimeException> rethrowAs) {
             this.type = type;
             this.rawValue = rawValue;
             try {
                 this.value = converter.apply(rawValue);
             } catch (RuntimeException ex) {
-                throw rethrowAs.apply(rawValue,ex);
+                throw rethrowAs.apply(rawValue, ex);
             }
         }
 
-        static <E extends Enum<E>> BiFunction<String,RuntimeException,RuntimeException> rethrowAs(Class<E> valueType, Function<E,String> toText) {
+        static <E extends Enum<E>> BiFunction<String, RuntimeException, RuntimeException> rethrowAs(Class<E> valueType, Function<E, String> toText) {
             return (rawValue, ex) -> new IllegalArgumentException(format("Invalid %s option: '%s'%n\toptions are: %s",
                     valueType.getSimpleName(), rawValue, Stream.of(valueType.getEnumConstants()).map(toText).collect(toList())));
         }
@@ -150,8 +150,7 @@ public interface Nodes {
         }
 
         @Override
-        public final T getValue()
-        {
+        public final T getValue() {
             return value;
         }
 
@@ -209,7 +208,7 @@ public interface Nodes {
         }
 
         @Override
-        public final void transform(BiFunction<Node<?>,List<Node<?>>,List<Node<?>>> transformer) {
+        public final void transform(BiFunction<Node<?>, List<Node<?>>, List<Node<?>>> transformer) {
             children = transformer.apply(this, children);
             children.forEach(c -> c.transform(transformer));
         }
@@ -224,7 +223,7 @@ public interface Nodes {
         final void toString(StringBuilder str, String indent) {
             super.toString(str, indent);
             for (Node<?> c : children)
-                ((AbstractNode<?>)c).toString(str, indent+"  ");
+                ((AbstractNode<?>) c).toString(str, indent + "  ");
         }
     }
 
@@ -308,15 +307,31 @@ public interface Nodes {
             java.util.function.BinaryOperator<Integer> sum = (a, b) -> a == null ? b : a + b;
             modifiers.forEach(mod -> {
                 Supplier<Object> value = () -> mod.child(0).child(0).getValue();
-                switch ((DataItemModifier)mod.getValue()) {
-                    case aggregationType: mods.aggregationType( (AggregationType) value.get()); break;
-                    case maxDate: mods.maxDate((LocalDate) value.get()); break;
-                    case minDate: mods.minDate( (LocalDate) value.get()); break;
-                    case periodOffset: mods.periodOffset(sum.apply(mods.build().getPeriodOffset(), (Integer) value.get())); break;
-                    case stageOffset: mods.stageOffset(sum.apply(mods.build().getStageOffset(), (Integer) value.get())); break;
-                    case yearToDate: mods.yearToDate( true); break;
-                    case periodAggregation: mods.periodAggregation(true); break;
-                    case subExpression: mods.subExpression((String) value.get()); break;
+                switch ((DataItemModifier) mod.getValue()) {
+                    case aggregationType:
+                        mods.aggregationType((AggregationType) value.get());
+                        break;
+                    case maxDate:
+                        mods.maxDate((LocalDate) value.get());
+                        break;
+                    case minDate:
+                        mods.minDate((LocalDate) value.get());
+                        break;
+                    case periodOffset:
+                        mods.periodOffset(sum.apply(mods.build().getPeriodOffset(), (Integer) value.get()));
+                        break;
+                    case stageOffset:
+                        mods.stageOffset(sum.apply(mods.build().getStageOffset(), (Integer) value.get()));
+                        break;
+                    case yearToDate:
+                        mods.yearToDate(true);
+                        break;
+                    case periodAggregation:
+                        mods.periodAggregation(true);
+                        break;
+                    case subExpression:
+                        mods.subExpression((String) value.get());
+                        break;
                 }
             });
             return mods.build();
@@ -348,7 +363,7 @@ public interface Nodes {
                 Node<?> arg = child(i);
                 Node<?> argC0 = arg.child(0);
                 ID.Type type = argC0.getType() == NodeType.IDENTIFIER && argC0.getValue() instanceof Tag
-                        ? ((Tag)argC0.getValue()).getIdType()
+                        ? ((Tag) argC0.getValue()).getIdType()
                         : itemType.getType(size(), i);
                 List<ID> ids = arg.children()
                         .filter(n -> n.getType() == NodeType.UID)
@@ -434,17 +449,28 @@ public interface Nodes {
                 if (c == '\\') {
                     c = chars[++i];
                     if (c == 'u') {
-                        str.appendCodePoint(parseInt(new String(new char[] { chars[++i], chars[++i], chars[++i], chars[++i]}), 16));
+                        str.appendCodePoint(parseInt(new String(new char[]{chars[++i], chars[++i], chars[++i], chars[++i]}), 16));
                     } else if (c >= '0' && c <= '9') {
-                        str.appendCodePoint(parseInt(new String(new char[] { chars[++i], chars[++i], chars[++i] }), 8));
+                        str.appendCodePoint(parseInt(new String(new char[]{chars[++i], chars[++i], chars[++i]}), 8));
                     } else {
                         switch (c) {
-                            case 'b': str.append('\b'); break;
-                            case 't': str.append('\t'); break;
-                            case 'n': str.append('\n'); break;
-                            case 'f': str.append('\f'); break;
-                            case 'r': str.append('\r'); break;
-                            default: str.append(c); // this is the escaped character
+                            case 'b':
+                                str.append('\b');
+                                break;
+                            case 't':
+                                str.append('\t');
+                                break;
+                            case 'n':
+                                str.append('\n');
+                                break;
+                            case 'f':
+                                str.append('\f');
+                                break;
+                            case 'r':
+                                str.append('\r');
+                                break;
+                            default:
+                                str.append(c); // this is the escaped character
                         }
                     }
                 } else {
@@ -482,7 +508,7 @@ public interface Nodes {
 
     final class BooleanNode extends SimpleNode<Boolean> {
 
-        public  BooleanNode(NodeType type, String rawValue) {
+        public BooleanNode(NodeType type, String rawValue) {
             super(type, rawValue, Boolean::valueOf);
         }
 
@@ -494,7 +520,7 @@ public interface Nodes {
 
     final class NumberNode extends SimpleNode<Double> {
 
-        public  NumberNode(NodeType type, String rawValue) {
+        public NumberNode(NodeType type, String rawValue) {
             super(type, rawValue, Double::valueOf);
         }
 
@@ -554,8 +580,7 @@ public interface Nodes {
         }
     }
 
-    final class NamedValueNode extends SimpleNode<NamedValue>
-    {
+    final class NamedValueNode extends SimpleNode<NamedValue> {
         public NamedValueNode(NodeType type, String rawValue) {
             super(type, rawValue, NamedValue::valueOf, rethrowAs(NamedValue.class, NamedValue::name));
         }
