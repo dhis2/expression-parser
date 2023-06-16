@@ -6,28 +6,37 @@ public interface Literals {
 
     static String parse(Expr expr, NodeType type) {
         switch (type) {
-            case BINARY_OPERATOR:
+            case BINARY_OPERATOR -> {
                 return parseBinaryOp(expr);
-            case UNARY_OPERATOR:
+            }
+            case UNARY_OPERATOR -> {
                 return parseUnaryOp(expr);
-            case NUMBER:
+            }
+            case NUMBER -> {
                 return parseNumeric(expr);
-            case INTEGER:
+            }
+            case INTEGER -> {
                 return parseInteger(expr);
-            case STRING:
+            }
+            case STRING -> {
                 return parseString(expr);
-            case BOOLEAN:
+            }
+            case BOOLEAN -> {
                 return parseBoolean(expr);
-            case DATE:
+            }
+            case DATE -> {
                 return parseDate(expr);
-            case UID:
+            }
+            case UID -> {
                 return parseUid(expr);
-            case NAMED_VALUE:
-            case IDENTIFIER:
+            }
+            case NAMED_VALUE, IDENTIFIER -> {
                 return parseIdentifier(expr);
-            default:
+            }
+            default -> {
                 expr.error("Not a literal type: " + type);
                 return null;
+            }
         }
     }
 
@@ -36,7 +45,7 @@ public interface Literals {
         if (Chars.isUnaryOperator(c)) {
             expr.error("unary operator");
         }
-        return "" + c;
+        return String.valueOf(c);
     }
 
     static String parseIdentifier(Expr expr) {

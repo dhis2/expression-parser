@@ -2,9 +2,7 @@ package org.hisp.dhis.lib.expression.math;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Translated from rule-engine {@code GS1DataMatrixValueFormatterTest}.

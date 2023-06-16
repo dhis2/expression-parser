@@ -1,10 +1,6 @@
 package org.hisp.dhis.lib.expression.syntax;
 
-import org.hisp.dhis.lib.expression.ast.DataItemModifier;
-import org.hisp.dhis.lib.expression.ast.NamedFunction;
-import org.hisp.dhis.lib.expression.ast.NodeType;
-import org.hisp.dhis.lib.expression.ast.Nodes;
-import org.hisp.dhis.lib.expression.ast.Position;
+import org.hisp.dhis.lib.expression.ast.*;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 
 import java.util.Collection;
@@ -13,7 +9,6 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toUnmodifiableList;
 
 /**
  * Declaration of the DHIS2 expression language.
@@ -221,6 +216,7 @@ public interface ExpressionGrammar {
         return block(NodeType.VARIABLE, symbol, '{', '.', '}', args).named(symbol);
     }
 
+    @SuppressWarnings("java:S3776")
     static Fragment block(NodeType type, String name, char start, char argsSeparator, char end, Fragment... args) {
         return (expr, ctx) -> {
             expr.expect(start);
@@ -248,7 +244,7 @@ public interface ExpressionGrammar {
                 }
                 boolean wrapInArgument = type != NodeType.VARIABLE;
                 if (wrapInArgument)
-                    ctx.beginNode(NodeType.ARGUMENT, expr.marker(), "" + i);
+                    ctx.beginNode(NodeType.ARGUMENT, expr.marker(), String.valueOf(i));
                 arg.parse(expr, ctx);
                 if (wrapInArgument)
                     ctx.endNode(NodeType.ARGUMENT, expr.marker());
@@ -263,6 +259,6 @@ public interface ExpressionGrammar {
     static List<Fragment> concat(List<Fragment>... nonTerminals) {
         return Stream.of(nonTerminals)
                 .flatMap(Collection::stream)
-                .collect(toUnmodifiableList());
+                .toList();
     }
 }

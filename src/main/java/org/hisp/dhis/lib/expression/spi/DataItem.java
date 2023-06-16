@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Value;
 
 import java.util.List;
-import java.util.function.UnaryOperator;
 
 import static java.util.stream.Collectors.joining;
 
@@ -21,18 +20,18 @@ public class DataItem {
     public DataItem(DataItemType type, ID... uid012) {
         this(type,
                 uid012[0],
-                uid012.length > 1 ? List.of(uid012[1]): List.of(),
-                uid012.length > 2 ? List.of(uid012[2]): List.of(),
-                QueryModifiers.builder().build() );
+                uid012.length > 1 ? List.of(uid012[1]) : List.of(),
+                uid012.length > 2 ? List.of(uid012[2]) : List.of(),
+                QueryModifiers.builder().build());
     }
 
     public DataItem(DataItemType type, ID uid0, QueryModifiers modifiers) {
-        this(type, uid0, List.of(), List.of(), modifiers );
+        this(type, uid0, List.of(), List.of(), modifiers);
     }
 
     public String getKey() {
         String diStr = toString();
-        return diStr.substring(2, diStr.length()-1);
+        return diStr.substring(2, diStr.length() - 1);
     }
 
     @Override
@@ -41,9 +40,9 @@ public class DataItem {
         str.append(type.getSymbol()).append("{");
         str.append(uid0.toString());
         if (!uid1.isEmpty())
-            str.append('.').append( uid1.stream().map(ID::getValue).collect(joining("&")));
+            str.append('.').append(uid1.stream().map(ID::getValue).collect(joining("&")));
         if (!uid2.isEmpty())
-            str.append('.').append( uid2.stream().map(ID::getValue).collect(joining("&")));
+            str.append('.').append(uid2.stream().map(ID::getValue).collect(joining("&")));
         str.append("}").append(modifiers);
         return str.toString();
     }

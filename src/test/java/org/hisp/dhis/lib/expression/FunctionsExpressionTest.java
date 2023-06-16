@@ -4,9 +4,7 @@ import org.hisp.dhis.lib.expression.ast.NamedFunction;
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link NamedFunction}s.

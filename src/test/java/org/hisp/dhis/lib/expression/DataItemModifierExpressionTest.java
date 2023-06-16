@@ -8,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Set;
 
-import static org.hisp.dhis.lib.expression.Expression.Mode.INDICATOR_EXPRESSION;
-import static org.hisp.dhis.lib.expression.Expression.Mode.PREDICTOR_GENERATOR_EXPRESSION;
-import static org.hisp.dhis.lib.expression.Expression.Mode.PROGRAM_INDICATOR_EXPRESSION;
+import static org.hisp.dhis.lib.expression.Expression.Mode.*;
 import static org.hisp.dhis.lib.expression.ast.AggregationType.sum;
 import static org.hisp.dhis.lib.expression.spi.DataItemType.DATA_ELEMENT;
 import static org.hisp.dhis.lib.expression.spi.ID.Type.DataElementUID;
@@ -24,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DataItemModifierExpressionTest {
 
     /**
-     * Any data item within an aggregation function is a period aggregation.
-     * The periods themselves are implicit and do not occur anywhere in the expression.
+     * Any data item within an aggregation function is a period aggregation. The periods themselves are implicit and do
+     * not occur anywhere in the expression.
      */
     @Test
     void testPeriodAggregation() {

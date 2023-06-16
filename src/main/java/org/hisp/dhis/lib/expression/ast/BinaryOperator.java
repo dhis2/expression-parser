@@ -61,14 +61,11 @@ public enum BinaryOperator implements Typed {
     private static final List<BinaryOperator> VALUES = List.of(values());
 
     static BinaryOperator fromSymbol(String symbol) {
-        switch (symbol) {
-            case "and":
-                return AND;
-            case "or":
-                return OR;
-            default:
-                return VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
-        }
+        return switch (symbol) {
+            case "and" -> AND;
+            case "or" -> OR;
+            default -> VALUES.stream().filter(op -> op.symbol.equals(symbol)).findFirst().orElseThrow();
+        };
     }
 
     /**
@@ -156,7 +153,7 @@ public enum BinaryOperator implements Typed {
     }
 
     private static BigDecimal asBigDecimal(Number n) {
-        return n instanceof BigDecimal ? (BigDecimal) n : new BigDecimal(n.toString(), MathContext.DECIMAL64);
+        return n instanceof BigDecimal d ? d : new BigDecimal(n.toString(), MathContext.DECIMAL64);
     }
 
     private static boolean isSpecialDouble(Number n) {
@@ -194,26 +191,26 @@ public enum BinaryOperator implements Typed {
      */
 
     public static boolean lessThan(Object left, Object right) {
-        return left instanceof String && right instanceof String
-                ? ((String) left).compareTo((String) right) < 0
+        return left instanceof String l && right instanceof String r
+                ? l.compareTo(r) < 0
                 : toNumberTypeCoercion(left) < toNumberTypeCoercion(right);
     }
 
     public static boolean lessThanOrEqual(Object left, Object right) {
-        return left instanceof String && right instanceof String
-                ? ((String) left).compareTo((String) right) <= 0
+        return left instanceof String l && right instanceof String r
+                ? l.compareTo(r) <= 0
                 : toNumberTypeCoercion(left) <= toNumberTypeCoercion(right);
     }
 
     public static boolean greaterThan(Object left, Object right) {
-        return left instanceof String && right instanceof String
-                ? ((String) left).compareTo((String) right) > 0
+        return left instanceof String l && right instanceof String r
+                ? l.compareTo(r) > 0
                 : toNumberTypeCoercion(left) > toNumberTypeCoercion(right);
     }
 
     public static boolean greaterThanOrEqual(Object left, Object right) {
-        return left instanceof String && right instanceof String
-                ? ((String) left).compareTo((String) right) >= 0
+        return left instanceof String l && right instanceof String r
+                ? l.compareTo(r) >= 0
                 : toNumberTypeCoercion(left) >= toNumberTypeCoercion(right);
     }
 

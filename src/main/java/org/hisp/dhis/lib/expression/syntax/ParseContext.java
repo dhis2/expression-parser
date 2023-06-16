@@ -9,8 +9,8 @@ import java.util.function.Function;
 /**
  * When parsing the expression grammar the context has two roles:
  * <p>
- * 1. allow to emit nodes in the AST by using begin/end or add node methods
- * 2. lookup named building blocks by name to continue parsing
+ * 1. allow to emit nodes in the AST by using begin/end or add node methods 2. lookup named building blocks by name to
+ * continue parsing
  *
  * @author Jan Bernitt
  */

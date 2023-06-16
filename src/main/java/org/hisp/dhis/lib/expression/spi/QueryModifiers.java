@@ -12,8 +12,7 @@ import java.util.function.BiConsumer;
 public class QueryModifiers {
 
     /**
-     * Use aggregation over periods when loading data.
-     * Value then must be a {@code double[]}.
+     * Use aggregation over periods when loading data. Value then must be a {@code double[]}.
      */
     boolean periodAggregation;
     AggregationType aggregationType;
@@ -27,7 +26,7 @@ public class QueryModifiers {
     @Override
     public String toString() {
         StringBuilder str = new StringBuilder();
-        BiConsumer<String,Object> toStr = (name, value) -> {
+        BiConsumer<String, Object> toStr = (name, value) -> {
             if (value != null && value != Boolean.FALSE) {
                 str.append(".").append(name).append("(").append(value == Boolean.TRUE ? "" : value.toString()).append(")");
             }

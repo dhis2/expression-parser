@@ -9,11 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static java.util.Comparator.comparing;
@@ -23,6 +19,7 @@ import static java.util.Comparator.comparing;
  *
  * @author Jan Bernitt
  */
+@SuppressWarnings("java:S100")
 @FunctionalInterface
 public interface ExpressionFunctions {
 
@@ -34,8 +31,7 @@ public interface ExpressionFunctions {
      * @param values zero or more values
      * @return the first value that is not null, or null if all values are zero or values is of length zero
      */
-    default Object firstNonNull(List<?> values)
-    {
+    default Object firstNonNull(List<?> values) {
         return values.stream().filter(Objects::nonNull).findFirst().orElse(null);
     }
 
@@ -45,23 +41,21 @@ public interface ExpressionFunctions {
      * @param values zero or more values, nulls allowed (ignored)
      * @return maximum value or null if all values are null
      */
-    default Number greatest(List<? extends Number> values)
-    {
+    default Number greatest(List<? extends Number> values) {
         return values.stream().filter(Objects::nonNull).max(comparing(Number::doubleValue)).orElse(null);
     }
 
     /**
-     * Returns conditional value based on the condition.
-     * Actually not the equivalent of an if-else block but the ternary operator {@code condition ? ifValue : elseValue}.
+     * Returns conditional value based on the condition. Actually not the equivalent of an if-else block but the ternary
+     * operator {@code condition ? ifValue : elseValue}.
      *
      * @param condition test, maybe null
-     * @param ifValue value when condition is true
+     * @param ifValue   value when condition is true
      * @param elseValue value when condition if false or null
+     * @param <T>       type of value
      * @return either if value or else value based on the condition
-     * @param <T> type of value
      */
-    default <T> T ifThenElse(Boolean condition, T ifValue, T elseValue)
-    {
+    default <T> T ifThenElse(Boolean condition, T ifValue, T elseValue) {
         return Boolean.TRUE.equals(condition) ? ifValue : elseValue;
     }
 
@@ -83,12 +77,11 @@ public interface ExpressionFunctions {
         return values.stream().filter(Objects::nonNull).min(comparing(Number::doubleValue)).orElse(null);
     }
 
-    default double log( Number n ) {
+    default double log(Number n) {
         return Math.log(n.doubleValue());
     }
 
-    default double log10(Number n)
-    {
+    default double log10(Number n) {
         return Math.log10(n.doubleValue());
     }
 
@@ -103,33 +96,43 @@ public interface ExpressionFunctions {
     default double avg(double[] values) {
         return AggregateMath.avg(values);
     }
+
     default double count(double[] values) {
         return AggregateMath.count(values);
     }
+
     default double max(double[] values) {
         return AggregateMath.max(values);
     }
+
     default double median(double[] values) {
         return AggregateMath.median(values);
     }
+
     default double min(double[] values) {
         return AggregateMath.min(values);
     }
+
     default Double percentileCont(double[] values, Number fraction) {
         return AggregateMath.percentileCont(values, fraction);
     }
+
     default double stddev(double[] values) {
         return AggregateMath.stddev(values);
     }
+
     default double stddevPop(double[] values) {
         return AggregateMath.stddevPop(values);
     }
+
     default double stddevSamp(double[] values) {
         return AggregateMath.stddevSamp(values);
     }
+
     default double sum(double[] values) {
         return AggregateMath.sum(values);
     }
+
     default double variance(double[] values) {
         return AggregateMath.variance(values);
     }
@@ -151,8 +154,8 @@ public interface ExpressionFunctions {
     }
 
     /**
-     * Counts the number of values that is entered for the source field in the argument.
-     * The source field parameter is the name of one of the defined source fields in the program.
+     * Counts the number of values that is entered for the source field in the argument. The source field parameter is
+     * the name of one of the defined source fields in the program.
      *
      * @return the number of {@link VariableValue#candidates()}
      */
@@ -175,7 +178,7 @@ public interface ExpressionFunctions {
     }
 
     default String d2_extractDataMatrixValue(String gs1Key, String value) {
-        return GS1Elements.fromKey( gs1Key ).format(value);
+        return GS1Elements.fromKey(gs1Key).format(value);
     }
 
     default double d2_floor(Number value) {
@@ -192,7 +195,7 @@ public interface ExpressionFunctions {
     }
 
     default boolean d2_inOrgUnitGroup(String group, VariableValue orgUnit, Map<String, List<String>> supplementaryValues) {
-        List<String> members = supplementaryValues.get( group );
+        List<String> members = supplementaryValues.get(group);
         String uid = orgUnit == null ? "" : orgUnit.value().replace("'", "");
         return members != null && members.contains(uid);
     }
@@ -245,15 +248,15 @@ public interface ExpressionFunctions {
         BigDecimal roundedNumber = BigDecimal.valueOf(value.doubleValue()).setScale(precision, RoundingMode.HALF_UP);
 
         return precision == 0 || roundedNumber.intValue() == roundedNumber.doubleValue()
-            ? roundedNumber.intValue()
-            : roundedNumber.stripTrailingZeros().doubleValue();
+                ? roundedNumber.intValue()
+                : roundedNumber.stripTrailingZeros().doubleValue();
     }
 
     /**
      * Split the text by delimiter, and keep the nth element(0 is the first).
      */
     default String d2_split(String input, String delimiter, Integer index) {
-        if ( input == null || delimiter == null ) return "";
+        if (input == null || delimiter == null) return "";
         String[] parts = input.split(Pattern.quote(delimiter));
         return index == null || index < 0 || index >= parts.length ? "" : parts[index];
     }
@@ -263,7 +266,7 @@ public interface ExpressionFunctions {
     }
 
     default boolean d2_validatePattern(String input, String regex) {
-        return input == null || regex == null ? false : input.matches(regex);
+        return input != null && regex != null && input.matches(regex);
     }
 
     default int d2_weeksBetween(LocalDate start, LocalDate end) {
@@ -284,7 +287,8 @@ public interface ExpressionFunctions {
     }
 
     /**
-     * Returns the number of numeric zero and positive values among the given object arguments. Can be provided with any number of arguments.
+     * Returns the number of numeric zero and positive values among the given object arguments. Can be provided with any
+     * number of arguments.
      */
     default double d2_zpvc(List<? extends Number> values) {
         return values.stream().mapToDouble(Number::doubleValue).filter(val -> val >= 0d).count();

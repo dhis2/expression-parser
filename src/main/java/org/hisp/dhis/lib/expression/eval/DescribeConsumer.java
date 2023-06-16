@@ -1,17 +1,8 @@
 package org.hisp.dhis.lib.expression.eval;
 
-import org.hisp.dhis.lib.expression.ast.BinaryOperator;
-import org.hisp.dhis.lib.expression.ast.DataItemModifier;
-import org.hisp.dhis.lib.expression.ast.NamedFunction;
-import org.hisp.dhis.lib.expression.ast.NamedValue;
-import org.hisp.dhis.lib.expression.ast.Node;
-import org.hisp.dhis.lib.expression.ast.NodeType;
-import org.hisp.dhis.lib.expression.ast.Tag;
-import org.hisp.dhis.lib.expression.ast.UnaryOperator;
-import org.hisp.dhis.lib.expression.ast.VariableType;
+import org.hisp.dhis.lib.expression.ast.*;
 import org.hisp.dhis.lib.expression.spi.DataItem;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
-import org.hisp.dhis.lib.expression.spi.ID;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -43,10 +34,10 @@ class DescribeConsumer implements NodeVisitor {
     private final Map<DataItem, Number> dataItemValues;
     private final Map<String, String> displayNames;
 
-    private int currentDataItemCardinality;
-    private DataItem currentDataItem;
-    private int currentDataItemIdIndex;
-
+    /**
+     * After parsing the root is always a parenthesis that should not be printed. To remember that this was skipped this
+     * flag is used because the expression could also start with a {@code (} without that being the root itself.
+     */
     private boolean wasRoot;
 
     public DescribeConsumer(Map<DataItem, Number> dataItemValues, Map<String, String> displayNames) {
@@ -118,9 +109,7 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitDataItem(Node<DataItemType> item) {
-        currentDataItemCardinality = item.size();
-        currentDataItem = item.toDataItem();
-        Number value = dataItemValues.get(currentDataItem);
+        Number value = dataItemValues.get(item.toDataItem());
         out.append(item.getWhitespace().before());
         if (value != null) {
             out.append(value);
@@ -132,17 +121,16 @@ class DescribeConsumer implements NodeVisitor {
 
     private void describeDataItem(Node<DataItemType> item) {
         Node<?> c0 = item.child(0);
-        boolean isPS_EVENTDATE = c0.child(0).getValue() == Tag.PS_EVENTDATE;
-        if (!isPS_EVENTDATE) {
+        boolean isEventDate = c0.child(0).getValue() == Tag.PS_EVENTDATE;
+        if (!isEventDate) {
             out.append(item.getValue().getSymbol());
             out.append('{');
         }
         for (int i = 0; i < item.size(); i++) {
             if (i > 0) out.append('.');
-            currentDataItemIdIndex = i;
             item.child(i).walk(this);
         }
-        if (!isPS_EVENTDATE) {
+        if (!isEventDate) {
             out.append('}');
         }
         visitModifiers(item);
@@ -213,29 +201,13 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitIdentifier(Node<?> value) {
-        out.append(value.getWhitespace().before());
-        out.append(value.getRawValue());
-        if (value.getValue() instanceof Tag)
-            out.append(':');
-        out.append(value.getWhitespace().after());
+        appendValue(value, value.getRawValue() + (value.getValue() instanceof Tag ? ":" : ""));
     }
 
     @Override
     public void visitUid(Node<String> value) {
-        out.append(value.getWhitespace().before());
-        if (!displayNames.isEmpty()) {
-            ID.Type type = currentDataItem.getType().getType(currentDataItemCardinality, currentDataItemIdIndex);
-            String name = displayNames.get(value.getValue());
-            // FYI: The type is only checked here for consistency
-            // and to remember how the type is computed here should it be needed
-            if (name != null && type != null) {
-                out.append(name);
-                out.append(value.getWhitespace().after());
-                return;
-            }
-        }
-        out.append(value.getValue());
-        out.append(value.getWhitespace().after());
+        String uid = value.getValue();
+        appendValue(value, displayNames.getOrDefault(uid, uid));
     }
 
     @Override

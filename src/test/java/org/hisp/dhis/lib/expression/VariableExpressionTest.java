@@ -8,12 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.hisp.dhis.lib.expression.ast.NodeType.ARGUMENT;
-import static org.hisp.dhis.lib.expression.ast.NodeType.FUNCTION;
-import static org.hisp.dhis.lib.expression.ast.NodeType.IDENTIFIER;
-import static org.hisp.dhis.lib.expression.ast.NodeType.PAR;
-import static org.hisp.dhis.lib.expression.ast.NodeType.STRING;
-import static org.hisp.dhis.lib.expression.ast.NodeType.VARIABLE;
+import static org.hisp.dhis.lib.expression.ast.NodeType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

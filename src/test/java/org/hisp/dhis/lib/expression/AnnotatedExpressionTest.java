@@ -17,6 +17,12 @@ class AnnotatedExpressionTest {
     void testSimpleNodeWithBeforeAndAfter() {
         assertDescribedWithWhitespace(" 1 ");
         assertDescribedWithWhitespace("/* hello*/'string'/*world*/ ");
+        assertDescribedWithWhitespace(" false ");
+        assertDescribedWithWhitespace(" true ");
+        assertDescribedWithWhitespace(" null ");
+        assertDescribedWithWhitespace(" 2.4 ");
+        assertDescribedWithWhitespace(" [days] ");
+        assertDescribedWithWhitespace(" #{deGroup:u1234567890} ");
     }
 
     @Test
@@ -38,6 +44,14 @@ class AnnotatedExpressionTest {
     @Test
     void testFunction() {
         assertDescribedWithWhitespace("firstNonNull( null , 12 )");
+        assertDescribedWithWhitespace(" d2:daysBetween( '2000-01-01' , '2000-01-05' ) ^ 5 ");
+    }
+
+    @Test
+    void testUnaryOperator() {
+        assertDescribedWithWhitespace(" ! true ");
+        assertDescribedWithWhitespace(" not  true ");
+        assertDescribedWithWhitespace(" distinct  true ");
     }
 
     @Test

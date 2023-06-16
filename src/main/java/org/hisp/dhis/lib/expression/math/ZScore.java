@@ -29,53 +29,44 @@ public final class ZScore {
     }
 
     public static double value(Mode mode, Number parameter, Number weight, String gender) {
-        if ( gender == null )
-        {
-            throw new IllegalArgumentException( "Gender cannot be null" );
+        if (gender == null) {
+            throw new IllegalArgumentException("Gender cannot be null");
         }
-        return getZScore(mode, parameter.floatValue(), weight.floatValue(), GENDER_CODES.contains( gender ) ? 0 : 1);
+        return getZScore(mode, parameter.floatValue(), weight.floatValue(), GENDER_CODES.contains(gender) ? 0 : 1);
     }
 
-    private static final Set<String> GENDER_CODES = Set.of( "male", "MALE", "Male", "ma", "m", "M", "0", "false" );
+    private static final Set<String> GENDER_CODES = Set.of("male", "MALE", "Male", "ma", "m", "M", "0", "false");
 
-    private static double getZScore( Mode mode, float parameter, float weight, int gender )
-    {
-        ZScoreTable.Key key = new ZScoreTable.Key( gender, parameter );
+    private static double getZScore(Mode mode, float parameter, float weight, int gender) {
+        ZScoreTable.Key key = new ZScoreTable.Key(gender, parameter);
 
         ZScoreTable.Entry table = gender == 1 ? mode.girl.get(key) : mode.boy.get(key);
 
-        if ( table == null )
-        {
-            throw new IllegalArgumentException( "No key exist for provided parameters" );
+        if (table == null) {
+            throw new IllegalArgumentException("No key exist for provided parameters");
         }
 
-        int multiplicationFactor = getMultiplicationFactor( table, weight );
+        int multiplicationFactor = getMultiplicationFactor(table, weight);
 
         // weight exactly matches with any of the SD values
-        if ( table.getSdMap().containsKey( weight ) )
-        {
-            int sd = table.getSdMap().get( weight );
+        if (table.getSdMap().containsKey(weight)) {
+            int sd = table.getSdMap().get(weight);
 
             return (double) sd * multiplicationFactor;
         }
 
         // weight is beyond -3SD or 3SD
-        if ( weight > table.getMax() )
-        {
+        if (weight > table.getMax()) {
             return 3.5d;
-        }
-        else if ( weight < table.getMin() )
-        {
+        } else if (weight < table.getMin()) {
             return -3.5d;
         }
 
         float lowerLimitX = 0, higherLimitY = 0;
 
         // find the interval
-        for ( float f : table.getSortedKeys() )
-        {
-            if ( weight > f )
-            {
+        for (float f : table.getSortedKeys()) {
+            if (weight > f) {
                 lowerLimitX = f;
                 continue;
             }
@@ -92,38 +83,32 @@ public final class ZScore {
 
         float result;
 
-        if ( weight > findMedian( table ) )
-        {
+        if (weight > findMedian(table)) {
             gap = weight - lowerLimitX;
             decimalAddition = gap / distance;
-            result = table.getSdMap().get( lowerLimitX ) + decimalAddition;
-        }
-        else
-        {
+            result = table.getSdMap().get(lowerLimitX) + decimalAddition;
+        } else {
             gap = higherLimitY - weight;
             decimalAddition = gap / distance;
-            result = table.getSdMap().get( higherLimitY ) + decimalAddition;
+            result = table.getSdMap().get(higherLimitY) + decimalAddition;
         }
 
         result = result * multiplicationFactor;
 
-        return parseDouble( getDecimalFormat().format( result ));
+        return parseDouble(getDecimalFormat().format(result));
     }
 
-    private static DecimalFormat getDecimalFormat()
-    {
+    private static DecimalFormat getDecimalFormat() {
         DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
-        symbols.setDecimalSeparator( '.' );
-        return new DecimalFormat( "##0.00", symbols );
+        symbols.setDecimalSeparator('.');
+        return new DecimalFormat("##0.00", symbols);
     }
 
-    private static int getMultiplicationFactor( ZScoreTable.Entry table, float weight )
-    {
-        return Float.compare( weight, findMedian( table ) );
+    private static int getMultiplicationFactor(ZScoreTable.Entry table, float weight) {
+        return Float.compare(weight, findMedian(table));
     }
 
-    private static float findMedian( ZScoreTable.Entry table )
-    {
+    private static float findMedian(ZScoreTable.Entry table) {
         return table.getSortedKeys().get(3);
     }
 }

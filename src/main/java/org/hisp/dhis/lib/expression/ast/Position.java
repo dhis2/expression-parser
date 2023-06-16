@@ -8,7 +8,9 @@ import java.util.List;
  * Information about positions in the input.
  *
  * @param charIndex  The absolute character index for the input expression
- * @param spaceIndex The absolute whitespace token count (so far). A single WS token is one or more successive WS characters also including comments.
+ * @param spaceIndex The absolute whitespace token count (so far). A single WS token is one or more successive WS
+ *                   characters also including comments.
+ * @author Jan Bernitt
  */
 public record Position(int charIndex, int spaceIndex) {
 
@@ -31,17 +33,17 @@ public record Position(int charIndex, int spaceIndex) {
         if (size == 0) return;
         for (int i = 0; i < size; i++) {
             Node<?> child = node.child(i);
-            int wsChildStart = child.getStart().spaceIndex();
-            int wsChildEnd = child.getEnd().spaceIndex();
-            int wsPrevChildEnd = i == 0 ? spaceIndex0 : node.child(i - 1).getEnd().spaceIndex();
-            int wsNextChildStart = size == 1 || i == size - 1 ? spaceIndexN : node.child(i + 1).getStart().spaceIndex();
-            int deltaBefore = wsChildStart - wsPrevChildEnd;
-            int deltaAfter = wsNextChildStart - wsChildEnd;
+            int selfStartIndex = child.getStart().spaceIndex();
+            int selfEndIndex = child.getEnd().spaceIndex();
+            int prevEndIndex = i == 0 ? spaceIndex0 : node.child(i - 1).getEnd().spaceIndex();
+            int nextStartIndex = size == 1 || i == size - 1 ? spaceIndexN : node.child(i + 1).getStart().spaceIndex();
+            int deltaBefore = selfStartIndex - prevEndIndex;
+            int deltaAfter = nextStartIndex - selfEndIndex;
             boolean hasAfter = deltaAfter > 1 || deltaAfter == 1 && i == size - 1;
             child.setWhitespace(Whitespace.of(
-                    deltaBefore > 0 ? wsTokens.get(wsChildStart - 1) : "",
-                    hasAfter && wsChildEnd < wsTokens.size() ? wsTokens.get(wsChildEnd) : ""));
-            addWhitespace(child, wsTokens, wsChildStart, wsChildEnd);
+                    deltaBefore > 0 ? wsTokens.get(selfStartIndex - 1) : "",
+                    hasAfter && selfEndIndex < wsTokens.size() ? wsTokens.get(selfEndIndex) : ""));
+            addWhitespace(child, wsTokens, selfStartIndex, selfEndIndex);
         }
     }
 

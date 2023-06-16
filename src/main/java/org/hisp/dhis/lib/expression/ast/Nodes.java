@@ -1,20 +1,11 @@
 package org.hisp.dhis.lib.expression.ast;
 
-import org.hisp.dhis.lib.expression.spi.DataItem;
-import org.hisp.dhis.lib.expression.spi.DataItemType;
-import org.hisp.dhis.lib.expression.spi.ID;
-import org.hisp.dhis.lib.expression.spi.QueryModifiers;
-import org.hisp.dhis.lib.expression.spi.ValueType;
-import org.hisp.dhis.lib.expression.spi.Variable;
+import org.hisp.dhis.lib.expression.spi.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static java.lang.Integer.parseInt;
@@ -42,12 +33,14 @@ public interface Nodes {
     }
 
     /**
-     * Modifiers affect data items only. However, they can be applied to data items directly or indirectly.
-     * Within a function or round bracket that has a modifier all data items within the bracket body are affected.
+     * Modifiers affect data items only. However, they can be applied to data items directly or indirectly. Within a
+     * function or round bracket that has a modifier all data items within the bracket body are affected.
      * <p>
-     * This transformation moves modifiers from being {@link Node#children()} to be added as {@link Node#addModifier(Node)}.
+     * This transformation moves modifiers from being {@link Node#children()} to be added as
+     * {@link Node#addModifier(Node)}.
      * <p>
-     * This transformation should only be applied when the expression should be evaluated including resolving data items to their actual value.
+     * This transformation should only be applied when the expression should be evaluated including resolving data items
+     * to their actual value.
      *
      * @param root the node to start the transformation from.
      */
@@ -278,8 +271,8 @@ public interface Nodes {
 
     abstract class ModifiedNode<T> extends ComplexNode<T> {
         /**
-         * This list of modifiers is always empty from pure parsing.
-         * It is used to aggregate the effective modifiers in AST transformation step.
+         * This list of modifiers is always empty from pure parsing. It is used to aggregate the effective modifiers in
+         * AST transformation step.
          */
         private final List<Node<?>> modifiers = new ArrayList<>();
 

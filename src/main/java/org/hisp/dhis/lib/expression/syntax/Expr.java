@@ -17,8 +17,8 @@ import static org.hisp.dhis.lib.expression.syntax.Chars.isWS;
 /**
  * An {@link Expr} is the fundamental building block of the expression grammar.
  * <p>
- * Aside from the actual {@code expr} block this class also implements the data item parsing
- * as it is too irregular to express it using composition.
+ * Aside from the actual {@code expr} block this class also implements the data item parsing as it is too irregular to
+ * express it using composition.
  *
  * @author Jan Bernitt
  */
@@ -104,7 +104,7 @@ public final class Expr implements Serializable {
                 || c == 'n' && expr.peek("not") && !expr.peek(3, Chars::isIdentifier)
         ) { // unary operators:
             expr.gobble(c == 'n' ? 3 : 1); // unary op
-            ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), c == 'n' ? "not" : c + "");
+            ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), c == 'n' ? "not" : String.valueOf(c));
             expr1(expr, ctx);
             return;
         }
@@ -219,12 +219,12 @@ public final class Expr implements Serializable {
         String raw = expr.rawMatch("data item", ce -> ce != '}');
         String[] parts = raw.split("\\.");
         if (Stream.of(parts).allMatch(Expr::isTaggedUidGroup)) {
-            ctx.beginNode(NodeType.DATA_ITEM, itemStart, "" + name);
+            ctx.beginNode(NodeType.DATA_ITEM, itemStart, String.valueOf(name));
             // a data item with 1-3 possibly tagged UID groups
             for (int i = 0; i < parts.length; i++) {
                 String part = parts[i];
                 int nameEndPos = part.indexOf(':');
-                ctx.beginNode(NodeType.ARGUMENT, rawStart, "" + i);
+                ctx.beginNode(NodeType.ARGUMENT, rawStart, String.valueOf(i));
                 if (nameEndPos > 0) {
                     String tag = part.substring(0, nameEndPos);
                     ctx.addNode(NodeType.IDENTIFIER, rawStart, tag, Nodes.TagNode::new);
@@ -239,7 +239,7 @@ public final class Expr implements Serializable {
             ctx.endNode(NodeType.DATA_ITEM, expr.marker(1)); // }
         } else if (Literals.isVarName(raw)) {
             // a programRuleVariableName
-            ctx.beginNode(NodeType.VARIABLE, itemStart, "" + name);
+            ctx.beginNode(NodeType.VARIABLE, itemStart, String.valueOf(name));
             ctx.addNode(NodeType.IDENTIFIER, rawStart, raw);
             ctx.endNode(NodeType.VARIABLE, expr.marker(1)); // }
         } else {

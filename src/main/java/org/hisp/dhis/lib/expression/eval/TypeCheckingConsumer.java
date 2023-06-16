@@ -1,12 +1,7 @@
 package org.hisp.dhis.lib.expression.eval;
 
 import lombok.RequiredArgsConstructor;
-import org.hisp.dhis.lib.expression.ast.BinaryOperator;
-import org.hisp.dhis.lib.expression.ast.DataItemModifier;
-import org.hisp.dhis.lib.expression.ast.NamedFunction;
-import org.hisp.dhis.lib.expression.ast.Node;
-import org.hisp.dhis.lib.expression.ast.NodeType;
-import org.hisp.dhis.lib.expression.ast.UnaryOperator;
+import org.hisp.dhis.lib.expression.ast.*;
 import org.hisp.dhis.lib.expression.spi.Issues;
 import org.hisp.dhis.lib.expression.spi.ValueType;
 
@@ -19,7 +14,8 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.joining;
 
 /**
- * Performs basic type checking based on the knowledge about the expectations of operators and functions as well as used value literals.
+ * Performs basic type checking based on the knowledge about the expectations of operators and functions as well as used
+ * value literals.
  *
  * @author Jan Bernitt
  */
@@ -144,25 +140,21 @@ final class TypeCheckingConsumer implements NodeVisitor {
 
     private Consumer<Node<?>> evalTo(ValueType expected) {
         EvaluateFunction eval = new EvaluateFunction(null, null);
-        switch (expected) {
-            case STRING:
-                return eval::evalToString;
-            case DATE:
-                return eval::evalToDate;
-            case BOOLEAN:
-                return eval::evalToBoolean;
-            case NUMBER:
-                return eval::evalToNumber;
-            default:
-                return node -> {
-                }; // we can't tell
-        }
+        return switch (expected) {
+            case STRING -> eval::evalToString;
+            case DATE -> eval::evalToDate;
+            case BOOLEAN -> eval::evalToBoolean;
+            case NUMBER -> eval::evalToNumber;
+            default -> node -> {
+            }; // we can't tell
+        };
     }
 
     /**
      * A statically defined node or expression can be computed to a deterministic result without any context.
      *
-     * @return true, if the node is either a value literal or a composition of only operators, brackets and value literals, false otherwise.
+     * @return true, if the node is either a value literal or a composition of only operators, brackets and value
+     * literals, false otherwise.
      */
     private static boolean isStaticallyDefined(Node<?> node) {
         NodeType type = node.getType();

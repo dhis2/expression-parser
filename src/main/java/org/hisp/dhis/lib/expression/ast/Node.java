@@ -7,22 +7,17 @@ import org.hisp.dhis.lib.expression.spi.Variable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 
 /**
  * A node in the AST of the expression language.
  * <p>
- * Nodes of the different {@link NodeType}s are implemented in {@link Nodes} by dedicated classes
- * but used through the {@link Node} interface.
+ * Nodes of the different {@link NodeType}s are implemented in {@link Nodes} by dedicated classes but used through the
+ * {@link Node} interface.
  * <p>
  * Generally there are two kinds of nodes:
  * <ul>
@@ -38,8 +33,8 @@ public interface Node<T> extends Typed, NodeAnnotations {
     /**
      * Creates a node of a specific type from a raw input value.
      * <p>
-     * This is used to customize the result node during the parsing process
-     * by attaching a custom factory to a fragment.
+     * This is used to customize the result node during the parsing process by attaching a custom factory to a
+     * fragment.
      */
     interface Factory {
 
@@ -62,11 +57,11 @@ public interface Node<T> extends Typed, NodeAnnotations {
     T getValue();
 
     /**
-     * Visits a subtree.
-     * This node first, then its children in order recursively.
+     * Visits a subtree. This node first, then its children in order recursively.
      *
      * @param visitor visitor to call for each matching node in the subtree
-     * @param filter  filter to restrict visitation to subset of nodes, filtered nodes are just not passed to the provided visitor
+     * @param filter  filter to restrict visitation to subset of nodes, filtered nodes are just not passed to the
+     *                provided visitor
      */
     void visit(Consumer<Node<?>> visitor, Predicate<Node<?>> filter);
 
@@ -82,8 +77,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
     }
 
     /**
-     * Visits a subtree without exception.
-     * This node first, then its children in order recursively.
+     * Visits a subtree without exception. This node first, then its children in order recursively.
      *
      * @param visitor visitor to call for each node in the subtree
      */
@@ -92,8 +86,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
     }
 
     /**
-     * Walking the AST is navigated by the walker.
-     * Nodes will not implicitly walk their children.
+     * Walking the AST is navigated by the walker. Nodes will not implicitly walk their children.
      *
      * @param walker controls the walking
      */
@@ -134,7 +127,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * @return root of the mapped tree
      */
     default <N, V> N map(Function<Node<?>, V> nodeMap, BiFunction<V, List<N>, N> newNode) {
-        return eval(node -> newNode.apply(nodeMap.apply(node), node.children().map(n -> n.map(nodeMap, newNode)).collect(toList())));
+        return eval(node -> newNode.apply(nodeMap.apply(node), node.children().map(n -> n.map(nodeMap, newNode)).toList()));
     }
 
     /**
@@ -157,7 +150,8 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * @param filter filter to restrict visitation to subset of nodes, filtered nodes are not evaluated nor aggregated
      * @param <A>    type of aggregation state (result)
      * @param <E>    type of the elements added to the aggregation state
-     * @return the initial aggregation value after the aggregation, this is the same instance that probably changed internally
+     * @return the initial aggregation value after the aggregation, this is the same instance that probably changed
+     * internally
      */
     default <A, E> A aggregate(A init, Function<Node<?>, E> eval, BiConsumer<A, E> agg, Predicate<Node<?>> filter) {
         visit(node -> {
@@ -263,10 +257,11 @@ public interface Node<T> extends Typed, NodeAnnotations {
     /**
      * AST transformation can change the children of nodes.
      * <p>
-     * After that children of this node have been updated the transformation is applied recursively to the remaining (new) children.
+     * After that children of this node have been updated the transformation is applied recursively to the remaining
+     * (new) children.
      * <p>
-     * The update function is only called for nodes which can have children.
-     * It is called for such nodes even if the currently do not have any children.
+     * The update function is only called for nodes which can have children. It is called for such nodes even if the
+     * currently do not have any children.
      *
      * @param transformer the children update function applied to all nodes with children
      */
@@ -275,7 +270,8 @@ public interface Node<T> extends Typed, NodeAnnotations {
     }
 
     /**
-     * Restructuring the AST by moving the operands of unary and binary operators to become child nodes of the operator.
+     * Restructuring the AST by moving the operands of unary and binary operators to become child nodes of the
+     * operator.
      * <p>
      * The transformation is done in operator precedence to assure a semantically correct result tree.
      *
@@ -290,7 +286,8 @@ public interface Node<T> extends Typed, NodeAnnotations {
     }
 
     /**
-     * Restructuring the AST by moving the affected sibling next to the unary operator into the operator as its only child node.
+     * Restructuring the AST by moving the affected sibling next to the unary operator into the operator as its only
+     * child node.
      * <p>
      * If this is done in operator precedence the correct evaluation tree structure is the result.
      *

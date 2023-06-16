@@ -5,7 +5,7 @@ import java.util.stream.DoubleStream;
 
 /**
  * Math operations for aggregation functions.
- *
+ * <p>
  * Some computations were extracted and simplified from apache math.
  *
  * @author Jan Bernitt
@@ -61,19 +61,17 @@ public final class AggregateMath {
     /**
      * Vector function: percentileCont (continuous percentile)
      * <p/>
-     * The percentileCont function is equivalent to the PostgreSQL function
-     * percentile_cont and the Excel function PERCENTILE.INC
+     * The percentileCont function is equivalent to the PostgreSQL function percentile_cont and the Excel function
+     * PERCENTILE.INC
      *
      * @author Jim Grace
      */
     public static Double percentileCont(double[] values, Number fraction) {
-        if (values.length == 0 || fraction == null || fraction.doubleValue() < 0d || fraction.doubleValue() > 1d )
-        {
+        if (values.length == 0 || fraction == null || fraction.doubleValue() < 0d || fraction.doubleValue() > 1d) {
             return null;
         }
-        Arrays.sort( values );
-        if ( fraction.doubleValue() == 0d )
-        {
+        Arrays.sort(values);
+        if (fraction.doubleValue() == 0d) {
             return values[0];
         }
         double[] work = DoubleStream.of(values).filter(v -> !Double.isNaN(v)).toArray();
@@ -119,7 +117,7 @@ public final class AggregateMath {
     private static double estimate(double[] work, int[] pivotsHeap, double pos) {
         int length = work.length;
         double fpos = Math.floor(pos);
-        int intPos = (int)fpos;
+        int intPos = (int) fpos;
         double dif = pos - fpos;
         if (pos < 1.0) {
             return KthSelector.select(work, pivotsHeap, 0);
@@ -133,7 +131,7 @@ public final class AggregateMath {
     }
 
     private static double indexR7(double p, int length) {
-        return Double.compare(p, 0.0) == 0 ? 0.0 : (Double.compare(p, 1.0) == 0 ? (double)length : 1.0 + (length - 1) * p);
+        return Double.compare(p, 0.0) == 0 ? 0.0 : (Double.compare(p, 1.0) == 0 ? (double) length : 1.0 + (length - 1) * p);
     }
 
     /**

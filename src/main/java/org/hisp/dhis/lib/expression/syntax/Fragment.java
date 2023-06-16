@@ -3,13 +3,14 @@ package org.hisp.dhis.lib.expression.syntax;
 import org.hisp.dhis.lib.expression.ast.NodeType;
 
 /**
- * A {@link Fragment} is a building block of a grammar that consists of further blocks that either are {@link Fragment}s themselves or are {@link Terminal}s.
+ * A {@link Fragment} is a building block of a grammar that consists of further blocks that either are {@link Fragment}s
+ * themselves or are {@link Terminal}s.
  */
 @FunctionalInterface
 public interface Fragment {
     /**
-     * Parse this non-terminal token for the expr at its current position
-     * and use the provided context to emit nodes or lookup named non-terminals.
+     * Parse this non-terminal token for the expr at its current position and use the provided context to emit nodes or
+     * lookup named non-terminals.
      *
      * @param expr input to process
      * @param ctx  context to build the tree and lookup named non-terminals
@@ -38,11 +39,11 @@ public interface Fragment {
     }
 
     /**
-     * This PEG parser is free of back-tracking.
-     * This means a universal "might occur" construct does not exist.
-     * The (...)? block here only works in argument lists which will simply check the {@link #isMaybe()} flag.
-     * If an expected argument is optional (maybe) an omitted position is not an error but valid and the end of the argument list is found.
-     * This also means that optional arguments can only occur at the end of the parameter list, not in the middle.
+     * This PEG parser is free of back-tracking. This means a universal "might occur" construct does not exist. The
+     * (...)? block here only works in argument lists which will simply check the {@link #isMaybe()} flag. If an
+     * expected argument is optional (maybe) an omitted position is not an error but valid and the end of the argument
+     * list is found. This also means that optional arguments can only occur at the end of the parameter list, not in
+     * the middle.
      *
      * @return This block as optional block (only in argument lists)
      */
@@ -81,8 +82,8 @@ public interface Fragment {
     }
 
     /**
-     * By default, blocks are not named.
-     * Naming a block only serves the purpose of indexing the block as a named block for later lookup.
+     * By default, blocks are not named. Naming a block only serves the purpose of indexing the block as a named block
+     * for later lookup.
      * <p>
      * Note that a name is a wrapper on the original block
      *
@@ -102,7 +103,7 @@ public interface Fragment {
                 return name;
             }
         }
-        return new Named(name, this instanceof Named ? ((Named) this).to : this);
+        return new Named(name, this instanceof Named n ? n.to : this);
     }
 
     default Fragment quoted() {

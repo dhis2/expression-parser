@@ -1,13 +1,6 @@
 package org.hisp.dhis.lib.expression.eval;
 
-import org.hisp.dhis.lib.expression.ast.BinaryOperator;
-import org.hisp.dhis.lib.expression.ast.DataItemModifier;
-import org.hisp.dhis.lib.expression.ast.NamedFunction;
-import org.hisp.dhis.lib.expression.ast.NamedValue;
-import org.hisp.dhis.lib.expression.ast.Node;
-import org.hisp.dhis.lib.expression.ast.NodeType;
-import org.hisp.dhis.lib.expression.ast.UnaryOperator;
-import org.hisp.dhis.lib.expression.ast.VariableType;
+import org.hisp.dhis.lib.expression.ast.*;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 
 import java.time.LocalDate;
@@ -24,62 +17,26 @@ public interface NodeVisitor extends Consumer<Node<?>> {
     default void accept(Node<?> node) {
         switch (node.getType()) {
             // complex nodes
-            case UNARY_OPERATOR:
-                visitUnaryOperator((Node<UnaryOperator>) node);
-                break;
-            case BINARY_OPERATOR:
-                visitBinaryOperator((Node<BinaryOperator>) node);
-                break;
-            case ARGUMENT:
-                visitArgument((Node<Integer>) node);
-                break;
-            case PAR:
-                visitParentheses((Node<Void>) node);
-                break;
-            case FUNCTION:
-                visitFunction((Node<NamedFunction>) node);
-                break;
-            case MODIFIER:
-                visitModifier((Node<DataItemModifier>) node);
-                break;
-            case DATA_ITEM:
-                visitDataItem((Node<DataItemType>) node);
-                break;
-            case VARIABLE:
-                visitVariable((Node<VariableType>) node);
-                break;
+            case UNARY_OPERATOR -> visitUnaryOperator((Node<UnaryOperator>) node);
+            case BINARY_OPERATOR -> visitBinaryOperator((Node<BinaryOperator>) node);
+            case ARGUMENT -> visitArgument((Node<Integer>) node);
+            case PAR -> visitParentheses((Node<Void>) node);
+            case FUNCTION -> visitFunction((Node<NamedFunction>) node);
+            case MODIFIER -> visitModifier((Node<DataItemModifier>) node);
+            case DATA_ITEM -> visitDataItem((Node<DataItemType>) node);
+            case VARIABLE -> visitVariable((Node<VariableType>) node);
+
 
             // simple nodes
-            case BOOLEAN:
-                visitBoolean((Node<Boolean>) node);
-                break;
-            case UID:
-                visitUid((Node<String>) node);
-                break;
-            case DATE:
-                visitDate((Node<LocalDate>) node);
-                break;
-            case NULL:
-                visitNull((Node<Void>) node);
-                break;
-            case NUMBER:
-                visitNumber((Node<Double>) node);
-                break;
-            case STRING:
-                visitString((Node<String>) node);
-                break;
-            case INTEGER:
-                visitInteger((Node<Integer>) node);
-                break;
-            case IDENTIFIER:
-                visitIdentifier(node);
-                break;
-            case NAMED_VALUE:
-                visitNamedValue((Node<NamedValue>) node);
-                break;
-
-            default:
-                throw new UnsupportedOperationException("Not type not supported yet: " + node.getType());
+            case BOOLEAN -> visitBoolean((Node<Boolean>) node);
+            case UID -> visitUid((Node<String>) node);
+            case DATE -> visitDate((Node<LocalDate>) node);
+            case NULL -> visitNull((Node<Void>) node);
+            case NUMBER -> visitNumber((Node<Double>) node);
+            case STRING -> visitString((Node<String>) node);
+            case INTEGER -> visitInteger((Node<Integer>) node);
+            case IDENTIFIER -> visitIdentifier(node);
+            case NAMED_VALUE -> visitNamedValue((Node<NamedValue>) node);
         }
     }
 

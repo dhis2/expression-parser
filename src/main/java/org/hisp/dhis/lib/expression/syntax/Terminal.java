@@ -4,9 +4,11 @@ import org.hisp.dhis.lib.expression.ast.Node;
 import org.hisp.dhis.lib.expression.ast.NodeType;
 
 /**
- * A {@link Terminal} is a building block of a grammar that does not consist and any smaller parts. They represent a simple value or leaf in the AST.
+ * A {@link Terminal} is a building block of a grammar that does not consist and any smaller parts. They represent a
+ * simple value or leaf in the AST.
  * <p>
- * In the java model {@link Terminal}s extends {@link Fragment} so that they can be mixed with them as argument building blocks that make up a {@link Fragment}.
+ * In the java model {@link Terminal}s extends {@link Fragment} so that they can be mixed with them as argument building
+ * blocks that make up a {@link Fragment}.
  */
 public interface Terminal extends Fragment {
     @Override
@@ -23,9 +25,8 @@ public interface Terminal extends Fragment {
     NodeType literalOf();
 
     /**
-     * @return The factory to use when creating the {@link Node} in the AST.
-     * {@code null} if no specific node type should be used to represent the {@link Terminal}.
-     * In that case the node used depends on the {@link NodeType}.
+     * @return The factory to use when creating the {@link Node} in the AST. {@code null} if no specific node type
+     * should be used to represent the {@link Terminal}. In that case the node used depends on the {@link NodeType}.
      */
     default Node.Factory factory() {
         return null;

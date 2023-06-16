@@ -4,29 +4,16 @@ import org.hisp.dhis.lib.expression.ast.Node;
 import org.hisp.dhis.lib.expression.ast.NodeType;
 import org.hisp.dhis.lib.expression.ast.Nodes;
 import org.hisp.dhis.lib.expression.ast.VariableType;
-import org.hisp.dhis.lib.expression.spi.DataItem;
-import org.hisp.dhis.lib.expression.spi.DataItemType;
-import org.hisp.dhis.lib.expression.spi.ExpressionData;
-import org.hisp.dhis.lib.expression.spi.ExpressionFunctions;
-import org.hisp.dhis.lib.expression.spi.ID;
-import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
-import org.hisp.dhis.lib.expression.spi.Issues;
-import org.hisp.dhis.lib.expression.spi.ValueType;
-import org.hisp.dhis.lib.expression.spi.Variable;
-import org.hisp.dhis.lib.expression.spi.VariableValue;
+import org.hisp.dhis.lib.expression.spi.*;
 
-import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
 /**
- * This is the exposed API of the evaluation package.
- * It contains all high level functions to turn a {@link Node}-tree into some value.
+ * This is the exposed API of the evaluation package. It contains all high level functions to turn a {@link Node}-tree
+ * into some value.
  *
  * @author Jan Bernitt
  */
@@ -42,7 +29,7 @@ public final class Evaluate {
 
     public static Object evaluate(Node<?> root, ExpressionFunctions functions, ExpressionData data) throws IllegalExpressionException {
         Object value = root.eval(new EvaluateFunction(functions, data));
-        return value instanceof VariableValue ? ((VariableValue) value).valueOrDefault() : value;
+        return value instanceof VariableValue var ? var.valueOrDefault() : value;
     }
 
     public static String normalise(Node<?> root) {
