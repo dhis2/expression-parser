@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Test of the {@code d2:ceil} function.
- *
+ * <p>
  * Translated from existing test of same name in rule-engine.
  *
  * @author Jan Bernitt
@@ -16,8 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class RuleFunctionCeilTest {
 
     @Test
-    void evaluateMustReturnCeiledValue()
-    {
+    void evaluateMustReturnCeiledValue() {
         assertEquals(5d, evaluate("d2:ceil(4.1)"));
         assertEquals(1d, evaluate("d2:ceil(0.8)"));
         assertEquals(6d, evaluate("d2:ceil(5.1)"));
@@ -27,15 +26,13 @@ class RuleFunctionCeilTest {
     }
 
     @Test
-    void return_zero_when_number_is_invalid()
-    {
+    void return_zero_when_number_is_invalid() {
         // ANTLR would return 0
         assertThrows(IllegalExpressionException.class, () -> evaluate("d2:ceil('str')"));
     }
 
     @Test
-    void return_NaN_when_input_is_NaN()
-    {
+    void return_NaN_when_input_is_NaN() {
         assertEquals(Double.NaN, evaluate("d2:ceil(1%0)"));
     }
 

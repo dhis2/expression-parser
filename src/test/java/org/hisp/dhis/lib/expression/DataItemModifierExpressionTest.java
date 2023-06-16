@@ -8,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Set;
 
-import static org.hisp.dhis.lib.expression.Expression.Mode.INDICATOR_EXPRESSION;
-import static org.hisp.dhis.lib.expression.Expression.Mode.PREDICTOR_GENERATOR_EXPRESSION;
-import static org.hisp.dhis.lib.expression.Expression.Mode.PROGRAM_INDICATOR_EXPRESSION;
+import static org.hisp.dhis.lib.expression.Expression.Mode.*;
 import static org.hisp.dhis.lib.expression.ast.AggregationType.sum;
 import static org.hisp.dhis.lib.expression.spi.DataItemType.DATA_ELEMENT;
 import static org.hisp.dhis.lib.expression.spi.ID.Type.DataElementUID;
@@ -24,8 +22,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class DataItemModifierExpressionTest {
 
     /**
-     * Any data item within an aggregation function is a period aggregation.
-     * The periods themselves are implicit and do not occur anywhere in the expression.
+     * Any data item within an aggregation function is a period aggregation. The periods themselves are implicit and do
+     * not occur anywhere in the expression.
      */
     @Test
     void testPeriodAggregation() {
@@ -98,8 +96,8 @@ class DataItemModifierExpressionTest {
     void testMultipleModifiersIndirectlyAppliedToMany() {
         QueryModifiers expected = QueryModifiers.builder().yearToDate(true).periodOffset(42).build();
         assertEquals(Set.of(
-                    new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
-                    new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
+                        new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
+                        new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
                 evaluate("(#{u1234567890} + #{v1234567890}).yearToDate().periodOffset(42)", INDICATOR_EXPRESSION));
     }
 
@@ -110,8 +108,8 @@ class DataItemModifierExpressionTest {
                 .maxDate(LocalDate.parse("2000-11-11"))
                 .periodAggregation(true).build();
         assertEquals(Set.of(
-                    new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
-                    new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
+                        new DataItem(DATA_ELEMENT, new ID(DataElementUID, "u1234567890"), expected),
+                        new DataItem(DATA_ELEMENT, new ID(DataElementUID, "v1234567890"), expected)),
                 evaluate("avg(#{u1234567890} + #{v1234567890}).minDate(1980-11-11).maxDate(2000-11-11)", PREDICTOR_GENERATOR_EXPRESSION));
     }
 

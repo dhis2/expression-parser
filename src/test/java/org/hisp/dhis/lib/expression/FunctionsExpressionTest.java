@@ -4,9 +4,7 @@ import org.hisp.dhis.lib.expression.ast.NamedFunction;
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Tests the {@link NamedFunction}s.
@@ -32,7 +30,7 @@ class FunctionsExpressionTest {
 
     @Test
     void testGreatest() {
-        assertEquals(5d, evaluate("greatest(3,2.2,5.0,0.4)") );
+        assertEquals(5d, evaluate("greatest(3,2.2,5.0,0.4)"));
     }
 
     @Test
@@ -106,7 +104,7 @@ class FunctionsExpressionTest {
 
     @Test
     void testLeast() {
-        assertEquals(0.4d, evaluate("least(3,2.2,5.0,0.4)") );
+        assertEquals(0.4d, evaluate("least(3,2.2,5.0,0.4)"));
     }
 
     @Test

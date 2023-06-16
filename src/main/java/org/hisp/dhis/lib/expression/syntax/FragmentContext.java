@@ -14,9 +14,8 @@ public interface FragmentContext {
         int s = expr.position();
         String name = parseName.apply(expr);
         Fragment res = lookup.apply(name);
-        if (res == null)
-        {
-            expr.error(s, "Unknown function or constant: '"+name+"'");
+        if (res == null) {
+            expr.error(s, "Unknown function or constant: '" + name + "'");
         }
         return res;
     }

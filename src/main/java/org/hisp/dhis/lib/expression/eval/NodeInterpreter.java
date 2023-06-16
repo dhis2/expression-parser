@@ -1,12 +1,6 @@
 package org.hisp.dhis.lib.expression.eval;
 
-import org.hisp.dhis.lib.expression.ast.BinaryOperator;
-import org.hisp.dhis.lib.expression.ast.DataItemModifier;
-import org.hisp.dhis.lib.expression.ast.NamedFunction;
-import org.hisp.dhis.lib.expression.ast.NamedValue;
-import org.hisp.dhis.lib.expression.ast.Node;
-import org.hisp.dhis.lib.expression.ast.UnaryOperator;
-import org.hisp.dhis.lib.expression.ast.VariableType;
+import org.hisp.dhis.lib.expression.ast.*;
 import org.hisp.dhis.lib.expression.spi.DataItemType;
 
 import java.time.LocalDate;
@@ -15,39 +9,36 @@ import java.util.function.Function;
 /**
  * A {@link NodeInterpreter} interprets a root {@link Node} to calculate or derive some value from it.
  *
- * @author Jan Bernitt
- *
  * @param <T> type of the result of the interpretation
+ * @author Jan Bernitt
  */
 public interface NodeInterpreter<T> extends Function<Node<?>, T> {
 
     @Override
     @SuppressWarnings("unchecked")
     default T apply(Node<?> node) {
-        switch(node.getType()) {
+        return switch (node.getType()) {
             // complex nodes
-            case UNARY_OPERATOR: return evalUnaryOperator((Node<UnaryOperator>) node);
-            case BINARY_OPERATOR: return evalBinaryOperator((Node<BinaryOperator>) node);
-            case ARGUMENT: return evalArgument((Node<Integer>) node);
-            case PAR: return evalParentheses((Node<Void>) node);
-            case FUNCTION: return evalFunction((Node<NamedFunction>) node);
-            case MODIFIER: return evalModifier((Node<DataItemModifier>) node);
-            case DATA_ITEM: return evalDataItem((Node<DataItemType>) node);
-            case VARIABLE: return evalVariable((Node<VariableType>) node);
+            case UNARY_OPERATOR -> evalUnaryOperator((Node<UnaryOperator>) node);
+            case BINARY_OPERATOR -> evalBinaryOperator((Node<BinaryOperator>) node);
+            case ARGUMENT -> evalArgument((Node<Integer>) node);
+            case PAR -> evalParentheses((Node<Void>) node);
+            case FUNCTION -> evalFunction((Node<NamedFunction>) node);
+            case MODIFIER -> evalModifier((Node<DataItemModifier>) node);
+            case DATA_ITEM -> evalDataItem((Node<DataItemType>) node);
+            case VARIABLE -> evalVariable((Node<VariableType>) node);
 
             // simple nodes
-            case BOOLEAN: return evalBoolean((Node<Boolean>) node);
-            case UID: return evalUid((Node<String>) node);
-            case DATE: return evalDate((Node<LocalDate>) node);
-            case NULL: return evalNull((Node<Void>) node);
-            case NUMBER: return evalNumber((Node<Double>) node);
-            case STRING: return evalString((Node<String>) node);
-            case INTEGER: return evalInteger((Node<Integer>) node);
-            case IDENTIFIER: return evalIdentifier(node);
-            case NAMED_VALUE: return evalNamedValue((Node<NamedValue>) node);
-
-            default: throw new UnsupportedOperationException("Not type not supported yet: "+node.getType());
-        }
+            case BOOLEAN -> evalBoolean((Node<Boolean>) node);
+            case UID -> evalUid((Node<String>) node);
+            case DATE -> evalDate((Node<LocalDate>) node);
+            case NULL -> evalNull((Node<Void>) node);
+            case NUMBER -> evalNumber((Node<Double>) node);
+            case STRING -> evalString((Node<String>) node);
+            case INTEGER -> evalInteger((Node<Integer>) node);
+            case IDENTIFIER -> evalIdentifier(node);
+            case NAMED_VALUE -> evalNamedValue((Node<NamedValue>) node);
+        };
     }
 
     default T evalParentheses(Node<Void> group) {
@@ -58,15 +49,15 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
         return argument.child(0).eval(this);
     }
 
-    T evalBinaryOperator(Node<BinaryOperator> operator) ;
+    T evalBinaryOperator(Node<BinaryOperator> operator);
 
-    T evalUnaryOperator(Node<UnaryOperator> operator) ;
+    T evalUnaryOperator(Node<UnaryOperator> operator);
 
-    T evalFunction(Node<NamedFunction> function) ;
+    T evalFunction(Node<NamedFunction> function);
 
-    T evalModifier(Node<DataItemModifier> modifier) ;
+    T evalModifier(Node<DataItemModifier> modifier);
 
-    T evalDataItem(Node<DataItemType> data) ;
+    T evalDataItem(Node<DataItemType> data);
 
     T evalVariable(Node<VariableType> variable);
 
@@ -76,7 +67,7 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
 
     T evalNamedValue(Node<NamedValue> value);
 
-    T evalNumber(Node<Double> value) ;
+    T evalNumber(Node<Double> value);
 
     T evalInteger(Node<Integer> value);
 
@@ -88,7 +79,7 @@ public interface NodeInterpreter<T> extends Function<Node<?>, T> {
 
     T evalIdentifier(Node<?> value);
 
-    T evalUid(Node<String> value) ;
+    T evalUid(Node<String> value);
 
     T evalDate(Node<LocalDate> value);
 }

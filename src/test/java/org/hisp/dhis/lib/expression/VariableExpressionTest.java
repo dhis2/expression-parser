@@ -6,11 +6,9 @@ import org.hisp.dhis.lib.expression.syntax.Parser;
 import org.hisp.dhis.lib.expression.util.TNode;
 import org.junit.jupiter.api.Test;
 
-import static org.hisp.dhis.lib.expression.ast.NodeType.ARGUMENT;
-import static org.hisp.dhis.lib.expression.ast.NodeType.FUNCTION;
-import static org.hisp.dhis.lib.expression.ast.NodeType.IDENTIFIER;
-import static org.hisp.dhis.lib.expression.ast.NodeType.STRING;
-import static org.hisp.dhis.lib.expression.ast.NodeType.VARIABLE;
+import java.util.List;
+
+import static org.hisp.dhis.lib.expression.ast.NodeType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -51,7 +49,7 @@ class VariableExpressionTest {
     }
 
     private void assertHasStructure(TNode expected, String expression) {
-        Node<?> root = Parser.parse(expression, ExpressionGrammar.ProgramIndicatorExpressionMode);
-        assertEquals(expected, TNode.of(root));
+        Node<?> root = Parser.parse(expression, ExpressionGrammar.ProgramIndicatorExpressionMode, true);
+        assertEquals(TNode.of(PAR, List.of(expected)), TNode.of(root));
     }
 }

@@ -9,8 +9,7 @@ import static java.lang.String.format;
  *
  * @author Jan Bernitt
  */
-public enum DataItemType
-{
+public enum DataItemType {
     // (data element for aggregate vs. program stage . data element for programs)
     DATA_ELEMENT("#", List.of(
             List.of(ID.Type.DataElementUID),
@@ -36,6 +35,7 @@ public enum DataItemType
     DataItemType(String symbol, ID.Type... parameterTypes) {
         this(symbol, List.of(List.of(parameterTypes)));
     }
+
     DataItemType(String symbol, List<List<ID.Type>> parameterTypes) {
         this.symbol = symbol;
         this.parameterTypes = parameterTypes;

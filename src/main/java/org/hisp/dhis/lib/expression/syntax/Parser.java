@@ -3,6 +3,7 @@ package org.hisp.dhis.lib.expression.syntax;
 import org.hisp.dhis.lib.expression.ast.Node;
 import org.hisp.dhis.lib.expression.ast.NodeType;
 import org.hisp.dhis.lib.expression.ast.Nodes;
+import org.hisp.dhis.lib.expression.ast.Position;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -49,25 +50,28 @@ public final class Parser implements ParseContext {
         return new Parser(fragments, new EnumMap<>(DEFAULT_FACTORIES));
     }
 
-    public static Node<?> parse(String expr, List<Fragment> fragments) {
+    public static Node<?> parse(String expr, List<Fragment> fragments, boolean annotate) {
         Parser parser = Parser.withFragments(fragments);
-        Expr.parse(expr, parser);
+        List<String> wsTokens = Expr.parse(expr, parser, annotate);
         Node<?> root = parser.getRoot();
+        if (annotate) {
+            Position.addWhitespace(root, wsTokens);
+        }
         Nodes.propagateModifiers(root);
         Node.groupOperators(root);
-        return root.getType() == NodeType.PAR && root.size() == 1 ? root.child(0) : root;
+        return root;
     }
 
     private final Map<String, Fragment> fragmentsByName;
-    private final Map<NodeType, Node.Factory> factoryByType;
+    private final Map<NodeType, Node.Factory> factoriesByType;
 
     private final LinkedList<Node<?>> stack = new LinkedList<>();
 
     private Node<?> root;
 
-    private Parser(List<Fragment> fragments, Map<NodeType, Node.Factory> factoryByType) {
+    private Parser(List<Fragment> fragments, Map<NodeType, Node.Factory> factoriesByType) {
         this.fragmentsByName = mapByName(fragments);
-        this.factoryByType = factoryByType;
+        this.factoriesByType = factoriesByType;
     }
 
     private static Map<String, Fragment> mapByName(List<Fragment> functions) {
@@ -80,7 +84,7 @@ public final class Parser implements ParseContext {
     }
 
     public Parser withFactory(NodeType type, Node.Factory factory) {
-        factoryByType.put(type, factory);
+        factoriesByType.put(type, factory);
         return this;
     }
 
@@ -94,13 +98,13 @@ public final class Parser implements ParseContext {
     }
 
     @Override
-    public void beginNode(NodeType type, String value, Node.Factory create) {
-        Node.Factory f = create != null ? create : factoryByType.get(type);
-        if (f == null)
-        {
-            throw new UnsupportedOperationException("No factory for type: "+type);
+    public void beginNode(NodeType type, Position start, String value, Node.Factory create) {
+        Node.Factory f = create != null ? create : factoriesByType.get(type);
+        if (f == null) {
+            throw new UnsupportedOperationException("No factory for type: " + type);
         }
         Node<?> node = f.create(type, value);
+        node.setStart(start);
         if (stack.isEmpty()) {
             root = new Nodes.ParenthesesNode(NodeType.PAR, "");
             root.addChild(node);
@@ -112,7 +116,8 @@ public final class Parser implements ParseContext {
     }
 
     @Override
-    public void endNode(NodeType type) {
-        stack.removeLast();
+    public void endNode(NodeType type, Position end) {
+        Node<?> node = stack.removeLast();
+        node.setEnd(end);
     }
 }

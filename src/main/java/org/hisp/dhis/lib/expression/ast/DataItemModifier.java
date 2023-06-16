@@ -10,11 +10,10 @@ import java.util.List;
  * @author Jan Bernitt
  */
 @SuppressWarnings("java:S115")
-public enum DataItemModifier implements Typed
-{
+public enum DataItemModifier implements Typed {
     aggregationType(ValueType.STRING),
     maxDate(ValueType.DATE),
-    minDate( ValueType.DATE),
+    minDate(ValueType.DATE),
     periodOffset(ValueType.NUMBER),
     stageOffset(ValueType.NUMBER),
     yearToDate(),

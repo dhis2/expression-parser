@@ -138,7 +138,7 @@ class RuleEngineValidationTest {
 
     @Test
     void testProgramVariable_Error() {
-        assertError("V{due_date}", "V{due_date}","Unknown variable: `due_date`");
+        assertError("V{due_date}", "V{due_date}", "Unknown variable: `due_date`");
     }
 
     @Test
@@ -160,7 +160,7 @@ class RuleEngineValidationTest {
     void testProgramRuleVariable_Error_ActualType() {
         assertError("d2:floor(#{due_date})", "#{due_date}",
                 "Incompatible type for 1. argument of d2:floor, expected NUMBER but was: DATE",
-                Map.of("due_date", ValueType.DATE) );
+                Map.of("due_date", ValueType.DATE));
     }
 
     @Test

@@ -5,25 +5,12 @@ import org.hisp.dhis.lib.expression.ast.VariableType;
 import org.hisp.dhis.lib.expression.eval.Evaluate;
 import org.hisp.dhis.lib.expression.eval.NodeValidator;
 import org.hisp.dhis.lib.expression.eval.ValueTypeVariableValue;
-import org.hisp.dhis.lib.expression.spi.DataItem;
-import org.hisp.dhis.lib.expression.spi.DataItemType;
-import org.hisp.dhis.lib.expression.spi.ExpressionData;
-import org.hisp.dhis.lib.expression.spi.ExpressionFunctions;
-import org.hisp.dhis.lib.expression.spi.ID;
-import org.hisp.dhis.lib.expression.spi.IllegalExpressionException;
-import org.hisp.dhis.lib.expression.spi.ParseException;
-import org.hisp.dhis.lib.expression.spi.ValueType;
-import org.hisp.dhis.lib.expression.spi.Variable;
-import org.hisp.dhis.lib.expression.spi.VariableValue;
+import org.hisp.dhis.lib.expression.spi.*;
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar;
 import org.hisp.dhis.lib.expression.syntax.Fragment;
 import org.hisp.dhis.lib.expression.syntax.Parser;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Facade API for working with DHIS2 expressions.
@@ -62,6 +49,7 @@ public final class Expression {
         Mode(List<Fragment> fragments, ValueType... resultTypes) {
             this(fragments, List.of(), resultTypes);
         }
+
         Mode(List<Fragment> fragments, List<NodeValidator> validators, ValueType... resultTypes) {
             this.resultTypes = EnumSet.of(resultTypes[0], resultTypes);
             this.fragments = fragments;
@@ -78,9 +66,13 @@ public final class Expression {
     }
 
     public Expression(String expression, Mode mode) throws ParseException {
+        this(expression, mode, false);
+    }
+
+    public Expression(String expression, Mode mode, boolean annotate) throws ParseException {
         this.mode = mode;
         this.expression = expression;
-        this.root = Parser.parse(expression, mode.fragments);
+        this.root = Parser.parse(expression, mode.fragments, annotate);
     }
 
     public Set<DataItem> collectDataItems() {
@@ -118,7 +110,7 @@ public final class Expression {
 
     /**
      * Collects all ID that are UID values.
-     *
+     * <p>
      * OBS! This does not include {@link ID}s that are not {@link ID.Type#isUID()}.
      *
      * @return A set of {@link ID}s used in the expression.
@@ -145,16 +137,15 @@ public final class Expression {
     }
 
     /**
-     * Regenerates an expression from the parse tree where all constant IDs are substituted with their values
-     * and all organisation unit groups IDs are substituted with their member count provided that are contained in
-     * the given map.
-     *
-     * @see #collectDataItemForRegenerate()
+     * Regenerates an expression from the parse tree where all constant IDs are substituted with their values and all
+     * organisation unit groups IDs are substituted with their member count provided that are contained in the given
+     * map.
      *
      * @param dataItemValues values for constants, member count for organisation unit groups
      * @return an expression where constant and organisation unit group data items are substituted with values
+     * @see #collectDataItemForRegenerate()
      */
-    public String regenerate(Map<DataItem, Number> dataItemValues ) {
+    public String regenerate(Map<DataItem, Number> dataItemValues) {
         // old: org.hisp.dhis.expression.DefaultExpressionService#regenerateIndicatorExpression (indicator only)
         return Evaluate.regenerate(root, dataItemValues);
     }

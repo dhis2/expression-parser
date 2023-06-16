@@ -8,32 +8,13 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Set;
 
-import static org.hisp.dhis.lib.expression.spi.DataItemType.ATTRIBUTE;
-import static org.hisp.dhis.lib.expression.spi.DataItemType.CONSTANT;
-import static org.hisp.dhis.lib.expression.spi.DataItemType.DATA_ELEMENT;
-import static org.hisp.dhis.lib.expression.spi.DataItemType.INDICATOR;
-import static org.hisp.dhis.lib.expression.spi.DataItemType.ORG_UNIT_GROUP;
-import static org.hisp.dhis.lib.expression.spi.DataItemType.PROGRAM_DATA_ELEMENT;
-import static org.hisp.dhis.lib.expression.spi.DataItemType.PROGRAM_INDICATOR;
-import static org.hisp.dhis.lib.expression.spi.DataItemType.REPORTING_RATE;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.AttributeOptionComboUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.AttributeUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.CategoryOptionGroupUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.CategoryOptionUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.ConstantUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.DataElementUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.DataSetUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.DateElementGroupUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.IndicatorUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.OrganisationUnitGroupUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.ProgramIndicatorUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.ProgramStageUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.ProgramUID;
-import static org.hisp.dhis.lib.expression.spi.ID.Type.ReportingRateType;
+import static org.hisp.dhis.lib.expression.spi.DataItemType.*;
+import static org.hisp.dhis.lib.expression.spi.ID.Type.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Tests all forms of {@link DataItem}s are correctly transformed from an expression to an AST and into a {@link DataItem} value.
+ * Tests all forms of {@link DataItem}s are correctly transformed from an expression to an AST and into a
+ * {@link DataItem} value.
  *
  * @author Jan Bernitt
  */

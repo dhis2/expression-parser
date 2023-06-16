@@ -11,54 +11,51 @@ import static java.lang.String.format;
 
 public interface Typed {
 
-    static Double toNumberTypeCoercion(Object value)
-    {
+    static Double toNumberTypeCoercion(Object value) {
         if (value == null) return null;
-        if (value instanceof VariableValue) return toNumberTypeCoercion(((VariableValue) value).valueOrDefault());
+        if (value instanceof VariableValue v) return toNumberTypeCoercion(v.valueOrDefault());
         if (value instanceof Boolean) return value == Boolean.TRUE ? 1d : 0d;
-        if (value instanceof Number) return ((Number) value).doubleValue();
+        if (value instanceof Number n) return n.doubleValue();
         return Double.valueOf(value.toString());
     }
 
-    static Boolean toBooleanTypeCoercion(Object value)
-    {
+    static Boolean toBooleanTypeCoercion(Object value) {
         if (value == null) return null;
-        if (value instanceof VariableValue) return toBooleanTypeCoercion(((VariableValue) value).valueOrDefault());
-        if (value instanceof Boolean) return (Boolean) value;
-        if (value instanceof Number) {
-            if (!isNonFractionValue((Number) value)) {
+        if (value instanceof VariableValue v) return toBooleanTypeCoercion(v.valueOrDefault());
+        if (value instanceof Boolean b) return b;
+        if (value instanceof Number n) {
+            if (!isNonFractionValue(n)) {
                 throw new IllegalArgumentException(format("Could not coerce Double '%s' to Boolean", value));
             }
-            return ((Number) value).intValue() != 0;
+            return n.intValue() != 0;
         }
         return Boolean.valueOf(value.toString());
     }
 
     static LocalDate toDateTypeCoercion(Object value) {
         if (value == null) return null;
-        if (value instanceof VariableValue) return toDateTypeCoercion(((VariableValue) value).valueOrDefault());
-        if (value instanceof LocalDate) return (LocalDate) value;
-        if (value instanceof String) return LocalDate.parse((String) value);
-        if (value instanceof Date) return LocalDate.ofInstant (((Date) value).toInstant(), ZoneId.systemDefault());
+        if (value instanceof VariableValue v) return toDateTypeCoercion(v.valueOrDefault());
+        if (value instanceof LocalDate d) return d;
+        if (value instanceof String s) return LocalDate.parse(s);
+        if (value instanceof Date d) return LocalDate.ofInstant(d.toInstant(), ZoneId.systemDefault());
         throw new IllegalArgumentException(format("Count not coerce to date: '%s'", value));
     }
 
     static String toStringTypeCoercion(Object value) {
         if (value == null) return null;
-        if (value instanceof VariableValue) return ((VariableValue) value).valueOrDefault().toString();
+        if (value instanceof VariableValue v) return v.valueOrDefault().toString();
         return value.toString();
     }
 
     static Object toMixedTypeTypeCoercion(Object value) {
         if (value == null) return null;
-        if (value instanceof VariableValue) {
-            VariableValue varValue = (VariableValue) value;
-            switch (varValue.valueType()) {
-                case NUMBER: return toNumberTypeCoercion(varValue.valueOrDefault());
-                case BOOLEAN: return toBooleanTypeCoercion(varValue.valueOrDefault());
-                case DATE: return toDateTypeCoercion(varValue.valueOrDefault());
-                default: return toStringTypeCoercion(varValue.valueOrDefault());
-            }
+        if (value instanceof VariableValue v) {
+            return switch (v.valueType()) {
+                case NUMBER -> toNumberTypeCoercion(v.valueOrDefault());
+                case BOOLEAN -> toBooleanTypeCoercion(v.valueOrDefault());
+                case DATE -> toDateTypeCoercion(v.valueOrDefault());
+                default -> toStringTypeCoercion(v.valueOrDefault());
+            };
         }
         return value;
     }

@@ -4,7 +4,7 @@ import lombok.Value;
 
 /**
  * An identifier of some type as used in {@link DataItem}s.
- *
+ * <p>
  * Mostly these are UIDs but sometimes these are other identifiers.
  *
  * @author Jan Bernitt

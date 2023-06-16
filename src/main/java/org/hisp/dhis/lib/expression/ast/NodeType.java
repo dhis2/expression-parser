@@ -1,7 +1,6 @@
 package org.hisp.dhis.lib.expression.ast;
 
-public enum NodeType
-{
+public enum NodeType {
     // complex nodes
     PAR,
     ARGUMENT,
@@ -20,7 +19,7 @@ public enum NodeType
      * <pre>
      * VARIABLE => IDENTIFIER
      * </pre>
-     *
+     * <p>
      * 2. A program rule variable name string
      * <pre>
      * VARIABLE => STRING
@@ -63,8 +62,8 @@ public enum NodeType
     }
 
     /**
-     * Special purpose literals like {@link #UID} or {@link #IDENTIFIER} are not considered literals
-     * as they should not be used in places where literals for the {@link org.hisp.dhis.lib.expression.spi.ValueType}s can occur.
+     * Special purpose literals like {@link #UID} or {@link #IDENTIFIER} are not considered literals as they should not
+     * be used in places where literals for the {@link org.hisp.dhis.lib.expression.spi.ValueType}s can occur.
      *
      * @return true if this is a general literal for no special purpose
      */
