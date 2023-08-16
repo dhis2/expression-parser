@@ -52,7 +52,7 @@ class DescribeConsumer implements NodeVisitor {
 
     @Override
     public void visitParentheses(Node<Void> group) {
-        boolean isRoot = !wasRoot && out.isEmpty();
+        boolean isRoot = !wasRoot && out.toString().isEmpty();
         if (isRoot) wasRoot = true;
         out.append(group.getWhitespace().before());
         if (!isRoot) out.append('(');
