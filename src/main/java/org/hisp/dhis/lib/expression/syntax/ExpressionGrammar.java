@@ -5,6 +5,7 @@ import org.hisp.dhis.lib.expression.spi.DataItemType;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
@@ -259,6 +260,6 @@ public interface ExpressionGrammar {
     static List<Fragment> concat(List<Fragment>... nonTerminals) {
         return Stream.of(nonTerminals)
                 .flatMap(Collection::stream)
-                .toList();
+                .collect(Collectors.toList());
     }
 }

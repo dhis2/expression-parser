@@ -2,6 +2,10 @@ package org.hisp.dhis.lib.expression.syntax;
 
 import org.hisp.dhis.lib.expression.ast.NodeType;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
 public interface Literals {
 
     static String parse(Expr expr, NodeType type) {
@@ -171,10 +175,19 @@ public interface Literals {
     }
 
     static boolean isUid(String s) {
-        return s.length() == 11 && Chars.isLetter(s.charAt(0)) && s.chars().allMatch(Chars::isAlphaNumeric);
+        return s.length() == 11 && Chars.isLetter(s.charAt(0)) && chars(s).allMatch(Chars::isAlphaNumeric);
     }
 
     static boolean isVarName(String s) {
-        return s.length() > 0 && s.chars().allMatch(Chars::isVarName);
+        return s.length() > 0 && chars(s).allMatch(Chars::isVarName);
+    }
+
+    static IntStream chars(String s){
+        List<Integer> intList = new ArrayList<>();
+        for (int i = 0; i < s.length(); i++) {
+            intList.add((int) s.charAt(i));
+        }
+
+        return intList.stream().mapToInt(Integer::intValue);
     }
 }

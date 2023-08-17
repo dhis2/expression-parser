@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.stream;
@@ -127,7 +128,7 @@ public interface Node<T> extends Typed, NodeAnnotations {
      * @return root of the mapped tree
      */
     default <N, V> N map(Function<Node<?>, V> nodeMap, BiFunction<V, List<N>, N> newNode) {
-        return eval(node -> newNode.apply(nodeMap.apply(node), node.children().map(n -> n.map(nodeMap, newNode)).toList()));
+        return eval(node -> newNode.apply(nodeMap.apply(node), node.children().map(n -> n.map(nodeMap, newNode)).collect(Collectors.toList())));
     }
 
     /**
