@@ -1,14 +1,22 @@
-group = "org.hisp.dhis.lib.expression"
-version = "1.1.0-SNAPSHOT"
-
 plugins {
     kotlin("multiplatform") version "1.9.0"
-    id("io.freefair.lombok") version "8.3"
     `maven-publish`
+    signing
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+    id("io.freefair.lombok") version "8.3"
+    id("org.jetbrains.dokka") version "1.9.0"
 }
 
 repositories {
     mavenCentral()
+}
+
+group = "org.hisp.dhis.lib.expression"
+version = "1.1.0-SNAPSHOT"
+
+val isReleaseVersion = project.hasProperty("removeSnapshot")
+if (isReleaseVersion) {
+    version = (version as String).replace("-SNAPSHOT", "")
 }
 
 kotlin {
@@ -53,4 +61,36 @@ kotlin {
         val nativeMain by getting
         val nativeTest by getting
     }
+}
+
+// Publication
+
+val ossrhUsername: String? = System.getenv("OSSRH_USERNAME")
+val ossrhPassword: String? = System.getenv("OSSRH_PASSWORD")
+val signingPrivateKey: String? = System.getenv("SIGNING_PRIVATE_KEY")
+val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
+
+val dokkaHtml = tasks.findByName("dokkaHtml")!!
+
+val dokkaHtmlJar = tasks.register<Jar>("dokkaHtmlJar") {
+    dependsOn(dokkaHtml)
+    from(dokkaHtml.outputs)
+    archiveClassifier.set("docs")
+}
+
+publicationConfig(dokkaHtmlJar)
+
+nexusPublishing {
+    this.repositories {
+        sonatype {
+            username.set(ossrhUsername)
+            password.set(ossrhPassword)
+        }
+    }
+}
+
+signing {
+    isRequired = isReleaseVersion
+    useInMemoryPgpKeys(signingPrivateKey, signingPassword)
+    sign(publishing.publications)
 }

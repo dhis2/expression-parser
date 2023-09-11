@@ -16,7 +16,7 @@ jobs:
           java-version: 17
           distribution: temurin
       - name: Test
-        run: mvn clean install --update-snapshots -q
+        run: ./gradlew clean test
 
   artifact:
     name: Publish - Nexus
@@ -29,13 +29,10 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - name: Remove snapshot
-        run: mvn -B versions:set -DremoveSnapshot -DgenerateBackupPoms=false
       - name: Release Maven package
-        uses: samuelmeuli/action-maven-publish@v1
+        run: ./gradlew publishJvmPublicationToSonatypeRepository -PremoveSnapshot
         with:
-          nexus_username: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
-          nexus_password: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
-          gpg_private_key: ${{ secrets.PGP_PRIVATE_KEY }}
-          gpg_passphrase: ${{ secrets.PGP_PASSPHRASE }}
-          maven_profiles: "master"
+          OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
+          SIGNING_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.PGP_PASSPHRASE }}
