@@ -15,6 +15,9 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+          cache: 'gradle'
+      - name: Change wrapper permission
+        run: chmod +x ./gradlew
       - name: Test
         run: ./gradlew clean test
 
@@ -29,6 +32,9 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
+          cache: 'gradle'
+      - name: Change wrapper permission
+        run: chmod +x ./gradlew
       - name: Release Maven package
         #run: ./gradlew publishJvmPublicationToSonatypeRepository -PremoveSnapshot
         run: ./gradlew assemble
