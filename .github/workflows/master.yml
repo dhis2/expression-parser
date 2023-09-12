@@ -30,7 +30,8 @@ jobs:
           java-version: 17
           distribution: temurin
       - name: Release Maven package
-        run: ./gradlew publishJvmPublicationToSonatypeRepository -PremoveSnapshot
+        #run: ./gradlew publishJvmPublicationToSonatypeRepository -PremoveSnapshot
+        run: ./gradlew assemble
         with:
           OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
