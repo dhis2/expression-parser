@@ -38,7 +38,7 @@ jobs:
       - name: Release Maven package
         #run: ./gradlew publishJvmPublicationToSonatypeRepository -PremoveSnapshot
         run: ./gradlew assemble
-        with:
+        env:
           OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
           SIGNING_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
