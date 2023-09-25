@@ -1,7 +1,6 @@
-package org.hisp.dhis.lib.expression.ast;
+package org.hisp.dhis.lib.expression.ast
 
-@SuppressWarnings("java:S115")
-public enum AggregationType {
+enum class AggregationType {
     sum,
     avg,
     avg_sum_org_unit,

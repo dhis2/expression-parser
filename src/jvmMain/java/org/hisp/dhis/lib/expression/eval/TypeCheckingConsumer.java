@@ -49,7 +49,7 @@ final class TypeCheckingConsumer implements NodeVisitor {
     }
 
     private void checkBinaryOperatorOperand(Node<BinaryOperator> operator, Node<?> operand, String name) {
-        ValueType expected = operator.getValue().getOperandsType();
+        ValueType expected = operator.getValue().operandsType;
         ValueType leftActual = operand.getValueType();
         if (!leftActual.isAssignableTo(expected)) {
             if (isStaticallyDefined(operand)) {
@@ -72,7 +72,7 @@ final class TypeCheckingConsumer implements NodeVisitor {
 
     @Override
     public void visitModifier(Node<DataItemModifier> modifier) {
-        checkArgumentTypesAreAssignable(modifier, modifier.getValue().getParameterTypes());
+        checkArgumentTypesAreAssignable(modifier, modifier.getValue().parameterTypes);
     }
 
     private void checkSameArgumentTypes(Node<NamedFunction> fn) {
