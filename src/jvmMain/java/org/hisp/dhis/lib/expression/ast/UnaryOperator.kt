@@ -13,6 +13,8 @@ enum class UnaryOperator(@JvmField val symbol: String, private val returnType: V
         return returnType
     }
 
+    fun getSymbol(): String { return symbol }
+
     companion object {
         /**
          * Avoid defensive copy when finding operator by symbol

@@ -253,7 +253,7 @@ public interface Nodes {
         @Override
         public ValueType getValueType() {
             ValueType type = getValue().getValueType();
-            return !type.isSame() ? type : child(getValue().getParameterTypes().indexOf(ValueType.SAME)).getValueType();
+            return !type.isSame() ? type : child(getValue().parameterTypes.indexOf(ValueType.SAME)).getValueType();
         }
     }
 

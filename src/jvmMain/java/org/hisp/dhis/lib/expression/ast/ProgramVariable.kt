@@ -1,7 +1,6 @@
-package org.hisp.dhis.lib.expression.ast;
+package org.hisp.dhis.lib.expression.ast
 
-@SuppressWarnings("java:S115")
-public enum ProgramVariable {
+enum class ProgramVariable {
     /*
     OBS! These are the names as they are expected in the syntax
      */

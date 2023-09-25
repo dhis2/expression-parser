@@ -1,11 +1,13 @@
-package org.hisp.dhis.lib.expression.ast;
+package org.hisp.dhis.lib.expression.ast
 
-import org.hisp.dhis.lib.expression.spi.ValueType;
+import org.hisp.dhis.lib.expression.spi.ValueType
 
-import java.util.List;
-
-@SuppressWarnings("java:S115")
-public enum NamedFunction implements Typed {
+enum class NamedFunction(
+    private val fnName: String,
+    private val returnType: ValueType,
+    @JvmField val isVarargs: Boolean,
+    vararg parameterTypes: ValueType
+) : Typed {
     // Base Functions
     firstNonNull("firstNonNull", ValueType.SAME, true, ValueType.SAME),
     greatest("greatest", ValueType.NUMBER, true, ValueType.NUMBER),
@@ -73,49 +75,40 @@ public enum NamedFunction implements Typed {
     d2_zScoreWFA("d2:zScoreWFA", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING),
     d2_zScoreWFH("d2:zScoreWFH", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING);
 
-    private final String name;
-    private final ValueType returnType;
-    private final boolean isVarargs;
-    private final List<ValueType> parameterTypes;
+    @JvmField
+    val parameterTypes: List<ValueType>
 
-    NamedFunction(String name, ValueType returnType, boolean isVarargs, ValueType... parameterTypes) {
-        this.name = name;
-        this.returnType = returnType;
-        this.isVarargs = isVarargs;
-        this.parameterTypes = List.of(parameterTypes);
+    constructor(name: String, returnType: ValueType, vararg parameterTypes: ValueType) : this(
+        name,
+        returnType,
+        false,
+        *parameterTypes
+    )
+
+    fun getName() : String {
+        return fnName;
     }
 
-    NamedFunction(String name, ValueType returnType, ValueType... parameterTypes) {
-        this(name, returnType, false, parameterTypes);
+    override fun getValueType(): ValueType {
+        return returnType
     }
 
-    public String getName() {
-        return name;
+    fun isAggregating(): Boolean {
+        return ordinal >= avg.ordinal && ordinal <= variance.ordinal;
     }
 
-    @Override
-    public ValueType getValueType() {
-        return returnType;
+    init {
+        this.parameterTypes = listOf(*parameterTypes)
     }
 
-    public boolean isVarargs() {
-        return isVarargs;
-    }
-
-    public List<ValueType> getParameterTypes() {
-        return parameterTypes;
-    }
-
-    public boolean isAggregating() {
-        return ordinal() >= avg.ordinal() && ordinal() <= variance.ordinal();
-    }
-
-    /**
-     * Avoid defensive copy when finding function by name
-     */
-    private static final List<NamedFunction> VALUES = List.of(values());
-
-    static NamedFunction fromName(String name) {
-        return VALUES.stream().filter(op -> op.name.equals(name)).findFirst().orElseThrow();
+    companion object {
+        /**
+         * Avoid defensive copy when finding function by name
+         */
+        private val VALUES = listOf(*entries.toTypedArray())
+        @JvmStatic
+        fun fromName(name: String): NamedFunction {
+            return VALUES.stream().filter { it.fnName == name } .findFirst().orElseThrow()
+        }
     }
 }

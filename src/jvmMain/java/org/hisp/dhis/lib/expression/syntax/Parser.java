@@ -55,7 +55,7 @@ public final class Parser implements ParseContext {
         List<String> wsTokens = Expr.parse(expr, parser, annotate);
         Node<?> root = parser.getRoot();
         if (annotate) {
-            Position.addWhitespace(root, wsTokens);
+            Position.Companion.addWhitespace(root, wsTokens);
         }
         Nodes.propagateModifiers(root);
         Node.groupOperators(root);

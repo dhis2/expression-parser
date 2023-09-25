@@ -1,6 +1,6 @@
-package org.hisp.dhis.lib.expression.ast;
+package org.hisp.dhis.lib.expression.ast
 
-public enum ReportingRateType {
+enum class ReportingRateType {
     REPORTING_RATE,
     REPORTING_RATE_ON_TIME,
     ACTUAL_REPORTS,

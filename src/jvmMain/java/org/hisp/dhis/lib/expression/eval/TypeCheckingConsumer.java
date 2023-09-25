@@ -66,7 +66,7 @@ final class TypeCheckingConsumer implements NodeVisitor {
 
     @Override
     public void visitFunction(Node<NamedFunction> function) {
-        checkArgumentTypesAreAssignable(function, function.getValue().getParameterTypes());
+        checkArgumentTypesAreAssignable(function, function.getValue().parameterTypes);
         checkSameArgumentTypes(function);
     }
 
@@ -77,8 +77,8 @@ final class TypeCheckingConsumer implements NodeVisitor {
 
     private void checkSameArgumentTypes(Node<NamedFunction> fn) {
         NamedFunction f = fn.getValue();
-        List<ValueType> expectedTypes = f.getParameterTypes();
-        if (!expectedTypes.contains(ValueType.SAME) || expectedTypes.size() == 1 && !f.isVarargs()) {
+        List<ValueType> expectedTypes = f.parameterTypes;
+        if (!expectedTypes.contains(ValueType.SAME) || expectedTypes.size() == 1 && !f.isVarargs) {
             return; // has no SAME in the signature
         }
         ValueType same = null;
