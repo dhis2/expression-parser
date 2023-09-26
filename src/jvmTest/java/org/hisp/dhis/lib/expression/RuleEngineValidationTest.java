@@ -180,7 +180,7 @@ class RuleEngineValidationTest {
         assertEquals(0, ex.getErrors().size());
         assertEquals(1, ex.getWarnings().size());
         Issue warning = ex.getWarnings().get(0);
-        assertEquals(expectedPosition, warning.getPosition().get());
+        assertEquals(expectedPosition, warning.getPosition().invoke());
         assertEquals(expectedWarning, warning.getMessage());
     }
 
@@ -193,7 +193,7 @@ class RuleEngineValidationTest {
         assertEquals(1, ex.getErrors().size());
         assertEquals(0, ex.getWarnings().size());
         Issue error = ex.getErrors().get(0);
-        assertEquals(expectedPosition, error.getPosition().get());
+        assertEquals(expectedPosition, error.getPosition().invoke());
         assertEquals(expectedWarning, error.getMessage());
     }
 

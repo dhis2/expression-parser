@@ -96,37 +96,49 @@ enum class BinaryOperator(@JvmField val symbol: String, private val returnType: 
      (all numeric operations either return a Double or an Integer)
      */
         @JvmStatic
-        fun add(left: Number, right: Number): Number {
+        fun add(left: Number?, right: Number?): Number {
+            require(left != null) { "left operator of addition must not be null" }
+            require(right != null) { "right operator of addition must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right)) left.toDouble() + right.toDouble()
             else asBigDecimal(left).add(asBigDecimal(right)).toDouble()
         }
 
         @JvmStatic
-        fun subtract(left: Number, right: Number): Number {
+        fun subtract(left: Number?, right: Number?): Number {
+            require(left != null) { "left operator of subtraction must not be null" }
+            require(right != null) { "right operator of subtraction must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right)) left.toDouble() - right.toDouble()
             else asBigDecimal(left).subtract(asBigDecimal(right)).toDouble()
         }
 
         @JvmStatic
-        fun multiply(left: Number, right: Number): Number {
+        fun multiply(left: Number?, right: Number?): Number {
+            require(left != null) { "left operator of multiplication must not be null" }
+            require(right != null) { "right operator of multiplication must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right)) left.toDouble() * right.toDouble()
             else asBigDecimal(left).multiply(asBigDecimal(right)).toDouble()
         }
 
         @JvmStatic
-        fun divide(left: Number, right: Number): Number {
+        fun divide(left: Number?, right: Number?): Number {
+            require(left != null) { "left operator of division must not be null" }
+            require(right != null) { "right operator of division must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right) || right.toDouble() == 0.0) left.toDouble() / right.toDouble()
             else asBigDecimal(left).divide(asBigDecimal(right), MathContext.DECIMAL64).toDouble()
         }
 
         @JvmStatic
-        fun modulo(left: Number, right: Number): Number {
+        fun modulo(left: Number?, right: Number?): Number {
+            require(left != null) { "left operator of modulo must not be null" }
+            require(right != null) { "right operator of modulo must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right) || right.toDouble() == 0.0) left.toDouble() % right.toDouble()
             else asBigDecimal(left).remainder(asBigDecimal(right)).toDouble()
         }
 
         @JvmStatic
-        fun exp(base: Number, exponent: Number): Number {
+        fun exp(base: Number?, exponent: Number?): Number {
+            require(base != null) { "base operator of exponential function must not be null" }
+            require(exponent != null) { "exponent operator of exponential function must not be null" }
             return if (isSpecialDouble(base) || isSpecialDouble(exponent)) Math.pow(
                 base.toDouble(),
                 exponent.toDouble()
@@ -138,7 +150,8 @@ enum class BinaryOperator(@JvmField val symbol: String, private val returnType: 
             return n as? BigDecimal ?: BigDecimal(n.toString(), MathContext.DECIMAL64)
         }
 
-        private fun isSpecialDouble(n: Number): Boolean {
+        private fun isSpecialDouble(n: Number?): Boolean {
+            if (n == null) return false
             val d = n.toDouble()
             return java.lang.Double.isNaN(d) || java.lang.Double.isInfinite(d)
         }
@@ -172,27 +185,27 @@ enum class BinaryOperator(@JvmField val symbol: String, private val returnType: 
     Comparison Operations
      */
         @JvmStatic
-        fun lessThan(left: Any, right: Any?): Boolean {
+        fun lessThan(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left < right
-            else Typed.toNumberTypeCoercion(left) < Typed.toNumberTypeCoercion(right)
+            else Typed.toNumberTypeCoercion(left)!! < Typed.toNumberTypeCoercion(right)!!
         }
 
         @JvmStatic
-        fun lessThanOrEqual(left: Any, right: Any?): Boolean {
+        fun lessThanOrEqual(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left <= right
-            else Typed.toNumberTypeCoercion(left) <= Typed.toNumberTypeCoercion(right)
+            else Typed.toNumberTypeCoercion(left)!! <= Typed.toNumberTypeCoercion(right)!!
         }
 
         @JvmStatic
-        fun greaterThan(left: Any, right: Any?): Boolean {
+        fun greaterThan(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left > right
-            else Typed.toNumberTypeCoercion(left) > Typed.toNumberTypeCoercion(right)
+            else Typed.toNumberTypeCoercion(left)!! > Typed.toNumberTypeCoercion(right)!!
         }
 
         @JvmStatic
-        fun greaterThanOrEqual(left: Any, right: Any?): Boolean {
+        fun greaterThanOrEqual(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left >= right
-            else Typed.toNumberTypeCoercion(left) >= Typed.toNumberTypeCoercion(right)
+            else Typed.toNumberTypeCoercion(left)!! >= Typed.toNumberTypeCoercion(right)!!
         }
 
         /*

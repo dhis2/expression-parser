@@ -47,12 +47,12 @@ final class GS1Formatter {
 
     private static String formatValue(String value, GS1Elements valueToReturn) {
         Map<String, String> dataMap = new HashMap<>();
-        String[] gs1Groups = removeGS1Identifier(value).split(GS1Elements.GS1_GROUP_SEPARATOR.getElement());
+        String[] gs1Groups = removeGS1Identifier(value).split(GS1Elements.GS1_GROUP_SEPARATOR.element);
         for (String gs1Group : gs1Groups) {
             handleGroupData(gs1Group, dataMap);
         }
-        if (dataMap.containsKey(valueToReturn.getElement())) {
-            return dataMap.get(valueToReturn.getElement());
+        if (dataMap.containsKey(valueToReturn.element)) {
+            return dataMap.get(valueToReturn.element);
         } else {
             throw new IllegalArgumentException("Required key does not exist for provided value");
         }
@@ -73,21 +73,21 @@ final class GS1Formatter {
     private static final Map<String, Integer> AI_FIXED_LENGTH = new HashMap<>();
 
     static {
-        AI_FIXED_LENGTH.put(SSCC.getElement(), 20);
-        AI_FIXED_LENGTH.put(GTIN.getElement(), 16);
-        AI_FIXED_LENGTH.put(CONTENT.getElement(), 16);
+        AI_FIXED_LENGTH.put(SSCC.element, 20);
+        AI_FIXED_LENGTH.put(GTIN.element, 16);
+        AI_FIXED_LENGTH.put(CONTENT.element, 16);
         AI_FIXED_LENGTH.put("03", 16);
         AI_FIXED_LENGTH.put("04", 18);
-        AI_FIXED_LENGTH.put(PROD_DATE.getElement(), 8);
-        AI_FIXED_LENGTH.put(DUE_DATE.getElement(), 8);
-        AI_FIXED_LENGTH.put(PACK_DATE.getElement(), 8);
+        AI_FIXED_LENGTH.put(PROD_DATE.element, 8);
+        AI_FIXED_LENGTH.put(DUE_DATE.element, 8);
+        AI_FIXED_LENGTH.put(PACK_DATE.element, 8);
         AI_FIXED_LENGTH.put("14", 8);
-        AI_FIXED_LENGTH.put(BEST_BEFORE_DATE.getElement(), 8);
-        AI_FIXED_LENGTH.put(SELL_BY.getElement(), 8);
-        AI_FIXED_LENGTH.put(EXP_DATE.getElement(), 8);
+        AI_FIXED_LENGTH.put(BEST_BEFORE_DATE.element, 8);
+        AI_FIXED_LENGTH.put(SELL_BY.element, 8);
+        AI_FIXED_LENGTH.put(EXP_DATE.element, 8);
         AI_FIXED_LENGTH.put("18", 8);
         AI_FIXED_LENGTH.put("19", 8);
-        AI_FIXED_LENGTH.put(VARIANT.getElement(), 4);
+        AI_FIXED_LENGTH.put(VARIANT.element, 4);
         AI_FIXED_LENGTH.put("31", 10);
         AI_FIXED_LENGTH.put("32", 10);
         AI_FIXED_LENGTH.put("33", 10);

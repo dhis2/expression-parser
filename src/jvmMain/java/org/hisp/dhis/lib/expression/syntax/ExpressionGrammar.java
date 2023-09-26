@@ -141,8 +141,8 @@ public interface ExpressionGrammar {
             Fragment.constant(NodeType.BOOLEAN, "false")
     );
 
-    Fragment HASH_BRACE = dataItemHash.named(DataItemType.DATA_ELEMENT.getSymbol());
-    Fragment A_BRACE = dataItemA.named(DataItemType.ATTRIBUTE.getSymbol());
+    Fragment HASH_BRACE = dataItemHash.named(DataItemType.DATA_ELEMENT.symbol);
+    Fragment A_BRACE = dataItemA.named(DataItemType.ATTRIBUTE.symbol);
     Fragment C_BRACE = item(DataItemType.CONSTANT, UID);
     Fragment D_BRACE = item(DataItemType.PROGRAM_DATA_ELEMENT, UID, UID);
     Fragment I_BRACE = item(DataItemType.PROGRAM_INDICATOR, UID);
@@ -208,12 +208,12 @@ public interface ExpressionGrammar {
     }
 
     static Fragment item(DataItemType value, Fragment... args) {
-        String symbol = value.getSymbol();
+        String symbol = value.symbol;
         return block(NodeType.DATA_ITEM, symbol, '{', '.', '}', args).named(symbol);
     }
 
     static Fragment variable(DataItemType value, Fragment... args) {
-        String symbol = value.getSymbol();
+        String symbol = value.symbol;
         return block(NodeType.VARIABLE, symbol, '{', '.', '}', args).named(symbol);
     }
 
