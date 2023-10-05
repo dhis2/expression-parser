@@ -50,9 +50,9 @@ interface NodeAnnotations {
 
     fun getStart(): Position?
 
-    fun setStart(start: Position)
+    fun setStart(start: Position?)
 
     fun getEnd(): Position?
 
-    fun setEnd(end: Position)
+    fun setEnd(end: Position?)
 }

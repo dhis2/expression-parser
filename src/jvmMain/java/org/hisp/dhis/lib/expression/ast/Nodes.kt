@@ -32,11 +32,11 @@ interface Nodes {
             }
         }
 
-        override fun setStart(start: Position) {
+        override fun setStart(start: Position?) {
             this.start = start
         }
 
-        override fun setEnd(end: Position) {
+        override fun setEnd(end: Position?) {
             this.end = end
         }
 

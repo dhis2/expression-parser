@@ -1,15 +1,13 @@
 package org.hisp.dhis.lib.expression.spi
 
-import lombok.Value
 import java.util.stream.Collectors
 
-@Value
-class DataItem(
-    var type: DataItemType,
-    var uid0: ID,
-    var uid1: List<ID>,
-    var uid2: List<ID>,
-    var modifiers: QueryModifiers) {
+data class DataItem(
+    val type: DataItemType,
+    val uid0: ID,
+    val uid1: List<ID>,
+    val uid2: List<ID>,
+    val modifiers: QueryModifiers) {
 
     constructor(type: DataItemType, vararg uid012: ID) : this(
         type,

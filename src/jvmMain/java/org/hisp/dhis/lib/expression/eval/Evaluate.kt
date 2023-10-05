@@ -10,6 +10,7 @@ import java.util.function.Consumer
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.collections.HashSet
+import kotlin.collections.LinkedHashSet
 
 /**
  * This is the exposed API of the evaluation package. It contains all high level functions to turn a [Node]-tree
@@ -78,7 +79,7 @@ class Evaluate private constructor() {
      */
         fun collectDataItems(root: Node<*>): Set<DataItem> {
             return root.aggregate(
-                HashSet(),
+                LinkedHashSet(),
                 Node<*>::toDataItem,
                 { set: MutableSet<DataItem>, e: DataItem? -> set.add(e!!) }
             ) { node: Node<*> -> node.getType() === NodeType.DATA_ITEM }
@@ -88,7 +89,7 @@ class Evaluate private constructor() {
             //TODO need to add subExpression modifier SQL in case that is present
             val filter = setOf(ofTypes)
             return root.aggregate(
-                HashSet(),
+                LinkedHashSet(),
                 Node<*>::toDataItem,
                 { set: MutableSet<DataItem>, e: DataItem? -> set.add(e!!) }
             ) { node: Node<*> -> node.getType() === NodeType.DATA_ITEM && filter.contains(node.getValue()) }
@@ -96,7 +97,7 @@ class Evaluate private constructor() {
 
         fun collectVariableNames(root: Node<*>, type: VariableType): Set<String> {
             return root.aggregate(
-                HashSet(),
+                LinkedHashSet(),
                 { node: Node<*> -> node.child(0).getRawValue() },
                 MutableSet<String>::add
             ) { node: Node<*> -> node.getType() === NodeType.VARIABLE && node.getValue() === type }
@@ -104,7 +105,7 @@ class Evaluate private constructor() {
 
         fun collectVariables(root: Node<*>, type: VariableType): Set<Variable> {
             return root.aggregate(
-                HashSet(),
+                LinkedHashSet(),
                 Node<*>::toVariable,
                 { set: MutableSet<Variable>, e: Variable? -> set.add(e!!) }
             ) { node: Node<*> -> node.getType() === NodeType.VARIABLE && node.getValue() === type }
@@ -112,7 +113,7 @@ class Evaluate private constructor() {
 
         fun collectUIDs(root: Node<*>): Set<ID> {
             return root.aggregate(
-                HashSet(), Node<*>::toIDs,
+                LinkedHashSet(), Node<*>::toIDs,
                 { set: HashSet<ID>, ids: Stream<ID> ->
                     ids.filter { id: ID -> id.type.isUID() }.forEach { e: ID -> set.add(e) }
                 }

@@ -2,9 +2,6 @@ package org.hisp.dhis.lib.expression.spi
 
 import org.hisp.dhis.lib.expression.ast.AggregationType
 import java.time.LocalDate
-import kotlin.Any
-import kotlin.Int
-import kotlin.String
 
 data class QueryModifiers (
     /**
