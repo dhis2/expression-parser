@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.eval
 
 import org.hisp.dhis.lib.expression.ast.*
+import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.hisp.dhis.lib.expression.spi.Issues
 import org.hisp.dhis.lib.expression.spi.ValueType
 import java.util.stream.Collectors
@@ -142,11 +143,12 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
     }
 
     private fun evalTo(expected: ValueType): (Node<*>) -> Unit {
+        val eval = EvaluateFunction({_ -> null}, ExpressionData())
         return when (expected) {
-            ValueType.STRING -> Typed::toStringTypeCoercion
-            ValueType.DATE -> Typed::toDateTypeCoercion
-            ValueType.BOOLEAN -> Typed::toBooleanTypeCoercion
-            ValueType.NUMBER -> Typed::toNumberTypeCoercion
+            ValueType.STRING -> eval::evalToString
+            ValueType.DATE -> eval::evalToDate
+            ValueType.BOOLEAN -> eval::evalToBoolean
+            ValueType.NUMBER -> eval::evalToNumber
             else -> { _ -> }
         }
     }

@@ -22,7 +22,7 @@ interface Nodes {
         private var value: T
         private var start: Position? = null
         private var end: Position? = null
-        private var whitespace: NodeAnnotations.Whitespace? = NodeAnnotations.Whitespace.DEFAULT
+        private var whitespace: NodeAnnotations.Whitespace = NodeAnnotations.Whitespace.DEFAULT
 
         init {
             try {
@@ -40,11 +40,11 @@ interface Nodes {
             this.end = end
         }
 
-        override fun setWhitespace(whitespace: NodeAnnotations.Whitespace?) {
+        override fun setWhitespace(whitespace: NodeAnnotations.Whitespace) {
             this.whitespace = whitespace
         }
 
-        override fun getWhitespace(): NodeAnnotations.Whitespace? {
+        override fun getWhitespace(): NodeAnnotations.Whitespace {
             return whitespace
         }
 

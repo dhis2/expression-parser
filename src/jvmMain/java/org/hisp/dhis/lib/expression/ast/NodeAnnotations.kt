@@ -41,12 +41,12 @@ interface NodeAnnotations {
      *
      * @param whitespace list of whitespace for the node. Might contain empty strings but never `null`
      */
-    fun setWhitespace(whitespace: Whitespace?)
+    fun setWhitespace(whitespace: Whitespace)
 
     /**
      * @return The whitespace between the syntax elements of this node or an empty list if no whitespace was attached
      */
-    fun getWhitespace(): Whitespace?
+    fun getWhitespace(): Whitespace
 
     fun getStart(): Position?
 

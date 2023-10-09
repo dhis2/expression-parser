@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.*
 
-interface Typed {
+fun interface Typed {
 
     fun getValueType(): ValueType
 
@@ -15,7 +15,7 @@ interface Typed {
             if (value == null) return null
             if (value is VariableValue) return toNumberTypeCoercion(value.valueOrDefault())
             return if (value is Boolean) if (value == true) 1.0 else 0.0
-            else (value as? Number)?.toDouble() ?: java.lang.Double.valueOf(value.toString())
+            else (value as? Number)?.toDouble() ?: value.toString().toDouble()
         }
 
         fun toBooleanTypeCoercion(value: Any?): Boolean? {
@@ -31,7 +31,7 @@ interface Typed {
                 }
                 return value.toInt() != 0
             }
-            return java.lang.Boolean.valueOf(value.toString())
+            return value.toString().toBoolean()
         }
 
         fun toDateTypeCoercion(value: Any?): LocalDate? {
@@ -55,22 +55,19 @@ interface Typed {
                     ValueType.NUMBER -> toNumberTypeCoercion(
                         value.valueOrDefault()
                     )
-
                     ValueType.BOOLEAN -> toBooleanTypeCoercion(
                         value.valueOrDefault()
                     )
-
                     ValueType.DATE -> toDateTypeCoercion(
                         value.valueOrDefault()
                     )
-
                     else -> toStringTypeCoercion(value.valueOrDefault())
                 }
             }
             else value
         }
 
-        fun isNonFractionValue(value: Number): Boolean {
+        private fun isNonFractionValue(value: Number): Boolean {
             return value.toDouble() % 1.0 == 0.0
         }
     }

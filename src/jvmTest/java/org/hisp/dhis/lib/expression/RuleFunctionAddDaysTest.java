@@ -29,7 +29,7 @@ class RuleFunctionAddDaysTest {
     @Test
     void throw_runtime_exception_if_first_argument_is_invalid() {
         assertIllegalExpression("d2:addDays('bad date', 6)",
-                "Failed to coerce value 'bad date' (String) to LocalDate: Text 'bad date' could not be parsed at index 0\n" +
+                "Failed to coerce value 'bad date' (String) to Date: Text 'bad date' could not be parsed at index 0\n" +
                         "\t in expression: 'bad date'");
     }
 
@@ -43,7 +43,7 @@ class RuleFunctionAddDaysTest {
     @Test
     void throw_illegal_argument_exception_if_first_and_second_argument_is_invalid() {
         assertIllegalExpression("d2:addDays('bad date', 'bad number')",
-                "Failed to coerce value 'bad date' (String) to LocalDate: Text 'bad date' could not be parsed at index 0\n" +
+                "Failed to coerce value 'bad date' (String) to Date: Text 'bad date' could not be parsed at index 0\n" +
                         "\t in expression: 'bad date'");
     }
 

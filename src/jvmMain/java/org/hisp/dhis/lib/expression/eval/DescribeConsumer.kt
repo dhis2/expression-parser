@@ -28,26 +28,26 @@ internal class DescribeConsumer(
     override fun visitParentheses(group: Node<Unit>) {
         val isRoot = !wasRoot && out.toString().isEmpty()
         if (isRoot) wasRoot = true
-        out.append(group.getWhitespace()!!.before)
+        out.append(group.getWhitespace().before)
         if (!isRoot) out.append('(')
         group.walkChildren(this, null)
         if (!isRoot) out.append(')')
-        out.append(group.getWhitespace()!!.after)
+        out.append(group.getWhitespace().after)
     }
 
     override fun visitArgument(argument: Node<Int>) {
-        out.append(argument.getWhitespace()!!.before)
+        out.append(argument.getWhitespace().before)
         argument.walkChildren(
             this
         ) { c1: Node<*>, c2: Node<*> -> out.append(if (c1.getType() === NodeType.UID && c2.getType() === NodeType.UID) "&" else "") }
-        out.append(argument.getWhitespace()!!.after)
+        out.append(argument.getWhitespace().after)
     }
 
     override fun visitBinaryOperator(operator: Node<BinaryOperator>) {
         operator.child(0).walk(this)
-        out.append(operator.getWhitespace()!!.before(" "))
+        out.append(operator.getWhitespace().before(" "))
         out.append(operator.getRawValue())
-        out.append(operator.getWhitespace()!!.after(" "))
+        out.append(operator.getWhitespace().after(" "))
         operator.child(1).walk(this)
     }
 
@@ -55,38 +55,38 @@ internal class DescribeConsumer(
         val rawValue: String = operator.getRawValue()
         val isWord = Character.isLetter(rawValue[0])
         val ifDefault = if (isWord) " " else ""
-        out.append(operator.getWhitespace()!!.before(ifDefault))
+        out.append(operator.getWhitespace().before(ifDefault))
         out.append(rawValue)
-        out.append(operator.getWhitespace()!!.after(ifDefault))
+        out.append(operator.getWhitespace().after(ifDefault))
         operator.child(0).walk(this)
     }
 
     override fun visitFunction(fn: Node<NamedFunction>) {
-        out.append(fn.getWhitespace()!!.before)
+        out.append(fn.getWhitespace().before)
         out.append(fn.getValue().getName()).append('(')
         fn.walkChildren(this) { _, _ -> out.append(',') }
         out.append(')')
-        out.append(fn.getWhitespace()!!.after)
+        out.append(fn.getWhitespace().after)
     }
 
     override fun visitModifier(modifier: Node<DataItemModifier>) {
-        out.append(modifier.getWhitespace()!!.before)
+        out.append(modifier.getWhitespace().before)
         out.append('.').append(modifier.getValue().name).append('(')
         modifier.walkChildren(this) { _, _ -> out.append(',') }
         out.append(')')
-        out.append(modifier.getWhitespace()!!.after)
+        out.append(modifier.getWhitespace().after)
     }
 
     override fun visitDataItem(item: Node<DataItemType>) {
         val value = dataItemValues[item.toDataItem()]
-        out.append(item.getWhitespace()!!.before)
+        out.append(item.getWhitespace().before)
         if (value != null) {
             out.append(value)
         }
         else {
             describeDataItem(item)
         }
-        out.append(item.getWhitespace()!!.after)
+        out.append(item.getWhitespace().after)
     }
 
     private fun describeDataItem(item: Node<DataItemType>) {
@@ -115,12 +115,12 @@ internal class DescribeConsumer(
     }
 
     override fun visitVariable(variable: Node<VariableType>) {
-        out.append(variable.getWhitespace()!!.before)
+        out.append(variable.getWhitespace().before)
         if (displayNames.isNotEmpty()) {
             val name = displayNames[variable.child(0).getRawValue()]
             if (name != null) {
                 out.append(name)
-                out.append(variable.getWhitespace()!!.after)
+                out.append(variable.getWhitespace().after)
                 return
             }
         }
@@ -135,7 +135,7 @@ internal class DescribeConsumer(
             out.append('}')
         }
         visitModifiers(variable)
-        out.append(variable.getWhitespace()!!.after)
+        out.append(variable.getWhitespace().after)
     }
 
     override fun visitNamedValue(value: Node<NamedValue>) {
@@ -176,9 +176,9 @@ internal class DescribeConsumer(
     }
 
     private fun appendValue(node: Node<*>, value: String) {
-        out.append(node.getWhitespace()!!.before)
+        out.append(node.getWhitespace().before)
         out.append(value)
-        out.append(node.getWhitespace()!!.after)
+        out.append(node.getWhitespace().after)
     }
 
     companion object {

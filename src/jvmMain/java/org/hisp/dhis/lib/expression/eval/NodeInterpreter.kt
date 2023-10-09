@@ -30,7 +30,7 @@ interface NodeInterpreter<T> : (Node<*>) -> T? {
             NodeType.NUMBER -> evalNumber(node as Node<Double>)
             NodeType.STRING -> evalString(node as Node<String>)
             NodeType.INTEGER -> evalInteger(node as Node<Int>)
-            NodeType.IDENTIFIER -> evalIdentifier(node)
+            NodeType.IDENTIFIER -> evalIdentifier(node as Node<Any>)
             NodeType.NAMED_VALUE -> evalNamedValue(node as Node<NamedValue>)
         }
     }
@@ -59,7 +59,7 @@ interface NodeInterpreter<T> : (Node<*>) -> T? {
     fun evalBoolean(value: Node<Boolean>): T
     fun evalNull(value: Node<Unit>): T?
     fun evalString(value: Node<String>): T
-    fun evalIdentifier(value: Node<*>): T
+    fun evalIdentifier(value: Node<Any>): T
     fun evalUid(value: Node<String>): T
     fun evalDate(value: Node<LocalDate>): T
 }

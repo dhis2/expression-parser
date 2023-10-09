@@ -286,11 +286,10 @@ interface Node<T> : Typed, NodeAnnotations {
         @JvmStatic
         fun groupOperators(root: Node<*>) {
             groupBinaryOperators(root, BinaryOperator.EXP)
-            Arrays.stream(UnaryOperator.entries.toTypedArray())
-                .forEachOrdered { op: UnaryOperator -> groupUnaryOperators(root, op) }
-            Arrays.stream(BinaryOperator.entries.toTypedArray())
-                .filter { op: BinaryOperator -> op !== BinaryOperator.EXP }
-                .forEachOrdered { op: BinaryOperator -> groupBinaryOperators(root, op) }
+            UnaryOperator.entries.stream().forEach { op: UnaryOperator -> groupUnaryOperators(root, op) }
+            BinaryOperator.entries
+                .filter  { op: BinaryOperator -> op !== BinaryOperator.EXP }
+                .forEach { op: BinaryOperator -> groupBinaryOperators(root, op) }
         }
 
         /**
@@ -303,7 +302,7 @@ interface Node<T> : Typed, NodeAnnotations {
          * @param root the node to start the transformation from
          * @param op   the operator to transform
          */
-        fun groupUnaryOperators(root: Node<*>, op: UnaryOperator) {
+        private fun groupUnaryOperators(root: Node<*>, op: UnaryOperator) {
             root.transform { _: Node<*>, children: List<Node<*>> ->
                 val isUnary = { child: Node<*> -> child.getValue() === op && child.isEmpty() }
                 if (children.stream().noneMatch(isUnary)) {
@@ -335,7 +334,7 @@ interface Node<T> : Typed, NodeAnnotations {
          * @param root the node to start the transformation from
          * @param op   the operator to transform
          */
-        fun groupBinaryOperators(root: Node<*>, op: BinaryOperator) {
+        private fun groupBinaryOperators(root: Node<*>, op: BinaryOperator) {
             root.transform { _: Node<*>?, children: List<Node<*>> ->
                 val isBinary = { child: Node<*> -> child.getValue() === op && child.isEmpty() }
                 if (children.stream().noneMatch(isBinary)) {
@@ -349,7 +348,7 @@ interface Node<T> : Typed, NodeAnnotations {
                     if (isBinary(operator)) {
                         operator.addChild(grouped.removeAt(grouped.size - 1)) // left
                         var right = children[++i]
-                        while (op === BinaryOperator.EXP && right.getValue() === NodeType.UNARY_OPERATOR) {
+                        while (op === BinaryOperator.EXP && right.getType() === NodeType.UNARY_OPERATOR) {
                             operator.addChild(right)
                             right = children[++i]
                         }

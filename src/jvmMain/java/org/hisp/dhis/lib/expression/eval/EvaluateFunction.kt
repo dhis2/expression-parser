@@ -1,10 +1,8 @@
 package org.hisp.dhis.lib.expression.eval
 
-import lombok.RequiredArgsConstructor
 import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.ast.UnaryOperator.Companion.negate
 import org.hisp.dhis.lib.expression.spi.*
-import java.lang.reflect.Array
 import java.time.LocalDate
 import java.util.stream.Collectors
 import java.util.stream.Stream
@@ -168,7 +166,8 @@ internal class EvaluateFunction(
         }
         if (items.isEmpty()) throw IllegalExpressionException("Aggregate function used without data item")
         val val0 = data.dataItemValues[items[0]] as DoubleArray?
-        val values = DoubleArray(val0!!.size)
+            ?: throw IllegalExpressionException("Aggregate function used with undefined data item")
+        val values = DoubleArray(val0.size)
         dataItemIndex = 0
         while (dataItemIndex < values.size) {
             val value: Number? = evalToNumber(fn.child(0))
@@ -198,25 +197,28 @@ internal class EvaluateFunction(
         return
     }
 
-    override fun evalDataItem(item: Node<DataItemType>): Any {
+    override fun evalDataItem(item: Node<DataItemType>): Any? {
         val dataItem = item.toDataItem()
-        if (!data.programRuleVariableValues.isEmpty()) {
-            return data.programRuleVariableValues[dataItem!!.getKey()]!!
+        if (data.programRuleVariableValues.isNotEmpty()) {
+            return if (dataItem == null) null else data.programRuleVariableValues[dataItem.getKey()]
         }
-        val value = data.dataItemValues[dataItem]
-        return (if (value != null && value.javaClass.isArray) Array.get(value, dataItemIndex) else value)!!
+        return when (val value = data.dataItemValues[dataItem]) {
+            is Array<*> -> value[dataItemIndex]
+            is DoubleArray -> value[dataItemIndex]
+            else -> value
+        }
     }
 
-    override fun evalVariable(variable: Node<VariableType>): Any {
+    override fun evalVariable(variable: Node<VariableType>): Any? {
         val name = evalToString(variable.child(0))
         val values =
-            if (!data.programRuleVariableValues.isEmpty()) data.programRuleVariableValues else data.programVariableValues
+            data.programRuleVariableValues.ifEmpty { data.programVariableValues }
         if (!values.containsKey(name)) throw IllegalExpressionException(String.format("Unknown variable: '%s'", name))
-        return values[name]!!
+        return values[name]
     }
 
-    override fun evalNamedValue(value: Node<NamedValue>): Any {
-        return data.namedValues[value.getRawValue()]!!
+    override fun evalNamedValue(value: Node<NamedValue>): Any? {
+        return data.namedValues[value.getRawValue()]
     }
 
     override fun evalNumber(value: Node<Double>): Double {
@@ -231,16 +233,16 @@ internal class EvaluateFunction(
         return value.getValue()
     }
 
-    override fun evalNull(value: Node<Unit>): Unit {
-        return
+    override fun evalNull(value: Node<Unit>): Any? {
+        return null
     }
 
     override fun evalString(value: Node<String>): String {
         return value.getValue()
     }
 
-    override fun evalIdentifier(value: Node<*>): Any {
-        return value.getValue()!!
+    override fun evalIdentifier(value: Node<Any>): Any {
+        return value.getValue()
     }
 
     override fun evalUid(value: Node<String>): String {
@@ -254,11 +256,11 @@ internal class EvaluateFunction(
     /*
     Result Type conversion
      */
-    private fun <T> eval(node: Node<*>, target: Class<T>, cast: (Any?) -> T?): T? {
+    private fun <T> eval(node: Node<*>, to: String, coerce: (Any?) -> T?): T? {
         var value: Any? = null
         return try {
             value = node.eval(this)
-            cast(value)
+            coerce(value)
         } catch (ex: IllegalExpressionException) {
             throw ex
         } catch (ex: UnsupportedOperationException) {
@@ -268,8 +270,8 @@ internal class EvaluateFunction(
                 String.format(
                     "Failed to coerce value '%s' (%s) to %s: %s%n\t in expression: %s",
                     value,
-                    if (value == null) "" else value.javaClass.simpleName,
-                    target.simpleName,
+                    if (value == null) "" else value::class.simpleName,
+                    to,
                     ex.message,
                     DescribeConsumer.toNormalisedExpression(node)
                 )
@@ -277,20 +279,20 @@ internal class EvaluateFunction(
         }
     }
 
-    private fun evalToString(node: Node<*>): String? {
-        return eval(node, String::class.java, Typed::toStringTypeCoercion)
+    fun evalToString(node: Node<*>): String? {
+        return eval(node, "String", Typed::toStringTypeCoercion)
     }
 
-    private fun evalToBoolean(node: Node<*>): Boolean? {
-        return eval(node, Boolean::class.java, Typed::toBooleanTypeCoercion)
+    fun evalToBoolean(node: Node<*>): Boolean? {
+        return eval(node, "Boolean", Typed::toBooleanTypeCoercion)
     }
 
-    private fun evalToNumber(node: Node<*>): Double? {
-        return eval(node, Double::class.java, Typed::toNumberTypeCoercion)
+    fun evalToNumber(node: Node<*>): Double? {
+        return eval(node, "Double", Typed::toNumberTypeCoercion)
     }
 
-    private fun evalToDate(node: Node<*>): LocalDate? {
-        return eval(node, LocalDate::class.java, Typed::toDateTypeCoercion)
+    fun evalToDate(node: Node<*>): LocalDate? {
+        return eval(node, "Date", Typed::toDateTypeCoercion)
     }
 
     private fun evalToInteger(node: Node<*>): Int? {
@@ -300,11 +302,11 @@ internal class EvaluateFunction(
     }
 
     private fun evalToMixed(node: Node<*>): Any? {
-        return eval(node, Any::class.java, Typed::toMixedTypeTypeCoercion)
+        return eval(node, "Any", Typed::toMixedTypeTypeCoercion)
     }
 
     private fun evalToVar(node: Node<*>): VariableValue? {
-        return eval(node, VariableValue::class.java, { it as VariableValue })
+        return eval(node, "Variable") { v: Any? -> v as VariableValue? }
     }
 
     private fun evalToMixed(nodes: Stream<Node<*>>): List<*> {
