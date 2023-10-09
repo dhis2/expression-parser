@@ -34,7 +34,7 @@ interface Node<T> : Typed, NodeAnnotations {
      * This is used to customize the result node during the parsing process by attaching a custom factory to a
      * fragment.
      */
-    interface Factory {
+    fun interface Factory {
         fun create(type: NodeType?, rawValue: String?): Node<*>?
     }
 
