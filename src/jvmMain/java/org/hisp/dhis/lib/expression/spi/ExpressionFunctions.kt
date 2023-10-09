@@ -91,47 +91,47 @@ fun interface ExpressionFunctions {
     /*
     Aggregate functions...
      */
-    fun avg(values: DoubleArray?): Double {
+    fun avg(values: DoubleArray): Double {
         return AggregateMath.avg(values)
     }
 
-    fun count(values: DoubleArray?): Double {
+    fun count(values: DoubleArray): Double {
         return AggregateMath.count(values)
     }
 
-    fun max(values: DoubleArray?): Double {
+    fun max(values: DoubleArray): Double {
         return AggregateMath.max(values)
     }
 
-    fun median(values: DoubleArray?): Double {
+    fun median(values: DoubleArray): Double {
         return AggregateMath.median(values)
     }
 
-    fun min(values: DoubleArray?): Double {
+    fun min(values: DoubleArray): Double {
         return AggregateMath.min(values)
     }
 
-    fun percentileCont(values: DoubleArray?, fraction: Number?): Double {
+    fun percentileCont(values: DoubleArray, fraction: Double?): Double? {
         return AggregateMath.percentileCont(values, fraction)
     }
 
-    fun stddev(values: DoubleArray?): Double {
+    fun stddev(values: DoubleArray): Double {
         return AggregateMath.stddev(values)
     }
 
-    fun stddevPop(values: DoubleArray?): Double {
+    fun stddevPop(values: DoubleArray): Double {
         return AggregateMath.stddevPop(values)
     }
 
-    fun stddevSamp(values: DoubleArray?): Double {
+    fun stddevSamp(values: DoubleArray): Double {
         return AggregateMath.stddevSamp(values)
     }
 
-    fun sum(values: DoubleArray?): Double {
+    fun sum(values: DoubleArray): Double {
         return AggregateMath.sum(values)
     }
 
-    fun variance(values: DoubleArray?): Double {
+    fun variance(values: DoubleArray): Double {
         return AggregateMath.variance(values)
     }
 

@@ -155,7 +155,7 @@ internal class EvaluateFunction(
         }
     }
 
-    private fun evalAggFunction(fn: Node<NamedFunction>): Double {
+    private fun evalAggFunction(fn: Node<NamedFunction>): Double? {
         val items: MutableList<DataItem> = mutableListOf()
         fn.visit(NodeType.DATA_ITEM) { node: Node<*> ->
             run {
