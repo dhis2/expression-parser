@@ -6,11 +6,11 @@ import org.hisp.dhis.lib.expression.spi.VariableValue
 data class RuleVariableValue (
     private val valueType: ValueType,
     private val value: String?,
-    private val candidates: List<String>?,
+    private val candidates: List<String>,
     private val eventDate: String?
 ) : VariableValue {
 
-    constructor(valueType: ValueType) : this(valueType, null, null, null)
+    constructor(valueType: ValueType) : this(valueType, null, listOf(), null)
 
     override fun value(): String? {
         return value
@@ -25,7 +25,7 @@ data class RuleVariableValue (
         }
     }
 
-    override fun candidates(): List<String>? {
+    override fun candidates(): List<String> {
         return candidates
     }
 

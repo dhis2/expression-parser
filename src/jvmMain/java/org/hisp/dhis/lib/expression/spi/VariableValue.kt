@@ -13,7 +13,7 @@ interface VariableValue {
     /**
      * @return list of candidates, never null
      */
-    fun candidates(): List<String?>?
+    fun candidates(): List<String>
 
     /**
      * @return associated event date, maybe null

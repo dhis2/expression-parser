@@ -13,8 +13,8 @@ class ValueTypeVariableValue(private val valueType: ValueType) : VariableValue {
         return null
     }
 
-    override fun candidates(): List<String?>? {
-        return null
+    override fun candidates(): List<String> {
+        return listOf()
     }
 
     override fun eventDate(): String? {
