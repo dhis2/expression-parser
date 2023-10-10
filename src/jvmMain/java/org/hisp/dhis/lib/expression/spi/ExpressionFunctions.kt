@@ -8,8 +8,6 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import java.util.*
-import java.util.regex.Pattern
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.ln
@@ -162,9 +160,7 @@ fun interface ExpressionFunctions {
 
     fun d2_countIfValue(value: VariableValue?, booleanOrNumber: Any?): Int {
         return if (value == null || booleanOrNumber == null) 0
-        else Collections.frequency(
-            value.candidates(),
-            booleanOrNumber)
+        else value.candidates().count { e -> e == booleanOrNumber }
     }
 
     fun d2_countIfZeroPos(value: VariableValue?): Int {
@@ -259,7 +255,7 @@ fun interface ExpressionFunctions {
      */
     fun d2_split(input: String?, delimiter: String?, index: Int?): String? {
         if (input == null || delimiter == null) return ""
-        val parts = input.split(Pattern.quote(delimiter).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val parts = input.split(Regex.escape(delimiter).toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         return if (index == null || index < 0 || index >= parts.size) "" else parts[index]
     }
 

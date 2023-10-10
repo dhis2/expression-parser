@@ -6,7 +6,6 @@ import org.hisp.dhis.lib.expression.spi.VariableValue
 import org.hisp.dhis.lib.expression.util.RuleVariableValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.util.*
 
 /**
  * Test of the `d2:hasValue` function.
@@ -19,25 +18,21 @@ import java.util.*
 internal class RuleFunctionHasValueTest {
     @Test
     fun return_false_for_non_existing_variable() {
-        assertHasValue("d2:hasValue(#{nonexisting})", java.util.Map.of(), false)
+        assertHasValue("d2:hasValue(#{nonexisting})", mapOf(), false)
     }
 
     @Test
     fun return_false_for_existing_variable_without_value() {
         assertHasValue(
             "d2:hasValue(#{non_value_var})",
-            Collections.singletonMap<String, VariableValue>("non_value_var", null),
-            false)
+            mapOf("non_value_var" to RuleVariableValue(ValueType.STRING)), false)
     }
 
     @Test
     fun return_true_for_existing_variable_with_value() {
         assertHasValue(
             "d2:hasValue(#{with_value_var})",
-            java.util.Map.of<String, VariableValue>(
-                "with_value_var",
-                RuleVariableValue(ValueType.STRING).copy(value = "value")),
-            true)
+            mapOf("with_value_var" to RuleVariableValue(ValueType.STRING).copy(value = "value")), true)
     }
 
     private fun assertHasValue(expression: String, values: Map<String, VariableValue>, expected: Boolean) {

@@ -4,7 +4,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import java.time.LocalDate
 import java.time.ZoneId
-import java.util.*
+import java.util.Date
 
 fun interface Typed {
 

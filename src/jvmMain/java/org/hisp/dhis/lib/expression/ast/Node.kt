@@ -3,10 +3,6 @@ package org.hisp.dhis.lib.expression.ast
 import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.Variable
-import java.util.*
-import java.util.function.*
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 /**
  * A node in the AST of the expression language.
@@ -127,8 +123,7 @@ interface Node<T> : Typed, NodeAnnotations {
     </V></N> */
     fun <N, V> map(nodeMap: (Node<*>) -> V, newNode: (V, MutableList<N>) -> N): N {
         return eval { node: Node<*> ->
-            newNode(nodeMap(node), node.children().map { n: Node<*> -> n.map(nodeMap, newNode) }
-                .collect(Collectors.toList()))
+            newNode(nodeMap(node), node.children().map { n: Node<*> -> n.map(nodeMap, newNode) }.toMutableList())
         }!!
     }
 
@@ -206,8 +201,8 @@ interface Node<T> : Typed, NodeAnnotations {
      *
      * @return A stream of the child nodes. Empty of this node has no children.
      */
-    fun children(): Stream<Node<*>> {
-        return Stream.empty() // by default: nothing to do assuming no children exist
+    fun children(): Sequence<Node<*>> {
+        return emptySequence() // by default: nothing to do assuming no children exist
     }
 
     /**
@@ -237,15 +232,10 @@ interface Node<T> : Typed, NodeAnnotations {
         return null
     }
 
-    fun toIDs(): Stream<ID> {
+    fun toIDs(): Sequence<ID> {
         val item = toDataItem()
-        return if (item == null) Stream.empty()
-        else Stream.concat(
-            Stream.concat(
-                Stream.of(item.uid0),
-                item.uid1.stream()
-            ), item.uid2.stream()
-        )
+        return if (item == null) emptySequence()
+        else listOf(listOf(item.uid0), item.uid1, item.uid2).flatten().asSequence()
     }
 
     fun toVariable(): Variable? {
@@ -315,7 +305,7 @@ interface Node<T> : Typed, NodeAnnotations {
                 if (children.stream().noneMatch(isUnary)) {
                     return@transform children
                 }
-                val grouped = LinkedList<Node<*>>()
+                val grouped = ArrayDeque<Node<*>>()
                 var operand = children[children.size - 1]
                 for (i in children.size - 2 downTo 0) {
                     val operator = children[i]

@@ -4,8 +4,6 @@ import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.ast.UnaryOperator.Companion.negate
 import org.hisp.dhis.lib.expression.spi.*
 import java.time.LocalDate
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 /**
  * A [NodeInterpreter] that calculates the expression result value using a [ExpressionFunctions] to
@@ -309,15 +307,15 @@ internal class EvaluateFunction(
         return eval(node, "Variable") { v: Any? -> v as VariableValue? }
     }
 
-    private fun evalToMixed(nodes: Stream<Node<*>>): List<*> {
+    private fun evalToMixed(nodes: Sequence<Node<*>>): List<*> {
         return evalToList(nodes) { node: Node<*> -> this.evalToMixed(node) }
     }
 
-    private fun evalToNumbers(nodes: Stream<Node<*>>): List<Double?> {
+    private fun evalToNumbers(nodes: Sequence<Node<*>>): List<Double?> {
         return evalToList(nodes) { node: Node<*> -> evalToNumber(node) }
     }
 
-    private fun evalToStrings(nodes: Stream<Node<*>>): List<String?> {
+    private fun evalToStrings(nodes: Sequence<Node<*>>): List<String?> {
         return evalToList(nodes) { node: Node<*> -> evalToString(node) }
     }
 
@@ -338,8 +336,8 @@ internal class EvaluateFunction(
             return op(lVal, rVal)
         }
 
-        private fun <T> evalToList(nodes: Stream<Node<*>>, map: (Node<*>) -> T?): List<T?> {
-            return nodes.map(map).collect(Collectors.toList())
+        private fun <T> evalToList(nodes: Sequence<Node<*>>, map: (Node<*>) -> T?): List<T?> {
+            return nodes.map(map).toList()
         }
     }
 }

@@ -1,7 +1,5 @@
 package org.hisp.dhis.lib.expression.spi
 
-import java.util.stream.Collectors
-
 data class DataItem(
     val type: DataItemType,
     val uid0: ID,
@@ -34,10 +32,8 @@ data class DataItem(
         val str = StringBuilder()
         str.append(type.symbol).append("{")
         str.append(uid0.toString())
-        if (uid1.isNotEmpty()) str.append('.').append(uid1.stream().map { obj: ID -> obj.value }
-            .collect(Collectors.joining("&")))
-        if (uid2.isNotEmpty()) str.append('.').append(uid2.stream().map { obj: ID -> obj.value }
-            .collect(Collectors.joining("&")))
+        if (uid1.isNotEmpty()) str.append('.').append(uid1.joinToString("&") { obj: ID -> obj.value })
+        if (uid2.isNotEmpty()) str.append('.').append(uid2.joinToString("&") { obj: ID -> obj.value })
         str.append("}").append(modifiers)
         return str.toString()
     }

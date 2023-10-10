@@ -17,30 +17,30 @@ internal class AggregateFunctionsExpressionTest {
 
     @Test
     fun testAvg2() {
-        val dataValues = java.util.Map.of<DataItem, Any>(
-            newDeDataItem("u1234567890"), doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0),
-            newDeDataItem("v1234567890"), doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
+        val dataValues = mapOf(
+            newDeDataItem("u1234567890") to doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0),
+            newDeDataItem("v1234567890") to doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
         assertEquals(10.0, evaluate("avg(#{u1234567890} + #{v1234567890})", dataValues))
     }
 
     @Test
     fun testSum() {
-        val dataValues = java.util.Map.of<DataItem, Any>(
-            newDeDataItem("u1234567890"), doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
+        val dataValues = mapOf(
+            newDeDataItem("u1234567890") to doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
         assertEquals(25.0, evaluate("sum(#{u1234567890})", dataValues))
     }
 
     @Test
     fun testMin() {
-        val dataValues = java.util.Map.of<DataItem, Any>(
-            newDeDataItem("u1234567890"), doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
+        val dataValues = mapOf(
+            newDeDataItem("u1234567890") to doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
         assertEquals(0.0, evaluate("min(#{u1234567890})", dataValues))
     }
 
     @Test
     fun testMax() {
-        val dataValues = java.util.Map.of<DataItem, Any>(
-            newDeDataItem("u1234567890"), doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
+        val dataValues = mapOf(
+            newDeDataItem("u1234567890") to doubleArrayOf(0.0, 10.0, 5.0, 3.0, 7.0))
         assertEquals(10.0, evaluate("max(#{u1234567890})", dataValues))
     }
 

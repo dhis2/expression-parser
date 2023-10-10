@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression.spi
 
 import java.time.LocalDate
-import java.util.*
+import java.util.Date
 
 /**
  * A rough classification of what values building blocks expect and return.

@@ -3,8 +3,6 @@ package org.hisp.dhis.lib.expression.ast
 import org.hisp.dhis.lib.expression.spi.*
 import org.hisp.dhis.lib.expression.ast.NodeAnnotations.Whitespace;
 import java.time.LocalDate
-import java.util.stream.Collectors
-import java.util.stream.Stream
 
 /**
  * Implements the different [Node] types in the AST.
@@ -127,8 +125,8 @@ object Nodes {
             return children[index]
         }
 
-        override fun children(): Stream<Node<*>> {
-            return children.stream()
+        override fun children(): Sequence<Node<*>> {
+            return children.asSequence()
         }
 
         override fun addChild(child: Node<*>): Node<T> {
@@ -266,7 +264,7 @@ object Nodes {
                 var ids = arg.children()
                     .filter { n: Node<*> -> n.getType() === NodeType.UID }
                     .map { n: Node<*> -> ID(type, n.getRawValue()) }
-                    .collect(Collectors.toList())
+                    .toList()
                 if (ids.isEmpty() && arg.size() == 1 && arg.child(0).getType() === NodeType.IDENTIFIER) {
                     ids = listOf(ID(type, arg.child(0).getRawValue()))
                 }

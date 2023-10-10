@@ -5,8 +5,6 @@ import org.hisp.dhis.lib.expression.ast.NodeType
 import org.hisp.dhis.lib.expression.ast.Nodes.VariableNode
 import org.hisp.dhis.lib.expression.ast.VariableType
 import org.hisp.dhis.lib.expression.spi.*
-import java.util.*
-import java.util.stream.Stream
 import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashSet
 
@@ -112,7 +110,7 @@ class Evaluate private constructor() {
         fun collectUIDs(root: Node<*>): Set<ID> {
             return root.aggregate(
                 LinkedHashSet(), Node<*>::toIDs,
-                { set: HashSet<ID>, ids: Stream<ID> ->
+                { set: HashSet<ID>, ids: Sequence<ID> ->
                     ids.filter { id: ID -> id.type.isUID() }.forEach { e: ID -> set.add(e) }
                 }
             ) { node: Node<*> -> node.getType() === NodeType.DATA_ITEM }

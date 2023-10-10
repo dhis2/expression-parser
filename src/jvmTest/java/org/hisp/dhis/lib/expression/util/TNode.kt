@@ -2,7 +2,6 @@ package org.hisp.dhis.lib.expression.util
 
 import org.hisp.dhis.lib.expression.ast.Node
 import org.hisp.dhis.lib.expression.ast.NodeType
-import java.util.function.UnaryOperator
 
 /**
  * A simplified tree structure useful to verify the [NodeType] structure of a [Node] AST.
@@ -19,8 +18,8 @@ data class TNode(
         return this
     }
 
-    fun add(type: NodeType, with: UnaryOperator<TNode>): TNode {
-        children.add(with.apply(of(type)))
+    fun add(type: NodeType, with: (TNode) -> TNode): TNode {
+        children.add(with(of(type)))
         return this
     }
 

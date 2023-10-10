@@ -17,7 +17,6 @@ import org.hisp.dhis.lib.expression.spi.*
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
 import org.hisp.dhis.lib.expression.syntax.Fragment
 import org.hisp.dhis.lib.expression.syntax.Parser
-import java.util.*
 
 /**
  * Facade API for working with DHIS2 expressions.

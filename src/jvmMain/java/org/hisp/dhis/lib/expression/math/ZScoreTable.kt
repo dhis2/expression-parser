@@ -601,14 +601,14 @@ object ZScoreTable {
         sd2: Float,
         sd3: Float
     ): Entry {
-        val sdMap = java.util.Map.of(
-            sd3neg, 3,
-            sd2neg, 2,
-            sd1neg, 1,
-            sd0, 0,
-            sd1, 1,
-            sd2, 2,
-            sd3, 3)
+        val sdMap = mutableMapOf(
+            sd3neg to 3,
+            sd2neg to 2,
+            sd1neg to 1,
+            sd0 to 0,
+            sd1 to 1,
+            sd2 to 2,
+            sd3 to 3)
         val list: MutableSet<Float> = sdMap.keys
         return Entry(sdMap, list.min(), list.max(), list.sorted())
     }

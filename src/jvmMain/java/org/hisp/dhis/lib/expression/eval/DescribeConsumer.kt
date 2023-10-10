@@ -183,17 +183,17 @@ internal class DescribeConsumer(
 
     companion object {
         fun toNormalisedExpression(root: Node<*>): String {
-            return toValueExpression(root, java.util.Map.of())
+            return toValueExpression(root, mapOf())
         }
 
         fun toValueExpression(root: Node<*>, dataItemValues: Map<DataItem, Number>): String {
-            val walker = DescribeConsumer(dataItemValues, java.util.Map.of())
+            val walker = DescribeConsumer(dataItemValues, mapOf())
             root.walk(walker)
             return walker.toString()
         }
 
         fun toDisplayExpression(root: Node<*>, displayNames: Map<String, String>): String {
-            val walker = DescribeConsumer(java.util.Map.of(), displayNames)
+            val walker = DescribeConsumer(mapOf(), displayNames)
             root.walk(walker)
             return walker.toString()
         }

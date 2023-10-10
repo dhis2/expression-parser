@@ -4,8 +4,6 @@ import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.hisp.dhis.lib.expression.spi.Issues
 import org.hisp.dhis.lib.expression.spi.ValueType
-import java.util.stream.Collectors
-import java.util.stream.IntStream
 
 /**
  * Performs basic type checking based on the knowledge about the expectations of operators and functions as well as used
@@ -87,9 +85,9 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
                 }
                 else if (actual !== same) {
                     val possiblySame = actual.isMaybeAssignableTo(same)
-                    val indexes = IntStream.range(0, expectedTypes.size)
-                        .filter { j: Int -> expectedTypes[j].isSame() }.mapToObj { j: Int -> (j + 1).toString() + "." }
-                        .collect(Collectors.joining(" and "))
+                    val indexes = IntRange(0, expectedTypes.size)
+                        .filter { j: Int -> expectedTypes[j].isSame() }
+                        .joinToString(" and ") { j: Int -> (j + 1).toString() + "." }
                     issues.addIssue(
                         possiblySame, fn, String.format(
                             "The argument types of parameters %s must be of the same type but were: %s, %s",
