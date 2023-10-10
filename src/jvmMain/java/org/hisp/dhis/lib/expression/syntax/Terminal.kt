@@ -39,7 +39,7 @@ fun interface Terminal : Fragment {
      * @param create the factory to use for this [Terminal].
      * @return this [Terminal] but using the provided [Node.Factory]
      */
-    fun `as`(create: Node.Factory): Terminal {
+    fun by(create: Node.Factory): Terminal {
         val self = this
         return object : Terminal {
             override fun literalOf(): NodeType {

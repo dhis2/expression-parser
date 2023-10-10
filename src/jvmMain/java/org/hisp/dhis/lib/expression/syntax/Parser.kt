@@ -8,9 +8,6 @@ import org.hisp.dhis.lib.expression.ast.Nodes.Companion.propagateModifiers
 import org.hisp.dhis.lib.expression.ast.Position
 import org.hisp.dhis.lib.expression.ast.Position.Companion.addWhitespace
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
-import java.util.*
-import java.util.function.Function
-import java.util.stream.Collectors
 
 /**
  * A [ParseContext] that builds a [Node]-tree using [Node.Factory].
@@ -23,7 +20,7 @@ class Parser private constructor(
 ) : ParseContext {
 
     private val fragmentsByName: MutableMap<String, Fragment>
-    private val stack = LinkedList<Node<*>>()
+    private val stack = ArrayDeque<Node<*>>()
 
     private var root: Node<*>? = null
 
@@ -57,7 +54,7 @@ class Parser private constructor(
             root = r;
         }
         else {
-            stack.last.addChild(node)
+            stack.last().addChild(node)
         }
         stack.addLast(node)
     }
@@ -68,8 +65,7 @@ class Parser private constructor(
     }
 
     companion object {
-        private val DEFAULT_FACTORIES: MutableMap<NodeType, Node.Factory> = EnumMap(
-            NodeType::class.java)
+        private val DEFAULT_FACTORIES: MutableMap<NodeType, Node.Factory> = mutableMapOf()
 
         private fun addFactory(type: NodeType, factory: (type: NodeType, rawValue: String) -> Node<*>) {
             DEFAULT_FACTORIES[type] = Node.Factory.new(factory)
@@ -98,8 +94,8 @@ class Parser private constructor(
             addFactory(NodeType.NULL, ::ConstantNode)
         }
 
-        fun withFragments(fragments: List<Fragment>): Parser {
-            return Parser(fragments, EnumMap(DEFAULT_FACTORIES))
+        private fun withFragments(fragments: List<Fragment>): Parser {
+            return Parser(fragments, DEFAULT_FACTORIES.toMutableMap())
         }
 
         fun parse(expr: String, fragments: List<Fragment>, annotate: Boolean): Node<*> {
@@ -115,8 +111,7 @@ class Parser private constructor(
         }
 
         private fun mapByName(functions: List<Fragment>): MutableMap<String, Fragment> {
-            return functions.stream().collect(Collectors.toUnmodifiableMap(
-                Function { obj: Fragment -> obj.name() }, Function.identity()))
+            return functions.associateBy { f -> f.name()!!  } .toMutableMap()
         }
     }
 }

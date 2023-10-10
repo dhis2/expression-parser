@@ -1,7 +1,5 @@
 package org.hisp.dhis.lib.expression.syntax
 
-import java.util.function.Function
-
 fun interface FragmentContext {
     /*
         Lookup named building blocks (non-terminals)
@@ -9,10 +7,10 @@ fun interface FragmentContext {
     fun fragment(name: String): Fragment?
 
     companion object {
-        fun lookup(expr: Expr, parseName: Function<Expr, String>, lookup: Function<String, Fragment?>): Fragment {
+        fun lookup(expr: Expr, parseName: (Expr) -> String, lookup: (String) -> Fragment?): Fragment {
             val s = expr.position()
-            val name = parseName.apply(expr)
-            val res = lookup.apply(name)
+            val name = parseName(expr)
+            val res = lookup(name)
             if (res == null) {
                 expr.error(s, "Unknown function or constant: '$name'")
             }

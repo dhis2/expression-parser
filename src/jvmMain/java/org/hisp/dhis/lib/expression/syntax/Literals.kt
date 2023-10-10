@@ -7,7 +7,6 @@ import org.hisp.dhis.lib.expression.syntax.Chars.isDigit
 import org.hisp.dhis.lib.expression.syntax.Chars.isLetter
 import org.hisp.dhis.lib.expression.syntax.Chars.isLogicOperator
 import org.hisp.dhis.lib.expression.syntax.Chars.isUnaryOperator
-import java.util.stream.IntStream
 
 object Literals {
 
@@ -166,18 +165,17 @@ object Literals {
     }
 
     fun isUid(s: String): Boolean {
-        return s.length == 11 && isLetter(s[0]) && chars(s).allMatch(Chars::isAlphaNumeric)
+        return s.length == 11 && isLetter(s[0]) && allMatch(s, Chars::isAlphaNumeric)
     }
 
     fun isVarName(s: String): Boolean {
-        return s.isNotEmpty() && chars(s).allMatch(Chars::isVarName)
+        return s.isNotEmpty() && allMatch(s, Chars::isVarName)
     }
 
-    fun chars(s: String): IntStream {
-        val intList: MutableList<Int> = ArrayList()
-        for (i in 0 until s.length) {
-            intList.add(s[i].code)
+    private fun allMatch(str: String, matcher: (Int) -> Boolean): Boolean {
+        for (c in str) {
+            if (!matcher(c.code)) return false
         }
-        return intList.stream().mapToInt { obj: Int -> obj }
+        return true;
     }
 }

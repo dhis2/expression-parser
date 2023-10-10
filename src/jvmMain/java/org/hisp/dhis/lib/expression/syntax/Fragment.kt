@@ -83,14 +83,12 @@ fun interface Fragment {
     }
 
     fun quoted(): Fragment {
-        return object : Fragment {
-            override fun parse(expr: Expr, ctx: ParseContext) {
-                val c = expr.peek()
-                val isQuoted = c == '\'' || c == '"'
-                if (isQuoted) expr.gobble()
-                parse(expr, ctx)
-                if (isQuoted) expr.expect(c)
-            }
+        return Fragment { expr, ctx ->
+            val c = expr.peek()
+            val isQuoted = c == '\'' || c == '"'
+            if (isQuoted) expr.gobble()
+            parse(expr, ctx)
+            if (isQuoted) expr.expect(c)
         }
     }
 
@@ -114,11 +112,7 @@ fun interface Fragment {
 
     companion object {
         fun constant(type: NodeType, literal: String): Fragment {
-            val constant = object : Fragment {
-                override fun parse(expr: Expr, ctx: ParseContext) {
-                    ctx.addNode(type, expr.marker(), literal)
-                }
-            }
+            val constant = Fragment { expr, ctx -> ctx.addNode(type, expr.marker(), literal) }
             return constant.named(literal)
         }
     }

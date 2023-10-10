@@ -9,8 +9,6 @@ import org.hisp.dhis.lib.expression.spi.ParseException
 import org.hisp.dhis.lib.expression.syntax.Chars.isBinaryOperator
 import org.hisp.dhis.lib.expression.syntax.Chars.isDigit
 import org.hisp.dhis.lib.expression.syntax.Chars.isUnaryOperator
-import java.io.Serializable
-import java.util.stream.Stream
 
 /**
  * An [Expr] is the fundamental building block of the expression grammar.
@@ -24,10 +22,10 @@ import java.util.stream.Stream
 class Expr(
     expr: String, // whitespace recording
     private val annotate: Boolean
-) : Serializable {
+) {
 
-    fun interface CharPredicate {
-        fun matches(c: Char): Boolean
+    override fun toString(): String {
+        return expr.concatToString()
     }
 
     fun error(desc: String?) {
@@ -66,8 +64,8 @@ class Expr(
         return if (pos >= expr.size) Chars.EOF else expr[pos]
     }
 
-    fun peek(ahead: Int, test: CharPredicate): Boolean {
-        return pos + ahead < expr.size && test.matches(expr[pos + ahead])
+    fun peek(ahead: Int, test: (Char) -> Boolean): Boolean {
+        return pos + ahead < expr.size && test(expr[pos + ahead])
     }
 
     fun peek(ahead: String): Boolean {
@@ -89,8 +87,8 @@ class Expr(
         gobble()
     }
 
-    fun expect(desc: String, test: CharPredicate) {
-        if (!test.matches(peek())) {
+    fun expect(desc: String, test: (Char) -> Boolean) {
+        if (!test(peek())) {
             error("expected $desc")
         }
         gobble()
@@ -121,8 +119,8 @@ class Expr(
         }
     }
 
-    fun skipWhile(test: CharPredicate) {
-        while (peek() != Chars.EOF && test.matches(peek())) {
+    fun skipWhile(test: (Char) -> Boolean) {
+        while (peek() != Chars.EOF && test(peek())) {
             gobble()
         }
     }
@@ -145,8 +143,8 @@ class Expr(
         pos += n
     }
 
-    fun gobbleIf(test: CharPredicate) {
-        if (test.matches(peek())) {
+    fun gobbleIf(test: (Char) -> Boolean) {
+        if (test(peek())) {
             gobble()
         }
     }
@@ -164,7 +162,7 @@ class Expr(
         return String(expr, start, pos - start)
     }
 
-    fun rawMatch(desc: String, test: CharPredicate): String {
+    fun rawMatch(desc: String, test: (Char) -> Boolean): String {
         val s = pos
         skipWhile(test)
         if (pos == s) {
@@ -173,10 +171,10 @@ class Expr(
         return raw(s)
     }
 
-    fun rawMatch(desc: String, vararg seq: CharPredicate): String {
+    fun rawMatch(desc: String, vararg seq: (Char) -> Boolean): String {
         val s = pos
         for (test in seq) {
-            if (!test.matches(peek())) {
+            if (!test(peek())) {
                 error("expected $desc")
             }
             gobble()
@@ -185,8 +183,8 @@ class Expr(
     }
 
     fun rawMatch(desc: String, expected: String): String {
-        for (i in 0 until expected.length) {
-            if (peek() != expected[i]) {
+        for (c in expected) {
+            if (peek() != c) {
                 error("expected $desc")
             }
             gobble()
@@ -239,9 +237,7 @@ class Expr(
         private fun expr(expr: Expr, ctx: ParseContext, root: Boolean) {
             while (true) {
                 expr1(expr, ctx)
-                while (expr.peek() == '.' && expr.peek(
-                        1,
-                        CharPredicate { obj: Char -> obj.isLetter() })) { // a dot modifier:
+                while (expr.peek() == '.' && expr.peek(1, Char::isLetter)) { // a dot modifier:
                     expr.gobble() // .
                     FragmentContext.lookup(expr, Literals::parseName, ctx::fragment)
                         .parse(expr, ctx)
@@ -269,7 +265,7 @@ class Expr(
         fun expr1(expr: Expr, ctx: ParseContext) {
             expr.skipWS()
             val c = expr.peek()
-            if (isUnaryOperator(c) && expr.peek(1, CharPredicate { p: Char -> p != '=' })
+            if (isUnaryOperator(c) && expr.peek(1) { it != '=' }
                 || c == 'n' && expr.peek("not") && !expr.peek(3, Chars::isIdentifier)) { // unary operators:
                 expr.gobble(if (c == 'n') 3 else 1) // unary op
                 ctx.addNode(NodeType.UNARY_OPERATOR, expr.marker(), if (c == 'n') "not" else c.toString())
@@ -308,9 +304,7 @@ class Expr(
                 expr.skipWS()
                 return
             }
-            if (c == '.' && expr.peek(
-                    1,
-                    CharPredicate { obj: Char -> obj.isDigit() }) || isDigit(c)) { // numeric literal
+            if (c == '.' && expr.peek(1, Char::isDigit) || isDigit(c)) { // numeric literal
                 ctx.addNode(NodeType.NUMBER, expr, Literals::parseNumeric)
                 expr.skipWS()
                 return
@@ -403,9 +397,9 @@ class Expr(
             val itemStart = expr.marker(-1)
             expr.expect('{')
             var rawStart : Position? = expr.marker()
-            val raw: String = expr.rawMatch("data item", CharPredicate { ce: Char -> ce != '}' })
+            val raw: String = expr.rawMatch("data item") { it != '}' }
             val parts = raw.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (Stream.of<String>(*parts).allMatch { str: String -> isTaggedUidGroup(str) }) {
+            if (parts.all { str: String -> isTaggedUidGroup(str) }) {
                 ctx.beginNode(NodeType.DATA_ITEM, itemStart, name.toString())
                 // a data item with 1-3 possibly tagged UID groups
                 for (i in parts.indices) {
@@ -442,11 +436,10 @@ class Expr(
             expr.expect('}')
         }
 
-        private fun isTaggedUidGroup(str: String): Boolean {
-            var str = str
-            str = str.substring(str.indexOf(':') + 1) // strip tag
-            return Stream.of(*str.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-                .allMatch { s: String -> s == "*" || Literals.isUid(s) }
+        private fun isTaggedUidGroup(expr: String): Boolean {
+            val str = expr.substring(expr.indexOf(':') + 1) // strip tag
+            return str.split("&".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                .all { s: String -> s == "*" || Literals.isUid(s) }
         }
     }
 }
