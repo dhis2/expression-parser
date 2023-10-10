@@ -10,7 +10,6 @@ import org.hisp.dhis.lib.expression.ast.NodeAnnotations.Whitespace.Companion.of
  * characters also including comments.
  * @author Jan Bernitt
  */
-@JvmRecord
 data class Position(val charIndex: Int, val spaceIndex: Int) {
 
     fun offsetBy(charOffset: Int): Position {

@@ -1,7 +1,5 @@
 package org.hisp.dhis.lib.expression.math
 
-import java.util.*
-
 /*
  * Copyright (c) 2004-2018, University of Oslo
  * All rights reserved.
@@ -29,7 +27,7 @@ import java.util.*
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-enum class GS1Elements(@JvmField val element: String) {
+enum class GS1Elements(val element: String) {
     GS1_E0_IDENTIFIER("]E0"),
 
     // EAN-13, UPC-A, UPC-E
@@ -313,7 +311,7 @@ enum class GS1Elements(@JvmField val element: String) {
         }
 
         private fun simplifiedGS1Key(value: String): String {
-            return value.lowercase(Locale.getDefault())
+            return value.lowercase()
                 .replace(" ", "")
                 .replace("_", "")
                 .replace("-", "")

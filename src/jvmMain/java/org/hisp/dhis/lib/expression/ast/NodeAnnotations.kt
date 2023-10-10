@@ -6,8 +6,8 @@ package org.hisp.dhis.lib.expression.ast
  * @author Jan Bernitt
  */
 interface NodeAnnotations {
-    @JvmRecord
-    data class Whitespace(@JvmField val before: String, @JvmField val after: String) {
+
+    data class Whitespace(val before: String, val after: String) {
         fun before(ifDefault: String): String {
             return if (this === DEFAULT) ifDefault else before
         }
@@ -17,10 +17,9 @@ interface NodeAnnotations {
         }
 
         companion object {
-            @JvmField
             val DEFAULT = Whitespace("", "")
-            val NONE = Whitespace("", "")
-            @JvmStatic
+            private val NONE = Whitespace("", "")
+
             fun of(before: String, after: String): Whitespace {
                 return if (before.isEmpty() && after.isEmpty()) NONE else Whitespace(before, after)
             }

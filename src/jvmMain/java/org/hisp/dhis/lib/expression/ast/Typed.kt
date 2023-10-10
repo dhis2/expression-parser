@@ -52,15 +52,9 @@ fun interface Typed {
             if (value == null) return null
             return if (value is VariableValue) {
                 when (value.valueType()) {
-                    ValueType.NUMBER -> toNumberTypeCoercion(
-                        value.valueOrDefault()
-                    )
-                    ValueType.BOOLEAN -> toBooleanTypeCoercion(
-                        value.valueOrDefault()
-                    )
-                    ValueType.DATE -> toDateTypeCoercion(
-                        value.valueOrDefault()
-                    )
+                    ValueType.NUMBER -> toNumberTypeCoercion(value.valueOrDefault())
+                    ValueType.BOOLEAN -> toBooleanTypeCoercion(value.valueOrDefault())
+                    ValueType.DATE -> toDateTypeCoercion(value.valueOrDefault())
                     else -> toStringTypeCoercion(value.valueOrDefault())
                 }
             }

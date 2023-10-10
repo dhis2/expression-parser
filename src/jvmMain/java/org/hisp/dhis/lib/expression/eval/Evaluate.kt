@@ -6,8 +6,6 @@ import org.hisp.dhis.lib.expression.ast.Nodes.VariableNode
 import org.hisp.dhis.lib.expression.ast.VariableType
 import org.hisp.dhis.lib.expression.spi.*
 import java.util.*
-import java.util.function.Consumer
-import java.util.stream.Collectors
 import java.util.stream.Stream
 import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashSet
@@ -65,12 +63,12 @@ class Evaluate private constructor() {
             if (actualResultType !== ValueType.MIXED && actualResultType !== ValueType.SAME && !resultTypes.contains(
                     actualResultType)) {
                 issues.addError(root, String.format("Expression must result in one of the types %s but was: %s",
-                    resultTypes.stream().map { obj: ValueType -> obj.name }.collect(Collectors.joining(", ")),
+                    resultTypes.map { obj: ValueType -> obj.name }.joinToString(", "),
                     actualResultType))
             }
 
             // AST and data dependent validations
-            validators.forEach(Consumer { v: NodeValidator -> v.validate(root, issues, data) })
+            validators.forEach { v: NodeValidator -> v.validate(root, issues, data) }
             issues.throwIfErrorsOrWarnings()
         }
 

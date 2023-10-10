@@ -216,8 +216,7 @@ fun interface ExpressionFunctions {
 
     fun d2_maxValue(value: VariableValue?): Double {
         return if (value == null) Double.NaN
-        else value.candidates().stream().mapToDouble { s: String -> s.toDouble() }.max().orElse(
-            Double.NaN)
+        else value.candidates().maxOfOrNull { str -> str.toDouble() } ?: Double.NaN
     }
 
     fun d2_minutesBetween(start: LocalDate?, end: LocalDate?): Int {
@@ -226,8 +225,7 @@ fun interface ExpressionFunctions {
 
     fun d2_minValue(value: VariableValue?): Double {
         return if (value == null) Double.NaN
-        else value.candidates().stream().mapToDouble { s: String -> s.toDouble() }.min().orElse(
-            Double.NaN)
+        else value.candidates().minOfOrNull { str -> str.toDouble() } ?: Double.NaN
     }
 
     fun d2_modulus(left: Number?, right: Number?): Double {

@@ -83,7 +83,7 @@ enum class ValueType {
 
     companion object {
         fun allSame(types: List<ValueType>): Boolean {
-            return types.isEmpty() || types.stream().filter { it != MIXED }.allMatch {it == types[0]}
+            return types.isEmpty() || types.filter { it != MIXED } .all {it == types[0]}
         }
     }
 }

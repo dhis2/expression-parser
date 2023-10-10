@@ -7,7 +7,7 @@ import java.math.MathContext
 /**
  * @author Jan Bernitt
  */
-enum class BinaryOperator(@JvmField val symbol: String, private val returnType: ValueType, @JvmField val operandsType: ValueType) : Typed {
+enum class BinaryOperator(val symbol: String, private val returnType: ValueType, val operandsType: ValueType) : Typed {
     // OBS!!! in order of precedence - highest to lowest
     EXP("^", ValueType.NUMBER, ValueType.NUMBER),
 
@@ -28,10 +28,6 @@ enum class BinaryOperator(@JvmField val symbol: String, private val returnType: 
 
     override fun getValueType(): ValueType {
         return returnType
-    }
-
-    fun getSymbol() : String {
-        return symbol;
     }
 
     /**

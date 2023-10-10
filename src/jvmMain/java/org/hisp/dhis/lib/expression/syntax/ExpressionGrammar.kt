@@ -1,7 +1,9 @@
 package org.hisp.dhis.lib.expression.syntax
 
 import org.hisp.dhis.lib.expression.ast.*
-import org.hisp.dhis.lib.expression.ast.Nodes.*
+import org.hisp.dhis.lib.expression.ast.Nodes.AggregationTypeNode
+import org.hisp.dhis.lib.expression.ast.Nodes.ProgramVariableNode
+import org.hisp.dhis.lib.expression.ast.Nodes.ReportingRateTypeNode
 import org.hisp.dhis.lib.expression.spi.DataItemType
 import org.hisp.dhis.lib.expression.syntax.Fragment.Companion.constant
 
@@ -223,7 +225,7 @@ object ExpressionGrammar {
                             + args
                             .drop(i)
                             .map { a: Fragment -> if (a.name() == null) "?" else a.name() }
-                            .joinToString { "," })
+                            .joinToString(","))
                 }
                 if (i > 0) {
                     if (c != argsSeparator) expr.error(String.format("Expected %s or %s", argsSeparator, end))
