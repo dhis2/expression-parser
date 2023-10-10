@@ -35,7 +35,14 @@ interface Node<T> : Typed, NodeAnnotations {
      * fragment.
      */
     fun interface Factory {
-        fun create(type: NodeType?, rawValue: String?): Node<*>?
+        fun create(type: NodeType, rawValue: String): Node<*>
+
+        companion object {
+
+            fun new(factory: (type: NodeType, rawValue: String) -> Node<*>): Factory {
+                return Factory { t, rawValue -> factory(t, rawValue)  }
+            }
+        }
     }
 
     /**

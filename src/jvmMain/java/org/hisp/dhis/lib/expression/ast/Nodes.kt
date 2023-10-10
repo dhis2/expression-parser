@@ -154,33 +154,33 @@ interface Nodes {
     }
 
     class ParenthesesNode(type: NodeType, rawValue: String) :
-        ComplexNode<String?>(type, rawValue, { it }) {
+        ComplexNode<String>(type, rawValue, { it }) {
         override fun getValueType(): ValueType {
             return child(0).getValueType()
         }
     }
 
     class ArgumentNode(type: NodeType, rawValue: String) :
-        ComplexNode<Int?>(type, rawValue, { raw: String? -> Integer.valueOf(raw) }) {
+        ComplexNode<Int>(type, rawValue, Integer::valueOf) {
         override fun getValueType(): ValueType {
             return if (size() == 1) child(0).getValueType() else ValueType.MIXED
         }
     }
 
     class FunctionNode(type: NodeType, rawValue: String) :
-        ComplexNode<NamedFunction?>(type, rawValue, { raw: String -> NamedFunction.fromName(raw) }, rethrowAs(
-            NamedFunction::class.java
-        ) { obj: NamedFunction -> obj.getName() }) {
+        ComplexNode<NamedFunction>(
+            type, rawValue, NamedFunction::fromName, rethrowAs(
+                NamedFunction::class.java, NamedFunction::getName)) {
         override fun getValueType(): ValueType {
-            val type = getValue()!!.getValueType()
-            return if (!type.isSame()) type else child(getValue()!!.parameterTypes.indexOf(ValueType.SAME)).getValueType()
+            val type = getValue().getValueType()
+            return if (!type.isSame()) type else child(getValue().parameterTypes.indexOf(ValueType.SAME)).getValueType()
         }
     }
 
     class ModifierNode(type: NodeType, rawValue: String) :
-        ComplexNode<DataItemModifier?>(type, rawValue, { name: String -> DataItemModifier.valueOf( name ) }) {
+        ComplexNode<DataItemModifier>(type, rawValue, DataItemModifier::valueOf) {
         override fun getValueType(): ValueType {
-            return getValue()!!.getValueType()
+            return getValue().getValueType()
         }
     }
 
@@ -191,11 +191,8 @@ interface Nodes {
          */
         private val modifiers: MutableList<Node<*>> = ArrayList()
 
-        internal constructor(type: NodeType, rawValue: String, converter: (String) -> T) : super(
-            type,
-            rawValue,
-            converter
-        )
+        internal constructor(type: NodeType, rawValue: String, converter: (String) -> T)
+                : super(type, rawValue, converter)
 
         internal constructor(
             type: NodeType,
@@ -243,7 +240,7 @@ interface Nodes {
     }
 
     class DataItemNode(type: NodeType, rawValue: String) :
-        ModifiedNode<DataItemType>(type, rawValue, { t: String -> DataItemType.fromSymbol(t) }, rethrowAs(
+        ModifiedNode<DataItemType>(type, rawValue, DataItemType::fromSymbol, rethrowAs(
             DataItemType::class.java
         ) { obj: DataItemType -> obj.getSymbol() }) {
         /**
@@ -302,7 +299,7 @@ interface Nodes {
     class TextNode(type: NodeType, rawValue: String) : SimpleNode<String>(type, rawValue, { it })
 
     class VariableNode(type: NodeType, rawValue: String) :
-        ModifiedNode<VariableType?>(type, rawValue, { name: String -> VariableType.fromSymbol(name) }) {
+        ModifiedNode<VariableType>(type, rawValue, { name: String -> VariableType.fromSymbol(name) }) {
         /**
          * Might be provided after AST has been constructed to specify more precisely what type a variable has
          */
@@ -380,7 +377,7 @@ interface Nodes {
     }
 
     class UnaryOperatorNode(type: NodeType, rawValue: String) :
-        ComplexNode<UnaryOperator?>(type, rawValue, { op: String -> UnaryOperator.fromSymbol(op) },
+        ComplexNode<UnaryOperator>(type, rawValue, { op: String -> UnaryOperator.fromSymbol(op) },
             rethrowAs(
             UnaryOperator::class.java
         ) { e: UnaryOperator -> e.getSymbol() }) {
@@ -402,28 +399,28 @@ interface Nodes {
     }
 
     class BooleanNode(type: NodeType, rawValue: String) :
-        SimpleNode<Boolean?>(type, rawValue, { value: String -> value.toBoolean() }) {
+        SimpleNode<Boolean>(type, rawValue, { value: String -> value.toBoolean() }) {
         override fun getValueType(): ValueType {
             return ValueType.BOOLEAN
         }
     }
 
     class NumberNode(type: NodeType, rawValue: String) :
-        SimpleNode<Double?>(type, rawValue, { value: String -> value.toDouble() }) {
+        SimpleNode<Double>(type, rawValue, { value: String -> value.toDouble() }) {
         override fun getValueType(): ValueType {
             return ValueType.NUMBER
         }
     }
 
     class IntegerNode(type: NodeType, rawValue: String) :
-        SimpleNode<Int?>(type, rawValue, { value: String -> value.toInt() }) {
+        SimpleNode<Int>(type, rawValue, { value: String -> value.toInt() }) {
         override fun getValueType(): ValueType {
             return ValueType.NUMBER
         }
     }
 
     class DateNode(type: NodeType, rawValue: String) :
-        SimpleNode<LocalDate?>(type, rawValue, { text: String -> LocalDate.parse(text) }) {
+        SimpleNode<LocalDate>(type, rawValue, { text: String -> LocalDate.parse(text) }) {
         override fun getValueType(): ValueType {
             return ValueType.DATE
         }
@@ -452,11 +449,7 @@ interface Nodes {
         ) { obj: ProgramVariable -> obj.name })
 
     class NamedValueNode(type: NodeType, rawValue: String) :
-        SimpleNode<NamedValue>(type, rawValue, { name: String ->
-            NamedValue.valueOf(
-                name
-            )
-        }, rethrowAs(
+        SimpleNode<NamedValue>(type, rawValue, NamedValue::valueOf, rethrowAs(
             NamedValue::class.java
         ) { obj: NamedValue -> obj.name })
 
