@@ -1,6 +1,6 @@
 package org.hisp.dhis.lib.expression
 
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 /**
  * Port of the ANTLR `MathExpressionTest` and some more.

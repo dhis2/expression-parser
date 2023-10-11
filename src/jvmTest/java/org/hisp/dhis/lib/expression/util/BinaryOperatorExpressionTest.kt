@@ -3,7 +3,7 @@ package org.hisp.dhis.lib.expression.util
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.spi.ValueType
 import kotlin.test.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class BinaryOperatorExpressionTest {
 

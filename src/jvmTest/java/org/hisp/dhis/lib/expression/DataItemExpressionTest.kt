@@ -4,7 +4,7 @@ import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.DataItemType
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**

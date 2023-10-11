@@ -4,7 +4,7 @@ import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import org.hisp.dhis.lib.expression.spi.ValueType
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 /**
  * Tests the validation as used in rule engine.

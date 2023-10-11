@@ -6,7 +6,7 @@ import org.hisp.dhis.lib.expression.spi.DataItemType
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
 import kotlin.test.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import java.time.LocalDate
 
 /**

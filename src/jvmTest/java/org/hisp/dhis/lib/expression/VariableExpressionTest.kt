@@ -4,7 +4,7 @@ import org.hisp.dhis.lib.expression.ast.NodeType
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
 import org.hisp.dhis.lib.expression.syntax.Parser
 import org.hisp.dhis.lib.expression.util.TNode
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**

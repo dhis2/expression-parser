@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNull

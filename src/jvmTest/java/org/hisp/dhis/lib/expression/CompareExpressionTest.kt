@@ -2,7 +2,7 @@ package org.hisp.dhis.lib.expression
 
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 /**
  * Port of the ANTLR `CompareExpressionTest`.

@@ -5,7 +5,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import org.hisp.dhis.lib.expression.util.RuleVariableValue
 import kotlin.test.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 /**
  * Test of the `d2:hasValue` function.

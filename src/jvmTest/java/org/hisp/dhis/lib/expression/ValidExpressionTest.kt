@@ -3,7 +3,7 @@ package org.hisp.dhis.lib.expression
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import org.hisp.dhis.lib.expression.spi.ParseException
 import kotlin.test.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
 /**

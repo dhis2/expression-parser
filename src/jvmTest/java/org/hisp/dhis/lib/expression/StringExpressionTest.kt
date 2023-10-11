@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression
 
 import kotlin.test.assertEquals
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
 
 internal class StringExpressionTest {
     @Test
