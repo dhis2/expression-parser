@@ -79,7 +79,7 @@ object Nodes {
         }
 
         open fun toString(str: StringBuilder, indent: String) {
-            str.append(indent).append(javaClass.simpleName)
+            str.append(indent).append(this::class.simpleName)
                 .append('[').append(getType().name).append(" ").append(getRawValue()).append("]\n")
         }
 

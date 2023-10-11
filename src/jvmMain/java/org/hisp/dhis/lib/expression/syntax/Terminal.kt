@@ -9,14 +9,14 @@ import org.hisp.dhis.lib.expression.syntax.Literals.parse
  * simple value or leaf in the AST.
  *
  *
- * In the java model [Terminal]s extends [Fragment] so that they can be mixed with them as argument building
+ * In the Java model [Terminal]s extends [Fragment] so that they can be mixed with them as argument building
  * blocks that make up a [Fragment].
  */
 fun interface Terminal : Fragment {
 
     override fun parse(expr: Expr, ctx: ParseContext) {
         val type = literalOf()
-        ctx.addNode(type, factory(), expr) { e: Expr? -> parse(e!!, type) }
+        ctx.addNode(type, factory(), expr) { e: Expr -> parse(e, type) }
     }
 
     override fun name(): String? {

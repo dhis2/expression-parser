@@ -1,8 +1,10 @@
 package org.hisp.dhis.lib.expression.ast
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.DecimalMode
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import org.hisp.dhis.lib.expression.spi.ValueType
-import java.math.BigDecimal
-import java.math.MathContext
+import kotlin.math.pow
 
 /**
  * @author Jan Bernitt
@@ -88,58 +90,52 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
         (all numeric operations either return a Double or an Integer)
         */
 
+        private val MODE: DecimalMode = DecimalMode(16, RoundingMode.ROUND_HALF_AWAY_FROM_ZERO)
+
         fun add(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of addition must not be null" }
             require(right != null) { "right operator of addition must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right)) left.toDouble() + right.toDouble()
-            else asBigDecimal(left).add(asBigDecimal(right)).toDouble()
+            else asBigDecimal(left).add(asBigDecimal(right)).doubleValue(false)
         }
-
 
         fun subtract(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of subtraction must not be null" }
             require(right != null) { "right operator of subtraction must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right)) left.toDouble() - right.toDouble()
-            else asBigDecimal(left).subtract(asBigDecimal(right)).toDouble()
+            else asBigDecimal(left).subtract(asBigDecimal(right)).doubleValue(false)
         }
-
 
         fun multiply(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of multiplication must not be null" }
             require(right != null) { "right operator of multiplication must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right)) left.toDouble() * right.toDouble()
-            else asBigDecimal(left).multiply(asBigDecimal(right)).toDouble()
+            else asBigDecimal(left).multiply(asBigDecimal(right)).doubleValue(false)
         }
-
 
         fun divide(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of division must not be null" }
             require(right != null) { "right operator of division must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right) || right.toDouble() == 0.0) left.toDouble() / right.toDouble()
-            else asBigDecimal(left).divide(asBigDecimal(right), MathContext.DECIMAL64).toDouble()
+            else asBigDecimal(left).divide(asBigDecimal(right)).doubleValue(false)
         }
-
 
         fun modulo(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of modulo must not be null" }
             require(right != null) { "right operator of modulo must not be null" }
             return if (isSpecialDouble(left) || isSpecialDouble(right) || right.toDouble() == 0.0) left.toDouble() % right.toDouble()
-            else asBigDecimal(left).remainder(asBigDecimal(right)).toDouble()
+            else BigDecimal.fromDouble(left.toDouble()).remainder(BigDecimal.fromDouble(right.toDouble())).doubleValue(false)
         }
-
 
         fun exp(base: Number?, exponent: Number?): Number {
             require(base != null) { "base operator of exponential function must not be null" }
             require(exponent != null) { "exponent operator of exponential function must not be null" }
-            return if (isSpecialDouble(base) || isSpecialDouble(exponent)) Math.pow(
-                base.toDouble(),
-                exponent.toDouble()
-            )
-            else asBigDecimal(base).pow(exponent.toInt(), MathContext.DECIMAL64).toDouble()
+            return if (isSpecialDouble(base) || isSpecialDouble(exponent)) base.toDouble().pow(exponent.toDouble())
+            else asBigDecimal(base).pow(exponent.toInt()).doubleValue(false)
         }
 
         private fun asBigDecimal(n: Number): BigDecimal {
-            return n as? BigDecimal ?: BigDecimal(n.toString(), MathContext.DECIMAL64)
+            return BigDecimal.fromDouble(n.toDouble(), MODE)
         }
 
         private fun isSpecialDouble(n: Number?): Boolean {

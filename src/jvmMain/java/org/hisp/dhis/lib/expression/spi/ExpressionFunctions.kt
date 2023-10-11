@@ -1,11 +1,10 @@
 package org.hisp.dhis.lib.expression.spi
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import org.hisp.dhis.lib.expression.ast.BinaryOperator.Companion.modulo
 import org.hisp.dhis.lib.expression.math.AggregateMath
 import org.hisp.dhis.lib.expression.math.GS1Elements.Companion.fromKey
 import org.hisp.dhis.lib.expression.math.ZScore
-import java.math.BigDecimal
-import java.math.RoundingMode
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.math.ceil
@@ -245,10 +244,14 @@ fun interface ExpressionFunctions {
         if (value == null) return Double.NaN
         precision = precision ?: 0
 
-        val roundedNumber = BigDecimal.valueOf(value.toDouble()).setScale(precision, RoundingMode.HALF_UP)
-        return if (precision == 0 || roundedNumber.toInt().toDouble() == roundedNumber.toDouble()) roundedNumber.toInt()
-            .toDouble()
-        else roundedNumber.stripTrailingZeros().toDouble()
+        val roundedNumber = BigDecimal.fromDouble(value.toDouble()).scale(precision.toLong())
+        if (precision == 0 || roundedNumber.intValue().toDouble() == roundedNumber.doubleValue())
+            return roundedNumber.intValue().toDouble()
+        val str = roundedNumber.toStringExpanded()
+        if (!str.contains('.')) return str.toDouble()
+        var len = str.length
+        while (str[len-1] == '0') len--;
+        return str.substring(0, len).toDouble()
     }
 
     /**

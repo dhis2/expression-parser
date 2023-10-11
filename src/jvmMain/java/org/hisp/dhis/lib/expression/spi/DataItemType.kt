@@ -6,6 +6,7 @@ package org.hisp.dhis.lib.expression.spi
  * @author Jan Bernitt
  */
 enum class DataItemType(val symbol: String, private val parameterTypes: List<List<ID.Type>>) {
+
     // (data element for aggregate vs. program stage . data element for programs)
     DATA_ELEMENT(
         "#", listOf(
@@ -35,9 +36,7 @@ enum class DataItemType(val symbol: String, private val parameterTypes: List<Lis
     PROGRAM_VARIABLE("V", ID.Type.ProgramVariableName);
 
     constructor(symbol: String, vararg parameterTypes: ID.Type) : this(
-        symbol,
-        listOf<List<ID.Type>>(listOf<ID.Type>(*parameterTypes))
-    )
+        symbol, listOf<List<ID.Type>>(listOf<ID.Type>(*parameterTypes)))
 
     fun getType(numberOfIds: Int, index: Int): ID.Type {
         val params =
