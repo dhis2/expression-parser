@@ -90,14 +90,7 @@ object Nodes {
                 toText: (E) -> String
             ): (String, RuntimeException) -> RuntimeException {
                 return { rawValue: String, _: RuntimeException ->
-                    IllegalArgumentException(
-                        String.format(
-                            "Invalid %s option: '%s'%n\toptions are: %s",
-                            name,
-                            rawValue,
-                            values.map(toText)
-                        )
-                    )
+                    IllegalArgumentException("Invalid $name option: '$rawValue'\n\toptions are: ${values.map(toText)}")
                 }
             }
         }

@@ -13,10 +13,7 @@ class IllegalExpressionException : IllegalArgumentException {
     }
 
     constructor(errors: List<Issue>, warnings: List<Issue>) : super(
-        String.format(
-            "%d error(s), %d warning(s)",
-            errors.size,
-            warnings.size)) {
+        "${errors.size} error(s), ${warnings.size} warning(s)") {
         this.errors = errors
         this.warnings = warnings
     }

@@ -20,16 +20,13 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
         if (!actual.isAssignableTo(expected)) {
             if (isStaticallyDefined(operand)) {
                 checkEvaluateToType(expected, operand) {
-                    String.format(
-                        "Literal expression `%s` cannot be converted to type %s expected by operator `%s`",
-                        Evaluate.normalise(operand), expected, operator.getRawValue())
+                    "Literal expression `${Evaluate.normalise(operand)}` cannot be converted to type $expected expected by operator `${operator.getRawValue()}`"
                 }
             }
             else {
                 issues.addIssue(
-                    actual.isMaybeAssignableTo(expected), operator, String.format(
-                        "Incompatible operand type for unary operator `%s`, expected a %s but was: %s",
-                        operator.getRawValue(), expected, actual))
+                    actual.isMaybeAssignableTo(expected), operator,
+                    "Incompatible operand type for unary operator `${operator.getRawValue()}`, expected a $expected but was: $actual")
             }
         }
     }
@@ -45,16 +42,13 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
         if (!leftActual.isAssignableTo(expected)) {
             if (isStaticallyDefined(operand)) {
                 checkEvaluateToType(expected, operand) {
-                    String.format(
-                        "Literal expression `%s` cannot be converted to type %s expected by operator `%s`",
-                        Evaluate.normalise(operand), expected, operator.getRawValue())
+                    "Literal expression `${Evaluate.normalise(operand)}` cannot be converted to type $expected expected by operator `${operator.getRawValue()}`"
                 }
             }
             else {
                 issues.addIssue(
-                    leftActual.isMaybeAssignableTo(expected), operator, String.format(
-                        "Incompatible type for %s operand of binary operator `%s`, expected a %s but was: %s",
-                        name, operator.getRawValue(), expected, leftActual))
+                    leftActual.isMaybeAssignableTo(expected), operator,
+                    "Incompatible type for $name operand of binary operator `${operator.getRawValue()}`, expected a $expected but was: $leftActual")
             }
         }
     }
@@ -89,9 +83,8 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
                         .filter { j: Int -> expectedTypes[j].isSame() }
                         .joinToString(" and ") { j: Int -> (j + 1).toString() + "." }
                     issues.addIssue(
-                        possiblySame, fn, String.format(
-                            "The argument types of parameters %s must be of the same type but were: %s, %s",
-                            indexes, same, arg.getValueType()))
+                        possiblySame, fn,
+                        "The argument types of parameters $indexes must be of the same type but were: $same, ${arg.getValueType()}")
                     return
                 }
             }
@@ -117,17 +110,14 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
             val value = argument.getValue() as Int
             if (isStaticallyDefined(argument)) {
                 checkEvaluateToType(expected, argument) {
-                    String.format(
-                        "Literal expression `%s` cannot be converted to type %s expected by function `%s`",
-                        Evaluate.normalise(argument), expected, called.getRawValue())
+                    "Literal expression `${Evaluate.normalise(argument)}` cannot be converted to type $expected expected by function `${called.getRawValue()}`"
                 }
             }
             else {
                 val possiblyAssignable = actual.isMaybeAssignableTo(expected)
                 issues.addIssue(
-                    possiblyAssignable, argument, String.format(
-                        "Incompatible type for %d. argument of %s, expected %s but was: %s",
-                        value + 1, called.getRawValue(), expected, actual))
+                    possiblyAssignable, argument,
+                    "Incompatible type for ${value + 1}. argument of ${called.getRawValue()}, expected $expected but was: $actual")
             }
         }
     }

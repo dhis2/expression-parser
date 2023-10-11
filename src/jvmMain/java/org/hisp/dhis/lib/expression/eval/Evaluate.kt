@@ -60,9 +60,8 @@ class Evaluate private constructor() {
             val actualResultType = root.getValueType()
             if (actualResultType !== ValueType.MIXED && actualResultType !== ValueType.SAME && !resultTypes.contains(
                     actualResultType)) {
-                issues.addError(root, String.format("Expression must result in one of the types %s but was: %s",
-                    resultTypes.map { obj: ValueType -> obj.name }.joinToString(", "),
-                    actualResultType))
+                val types = resultTypes.joinToString(", ") { obj: ValueType -> obj.name }
+                issues.addError(root, "Expression must result in one of the types $types but was: $actualResultType")
             }
 
             // AST and data dependent validations

@@ -229,7 +229,7 @@ object ExpressionGrammar {
                             .joinToString(","))
                 }
                 if (i > 0) {
-                    if (c != argsSeparator) expr.error(String.format("Expected %s or %s", argsSeparator, end))
+                    if (c != argsSeparator) expr.error("Expected $argsSeparator or $end")
                     expr.gobble() // separator
                     expr.skipWS()
                 }

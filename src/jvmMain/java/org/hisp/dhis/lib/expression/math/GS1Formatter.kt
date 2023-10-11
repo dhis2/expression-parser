@@ -15,7 +15,7 @@ object GS1Formatter {
                 valueToReturn)
 
             GS1Elements.GS1_J1_IDENTIFIER, GS1Elements.GS1_d1_IDENTIFIER, GS1Elements.GS1_Q1_IDENTIFIER, GS1Elements.GS1_E0_IDENTIFIER, GS1Elements.GS1_E1_IDENTIFIER, GS1Elements.GS1_E2_IDENTIFIER, GS1Elements.GS1_E3_IDENTIFIER, GS1Elements.GS1_E4_IDENTIFIER, GS1Elements.GS1_I1_IDENTIFIER, GS1Elements.GS1_C1_IDENTIFIER, GS1Elements.GS1_e0_IDENTIFIER, GS1Elements.GS1_e1_IDENTIFIER, GS1Elements.GS1_e2_IDENTIFIER -> throw IllegalArgumentException(
-                String.format("gs1 identifier %s is not supported", gs1Identifier))
+                "gs1 identifier $gs1Identifier is not supported")
 
             else -> throw IllegalArgumentException("Value does not start with a gs1 identifier")
         }

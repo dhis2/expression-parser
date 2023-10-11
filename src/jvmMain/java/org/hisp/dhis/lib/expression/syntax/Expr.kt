@@ -208,7 +208,7 @@ class Expr(
             val exprCutout = String(expr.expr, posLine0, cutoutLength)
             val pointer = if (markLen <= 1) " ".repeat(offset0) + "^"
             else " ".repeat(offset0) + "^" + "-".repeat(0.coerceAtLeast(markLen - 2)) + "^"
-            return String.format("%s%n\tat line:%d character:%d%n\t%s%n\t%s", desc, line, offset0, exprCutout, pointer)
+            return "$desc\n\tat line:$line character:$offset0\n\t$exprCutout\n\t$pointer"
         }
 
         /**

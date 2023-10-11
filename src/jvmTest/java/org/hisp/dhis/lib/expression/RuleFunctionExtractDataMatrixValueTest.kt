@@ -50,7 +50,7 @@ internal class RuleFunctionExtractDataMatrixValueTest {
 
     companion object {
         private fun extractDataMatrixValue(key: String, value: String): String {
-            val expression = String.format("d2:extractDataMatrixValue('%s', '%s')", key, value)
+            val expression = "d2:extractDataMatrixValue('$key', '$value')"
             return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate() as String
         }
     }

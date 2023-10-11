@@ -25,7 +25,7 @@ fun interface NodeValidator {
             ) { node ->
                 val name: String = node.child(0).getRawValue()
                 if (!data.programRuleVariableValues.containsKey(name)) {
-                    issues.addError(node, String.format("Unknown variable: `%s`", name))
+                    issues.addError(node, "Unknown variable: `$name`")
                 }
             }
         }
@@ -36,7 +36,7 @@ fun interface NodeValidator {
                 if (node.getValue() !== DataItemType.CONSTANT) return@visit
                 val key = node.toDataItem()!!.getKey()
                 if (!data.programRuleVariableValues.containsKey(key)) {
-                    issues.addError(node, String.format("Unknown constant: `%s`", key))
+                    issues.addError(node, "Unknown constant: `$key`")
                 }
             }
         }

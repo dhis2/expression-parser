@@ -41,7 +41,7 @@ enum class DataItemType(val symbol: String, private val parameterTypes: List<Lis
     fun getType(numberOfIds: Int, index: Int): ID.Type {
         val params =
             parameterTypes.firstOrNull { l: List<ID.Type> -> l.size == numberOfIds } ?: throw IllegalArgumentException(
-                String.format("Data item %s cannot be used with %d ids", name, numberOfIds))
+                "Data item $name cannot be used with $numberOfIds ids")
         return params[index]
     }
 

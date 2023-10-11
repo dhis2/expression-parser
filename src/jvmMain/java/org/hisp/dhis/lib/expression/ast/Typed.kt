@@ -24,12 +24,7 @@ fun interface Typed {
             if (value is VariableValue) return toBooleanTypeCoercion(value.valueOrDefault())
             if (value is Boolean) return value
             if (value is Number) {
-                require(isNonFractionValue(value)) {
-                    String.format(
-                        "Could not coerce Double '%s' to Boolean",
-                        value
-                    )
-                }
+                require(isNonFractionValue(value)) { "Could not coerce Double '$value' to Boolean" }
                 return value.toInt() != 0
             }
             return value.toString().toBoolean()
@@ -41,7 +36,7 @@ fun interface Typed {
             if (value is LocalDate) return value
             if (value is String) return LocalDate.parse(value)
             if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
-            throw IllegalArgumentException(String.format("Count not coerce to date: '%s'", value))
+            throw IllegalArgumentException("Count not coerce to date: '$value'")
         }
 
         fun toStringTypeCoercion(value: Any?): String? {

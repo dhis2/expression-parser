@@ -211,7 +211,7 @@ internal class EvaluateFunction(
         val name = evalToString(variable.child(0))
         val values =
             data.programRuleVariableValues.ifEmpty { data.programVariableValues }
-        if (!values.containsKey(name)) throw IllegalExpressionException(String.format("Unknown variable: '%s'", name))
+        if (!values.containsKey(name)) throw IllegalExpressionException("Unknown variable: '$name'")
         return values[name]
     }
 
@@ -264,17 +264,10 @@ internal class EvaluateFunction(
         } catch (ex: UnsupportedOperationException) {
             throw ex
         } catch (ex: RuntimeException) {
-
-            throw IllegalExpressionException(
-                String.format(
-                    "Failed to coerce value '%s' (%s) to %s: %s%n\t in expression: %s",
-                    value,
-                    if (value == null) "" else value::class.simpleName,
-                    to,
-                    ex.message?.replace("java.time.format.DateTimeParseException: ", ""),
-                    DescribeConsumer.toNormalisedExpression(node)
-                )
-            )
+            val type = if (value == null) "" else value::class.simpleName
+            val msg = ex.message?.replace("java.time.format.DateTimeParseException: ", "")
+            val expr = DescribeConsumer.toNormalisedExpression(node)
+            throw IllegalExpressionException("Failed to coerce value '$value' ($type) to $to: $msg\n\t in expression: $expr")
         }
     }
 
