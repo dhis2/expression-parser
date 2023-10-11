@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression.eval
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.spi.DataItemType
-import java.time.LocalDate
 
 /**
  * A [NodeInterpreter] interprets a root [Node] to calculate or derive some value from it.

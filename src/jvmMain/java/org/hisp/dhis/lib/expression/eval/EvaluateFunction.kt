@@ -1,9 +1,9 @@
 package org.hisp.dhis.lib.expression.eval
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.ast.UnaryOperator.Companion.negate
 import org.hisp.dhis.lib.expression.spi.*
-import java.time.LocalDate
 
 /**
  * A [NodeInterpreter] that calculates the expression result value using a [ExpressionFunctions] to
@@ -163,9 +163,9 @@ internal class EvaluateFunction(
             }
         }
         if (items.isEmpty()) throw IllegalExpressionException("Aggregate function used without data item")
-        val val0 = data.dataItemValues[items[0]] as DoubleArray?
+        val vector = data.dataItemValues[items[0]] as DoubleArray?
             ?: throw IllegalExpressionException("Aggregate function used with undefined data item")
-        val values = DoubleArray(val0.size)
+        val values = DoubleArray(vector.size)
         dataItemIndex = 0
         while (dataItemIndex < values.size) {
             val value: Number? = evalToNumber(fn.child(0))
@@ -264,13 +264,14 @@ internal class EvaluateFunction(
         } catch (ex: UnsupportedOperationException) {
             throw ex
         } catch (ex: RuntimeException) {
+
             throw IllegalExpressionException(
                 String.format(
                     "Failed to coerce value '%s' (%s) to %s: %s%n\t in expression: %s",
                     value,
                     if (value == null) "" else value::class.simpleName,
                     to,
-                    ex.message,
+                    ex.message?.replace("java.time.format.DateTimeParseException: ", ""),
                     DescribeConsumer.toNormalisedExpression(node)
                 )
             )

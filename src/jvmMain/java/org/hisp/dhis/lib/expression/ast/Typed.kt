@@ -1,10 +1,11 @@
 package org.hisp.dhis.lib.expression.ast
 
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Date
 
 fun interface Typed {
 
@@ -39,7 +40,7 @@ fun interface Typed {
             if (value is VariableValue) return toDateTypeCoercion(value.valueOrDefault())
             if (value is LocalDate) return value
             if (value is String) return LocalDate.parse(value)
-            if (value is Date) return value.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
             throw IllegalArgumentException(String.format("Count not coerce to date: '%s'", value))
         }
 

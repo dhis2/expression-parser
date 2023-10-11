@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression.spi
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.AggregationType
-import java.time.LocalDate
 
 data class QueryModifiers (
     /**
@@ -21,7 +21,7 @@ data class QueryModifiers (
 
     override fun toString(): String {
         val str = StringBuilder()
-        val toStr = { name: String?, value: Any? ->
+        val toStr = { name: String, value: Any? ->
             if (value != null) {
                 if (value is Boolean) {
                     if (value == true) str.append(".").append(name).append("()");

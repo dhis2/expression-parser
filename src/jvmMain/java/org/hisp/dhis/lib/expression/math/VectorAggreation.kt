@@ -10,7 +10,7 @@ import kotlin.math.floor
  *
  * @author Jan Bernitt
  */
-object AggregateMath {
+object VectorAggreation {
 
     fun avg(values: DoubleArray): Double {
         val sampleSize = values.size.toDouble()

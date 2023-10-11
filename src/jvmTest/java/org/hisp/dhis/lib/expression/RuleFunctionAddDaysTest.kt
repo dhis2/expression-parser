@@ -1,9 +1,9 @@
 package org.hisp.dhis.lib.expression
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import kotlin.test.assertEquals
 import kotlin.test.Test
-import java.time.LocalDate
 import kotlin.test.assertFailsWith
 
 /**

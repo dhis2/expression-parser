@@ -1,5 +1,6 @@
 package org.hisp.dhis.lib.expression
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.AggregationType
 import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.DataItemType
@@ -7,7 +8,6 @@ import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
 import kotlin.test.assertEquals
 import kotlin.test.Test
-import java.time.LocalDate
 
 /**
  * Tests [DataItem] which have non-standard [QueryModifiers].

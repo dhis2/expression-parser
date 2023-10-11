@@ -1,9 +1,9 @@
 package org.hisp.dhis.lib.expression.eval
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.DataItemType
-import java.time.LocalDate
 
 /**
  * Converts an AST back into a "normalised" or substituted [String] form.

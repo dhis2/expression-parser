@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression.spi
 
-import java.time.LocalDate
-import java.util.Date
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 
 /**
  * A rough classification of what values building blocks expect and return.
@@ -76,7 +76,7 @@ enum class ValueType {
             STRING -> value is String
             NUMBER -> value is Number
             BOOLEAN -> value is Boolean
-            DATE -> value is LocalDate || value is Date
+            DATE -> value is LocalDate || value is Instant
             else -> true
         }
     }

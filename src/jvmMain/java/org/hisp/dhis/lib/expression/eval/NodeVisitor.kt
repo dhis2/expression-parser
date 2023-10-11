@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression.eval
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.spi.DataItemType
-import java.time.LocalDate
 
 /**
  * Extended visitor for [Node]s by their [NodeType].

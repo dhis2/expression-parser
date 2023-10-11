@@ -1,12 +1,11 @@
 package org.hisp.dhis.lib.expression.spi
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import kotlinx.datetime.*
 import org.hisp.dhis.lib.expression.ast.BinaryOperator.Companion.modulo
-import org.hisp.dhis.lib.expression.math.AggregateMath
+import org.hisp.dhis.lib.expression.math.VectorAggreation
 import org.hisp.dhis.lib.expression.math.GS1Elements.Companion.fromKey
 import org.hisp.dhis.lib.expression.math.ZScore
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.ln
@@ -89,54 +88,54 @@ fun interface ExpressionFunctions {
     Aggregate functions...
      */
     fun avg(values: DoubleArray): Double {
-        return AggregateMath.avg(values)
+        return VectorAggreation.avg(values)
     }
 
     fun count(values: DoubleArray): Double {
-        return AggregateMath.count(values)
+        return VectorAggreation.count(values)
     }
 
     fun max(values: DoubleArray): Double {
-        return AggregateMath.max(values)
+        return VectorAggreation.max(values)
     }
 
     fun median(values: DoubleArray): Double {
-        return AggregateMath.median(values)
+        return VectorAggreation.median(values)
     }
 
     fun min(values: DoubleArray): Double {
-        return AggregateMath.min(values)
+        return VectorAggreation.min(values)
     }
 
     fun percentileCont(values: DoubleArray, fraction: Double?): Double? {
-        return AggregateMath.percentileCont(values, fraction)
+        return VectorAggreation.percentileCont(values, fraction)
     }
 
     fun stddev(values: DoubleArray): Double {
-        return AggregateMath.stddev(values)
+        return VectorAggreation.stddev(values)
     }
 
     fun stddevPop(values: DoubleArray): Double {
-        return AggregateMath.stddevPop(values)
+        return VectorAggreation.stddevPop(values)
     }
 
     fun stddevSamp(values: DoubleArray): Double {
-        return AggregateMath.stddevSamp(values)
+        return VectorAggreation.stddevSamp(values)
     }
 
     fun sum(values: DoubleArray): Double {
-        return AggregateMath.sum(values)
+        return VectorAggreation.sum(values)
     }
 
     fun variance(values: DoubleArray): Double {
-        return AggregateMath.variance(values)
+        return VectorAggreation.variance(values)
     }
 
     /*
     D2 functions...
      */
     fun d2_addDays(date: LocalDate?, days: Number?): LocalDate? {
-        return if (date == null) null else if (days == null) date else date.plusDays(days.toInt().toLong())
+        return if (date == null) null else if (days == null) date else date.plus(DatePeriod(days=days.toInt()))
     }
 
     fun d2_ceil(value: Number?): Double {
@@ -167,7 +166,9 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_daysBetween(start: LocalDate?, end: LocalDate?): Int {
-        return ChronoUnit.DAYS.between(start, end).toInt()
+        require(start != null) { "start parameter of d2:daysBetween must not be null" }
+        require(end != null) { "end parameter of d2:daysBetween must not be null" }
+        return if (start.toEpochDays() < end.toEpochDays()) start.daysUntil(end) else end.daysUntil(start)
     }
 
     fun d2_extractDataMatrixValue(gs1Key: String?, value: String?): String? {
@@ -198,7 +199,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_lastEventDate(value: VariableValue?): LocalDate? {
-        return if (value == null) null else LocalDate.parse(value.eventDate())
+        return if (value?.eventDate() == null) null else LocalDate.parse(value.eventDate()!!)
     }
 
     fun d2_left(input: String?, length: Int?): String? {
@@ -215,7 +216,9 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_minutesBetween(start: LocalDate?, end: LocalDate?): Int {
-        return ChronoUnit.MINUTES.between(start, end).toInt()
+        require(start != null) { "start parameter of d2:minutesBetween must not be null" }
+        require(end != null) { "end parameter of d2:minutesBetween must not be null" }
+        return d2_daysBetween(start, end).times(25 * 60)
     }
 
     fun d2_minValue(value: VariableValue?): Double {
@@ -228,7 +231,9 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_monthsBetween(start: LocalDate?, end: LocalDate?): Int {
-        return ChronoUnit.MONTHS.between(start, end).toInt()
+        require(start != null) { "start parameter of d2:monthsBetween must not be null" }
+        require(end != null) { "end parameter of d2:monthsBetween must not be null" }
+        return if (start.toEpochDays() < end.toEpochDays()) start.monthsUntil(end) else end.monthsUntil(start)
     }
 
     fun d2_oizp(value: Number?): Double {
@@ -272,11 +277,15 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_weeksBetween(start: LocalDate?, end: LocalDate?): Int {
-        return ChronoUnit.WEEKS.between(start, end).toInt()
+        require(start != null) { "start parameter of d2:weeksBetween must not be null" }
+        require(end != null) { "end parameter of d2:weeksBetween must not be null" }
+        return d2_daysBetween(start, end) / 7
     }
 
     fun d2_yearsBetween(start: LocalDate?, end: LocalDate?): Int {
-        return ChronoUnit.YEARS.between(start, end).toInt()
+        require(start != null) { "start parameter of d2:yearsBetween must not be null" }
+        require(end != null) { "end parameter of d2:yearsBetween must not be null" }
+        return if (start.toEpochDays() < end.toEpochDays()) start.yearsUntil(end) / 7 else end.yearsUntil(start) / 7
     }
 
     /**

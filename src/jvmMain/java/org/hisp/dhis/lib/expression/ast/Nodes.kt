@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression.ast
 
+import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.spi.*
 import org.hisp.dhis.lib.expression.ast.NodeAnnotations.Whitespace;
-import java.time.LocalDate
 
 /**
  * Implements the different [Node] types in the AST.
