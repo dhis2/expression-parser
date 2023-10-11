@@ -114,7 +114,7 @@ class Expr(
                 pos += 2 // gobble(2); => */
                 return
             }
-            pos++ // gobble(); but without triggering WS tracking
+            pos++ // gobble; but without triggering WS tracking
             c = peek()
         }
     }
@@ -207,10 +207,7 @@ class Expr(
             val cutoutLength = posLineEnd - posLine0
             val exprCutout = String(expr.expr, posLine0, cutoutLength)
             val pointer = if (markLen <= 1) " ".repeat(offset0) + "^"
-            else " ".repeat(offset0) + "^" + "-".repeat(
-                Math.max(
-                    0,
-                    markLen - 2)) + "^"
+            else " ".repeat(offset0) + "^" + "-".repeat(0.coerceAtLeast(markLen - 2)) + "^"
             return String.format("%s%n\tat line:%d character:%d%n\t%s%n\t%s", desc, line, offset0, exprCutout, pointer)
         }
 
@@ -228,8 +225,8 @@ class Expr(
         }
 
         /*
-    Non-Terminals
-     */
+        Non-Terminals
+        */
         fun expr(expr: Expr, ctx: ParseContext) {
             expr(expr, ctx, false)
         }
@@ -262,7 +259,8 @@ class Expr(
             }
         }
 
-        fun expr1(expr: Expr, ctx: ParseContext) {
+        @Suppress("kotlin:S3776")
+        private fun expr1(expr: Expr, ctx: ParseContext) {
             expr.skipWS()
             val c = expr.peek()
             if (isUnaryOperator(c) && expr.peek(1) { it != '=' }

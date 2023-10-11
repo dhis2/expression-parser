@@ -1,5 +1,7 @@
 package org.hisp.dhis.lib.expression.math
 
+import kotlin.math.floor
+
 /**
  * Math operations for aggregation functions.
  *
@@ -107,7 +109,7 @@ object AggregateMath {
 
     private fun estimate(work: DoubleArray, pivotsHeap: IntArray, pos: Double): Double {
         val length = work.size
-        val fpos = Math.floor(pos)
+        val fpos = floor(pos)
         val intPos = fpos.toInt()
         val dif = pos - fpos
         return if (pos < 1.0) {
@@ -136,19 +138,19 @@ object AggregateMath {
      * `org.apache.commons.math3.util.MedianOf3PivotingStrategy`.
      */
     internal object KthSelector {
-        fun select(work: DoubleArray, pivotsHeap: IntArray?, k: Int): Double {
+        fun select(work: DoubleArray, pivotsHeap: IntArray, k: Int): Double {
             var begin = 0
             var end = work.size
             var node = 0
-            val usePivotsHeap = pivotsHeap != null
+            val usePivotsHeap = true
             while (end - begin > 15) {
                 var pivot: Int
-                if (usePivotsHeap && node < pivotsHeap!!.size && pivotsHeap[node] >= 0) {
+                if (usePivotsHeap && node < pivotsHeap.size && pivotsHeap[node] >= 0) {
                     pivot = pivotsHeap[node]
                 }
                 else {
                     pivot = partition(work, begin, end, pivotIndex(work, begin, end))
-                    if (usePivotsHeap && node < pivotsHeap!!.size) {
+                    if (usePivotsHeap && node < pivotsHeap.size) {
                         pivotsHeap[node] = pivot
                     }
                 }
@@ -157,11 +159,11 @@ object AggregateMath {
                 }
                 if (k < pivot) {
                     end = pivot
-                    node = Math.min(2 * node + 1, if (usePivotsHeap) pivotsHeap!!.size else pivot)
+                    node = (2 * node + 1).coerceAtMost(if (usePivotsHeap) pivotsHeap.size else pivot)
                 }
                 else {
                     begin = pivot + 1
-                    node = Math.min(2 * node + 2, if (usePivotsHeap) pivotsHeap!!.size else end)
+                    node = (2 * node + 2).coerceAtMost(if (usePivotsHeap) pivotsHeap.size else end)
                 }
             }
             work.sort(begin, end)

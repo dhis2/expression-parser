@@ -4,7 +4,7 @@ import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import org.hisp.dhis.lib.expression.util.RuleVariableValue
-import org.junit.jupiter.api.Assertions.assertEquals
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 
 /**

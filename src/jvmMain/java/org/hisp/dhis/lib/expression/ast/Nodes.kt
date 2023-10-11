@@ -15,7 +15,7 @@ object Nodes {
         private val type: NodeType,
         private val rawValue: String,
         converter: (String) -> T,
-        rethrowAs: (String, RuntimeException) -> RuntimeException? = { _: String, ex: RuntimeException -> ex }
+        rethrowAs: (String, RuntimeException) -> RuntimeException = { _: String, ex: RuntimeException -> ex }
     ) : Node<T> {
         private var value: T
         private var start: Position? = null
@@ -26,7 +26,7 @@ object Nodes {
             try {
                 value = converter(rawValue)
             } catch (ex: RuntimeException) {
-                throw rethrowAs(rawValue, ex)!!
+                throw rethrowAs(rawValue, ex)
             }
         }
 

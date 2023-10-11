@@ -197,7 +197,8 @@ object ExpressionGrammar {
         return block(NodeType.VARIABLE, symbol, '{', '.', '}', *args).named(symbol)
     }
 
-    fun block(
+    @Suppress("kotlin:S3776")
+    private fun block(
         type: NodeType,
         name: String?,
         start: Char,
@@ -213,7 +214,7 @@ object ExpressionGrammar {
             var i = 0
             while (i < args.size || args.isNotEmpty() && args[args.size - 1].isVarargs()) {
                 expr.skipWS()
-                val arg = args[Math.min(i, args.size - 1)]
+                val arg = args[i.coerceAtMost(args.size - 1)]
                 val c = expr.peek()
                 if (c == end) {
                     if (arg.isMaybe() || args[args.size - 1].isVarargs()) {

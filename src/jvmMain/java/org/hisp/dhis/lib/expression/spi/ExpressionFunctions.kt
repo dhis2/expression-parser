@@ -202,7 +202,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_left(input: String?, length: Int?): String? {
-        return if (input == null || length == null) "" else input.substring(0, Math.min(input.length, length))
+        return if (input == null || length == null) "" else input.substring(0, input.length.coerceAtMost(length))
     }
 
     fun d2_length(str: String?): Int {
@@ -264,7 +264,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_substring(input: String?, beginIndex: Int?, endIndex: Int?): String? {
-        return input?.substring(beginIndex!!, endIndex!!) ?: ""
+        return input?.substring(beginIndex!!, endIndex?: input.length) ?: ""
     }
 
     fun d2_validatePattern(input: String?, regex: String?): Boolean {

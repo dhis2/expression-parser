@@ -7,8 +7,8 @@ class IllegalExpressionException : IllegalArgumentException {
     @Transient
     private val warnings: List<Issue>
 
-    constructor(message: String?) : super(message) {
-        errors = listOf(Issue({ "" }, message!!))
+    constructor(message: String) : super(message) {
+        errors = listOf(Issue({ "" }, message))
         warnings = listOf()
     }
 

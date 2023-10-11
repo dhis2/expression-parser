@@ -4,8 +4,8 @@ import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.DataItemType
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 /**
  * Tests all forms of [DataItem]s are correctly transformed from an expression to an AST and into a

@@ -3,7 +3,7 @@ package org.hisp.dhis.lib.expression
 import org.hisp.dhis.lib.expression.ast.ProgramVariable
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
 import org.hisp.dhis.lib.expression.spi.Variable
-import org.junit.jupiter.api.Assertions.assertEquals
+import kotlin.test.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class VariableModifierExpressionTest {

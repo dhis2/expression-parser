@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.spi.*
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 /**
  * @author Jan Bernitt
@@ -45,10 +45,10 @@ internal class AggregateFunctionsExpressionTest {
     }
 
     companion object {
-        private fun evaluate(expression: String, dataValues: Map<DataItem, Any>): Double? {
+        private fun evaluate(expression: String, dataValues: Map<DataItem, Any>): Double {
             return Expression(expression).evaluate(
-                { name: String? -> null },
-                ExpressionData().copy(dataItemValues = dataValues)) as Double?
+                { _: String -> null },
+                ExpressionData().copy(dataItemValues = dataValues)) as Double
         }
 
         private fun newDeDataItem(u1234567890: String): DataItem {

@@ -76,7 +76,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
         }
         var same: ValueType? = null
         for (i in 0 until fn.size()) {
-            val expected = expectedTypes[Math.min(expectedTypes.size - 1, i)]
+            val expected = expectedTypes[(expectedTypes.size - 1).coerceAtMost(i)]
             if (expected.isSame()) {
                 val arg = fn.child(i)
                 val actual = arg.getValueType()
@@ -98,8 +98,8 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
         }
     }
 
-    private fun checkArgumentTypesAreAssignable(node: Node<*>?, expectedTypes: List<ValueType>) {
-        for (i in 0 until node!!.size()) {
+    private fun checkArgumentTypesAreAssignable(node: Node<*>, expectedTypes: List<ValueType>) {
+        for (i in 0 until node.size()) {
             val argument = node.child(i)
             val actual = argument.getValueType()
             val expected = if (i >= expectedTypes.size) expectedTypes[expectedTypes.size - 1] else expectedTypes[i]
@@ -108,7 +108,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
     }
 
     private fun checkArgumentTypeIsAssignable(
-        called: Node<*>?,
+        called: Node<*>,
         argument: Node<*>,
         expected: ValueType,
         actual: ValueType
@@ -119,7 +119,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
                 checkEvaluateToType(expected, argument) {
                     String.format(
                         "Literal expression `%s` cannot be converted to type %s expected by function `%s`",
-                        Evaluate.normalise(argument), expected, called!!.getRawValue())
+                        Evaluate.normalise(argument), expected, called.getRawValue())
                 }
             }
             else {
@@ -127,7 +127,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
                 issues.addIssue(
                     possiblyAssignable, argument, String.format(
                         "Incompatible type for %d. argument of %s, expected %s but was: %s",
-                        value + 1, called!!.getRawValue(), expected, actual))
+                        value + 1, called.getRawValue(), expected, actual))
             }
         }
     }

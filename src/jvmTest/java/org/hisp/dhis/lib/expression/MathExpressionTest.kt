@@ -1,9 +1,6 @@
 package org.hisp.dhis.lib.expression
 
-import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 /**
  * Port of the ANTLR `MathExpressionTest` and some more.
@@ -87,15 +84,15 @@ internal class MathExpressionTest {
     }
 
     companion object {
-        private fun assertEquals(expected: Double, actual: Number?) {
-            Assertions.assertEquals(expected, actual!!.toDouble(), 0.000001)
+        private fun assertEquals(expected: Double, actual: Number) {
+            kotlin.test.assertEquals(expected, actual.toDouble(), 0.000001)
         }
 
-        private fun evaluate(expression: String): Number? {
+        private fun evaluate(expression: String): Number {
             val expr = Expression(expression)
             val clean: (String) -> String = { str: String -> str.replace("\\s+".toRegex(), "") }
-            Assertions.assertEquals(clean(expression), clean(expr.normalise()))
-            return expr.evaluate() as Number?
+            kotlin.test.assertEquals(clean(expression), clean(expr.normalise()))
+            return expr.evaluate() as Number
         }
     }
 }

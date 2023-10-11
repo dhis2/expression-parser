@@ -23,7 +23,7 @@ enum class UnaryOperator(val symbol: String, private val returnType: ValueType) 
             if (value == null) {
                 return null
             }
-            return if (value is Int) Math.negateExact(value.toInt()) else -value.toDouble()
+            return if (value is Int) -value.toInt() else -value.toDouble()
         }
     }
 }
