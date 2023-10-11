@@ -10,10 +10,10 @@ import org.hisp.dhis.lib.expression.spi.DataItemType
  * @author Jan Bernitt
  */
 @Suppress("kotlin:S1186")
-interface NodeVisitor : (Node<*>) -> Unit {
+interface NodeVisitor {
 
     @Suppress("kotlin:S6530", "UNCHECKED_CAST")
-    override fun invoke(node: Node<*>) {
+    fun invoke(node: Node<*>) {
         when (node.getType()) {
             NodeType.UNARY_OPERATOR -> visitUnaryOperator(node as Node<UnaryOperator>)
             NodeType.BINARY_OPERATOR -> visitBinaryOperator(node as Node<BinaryOperator>)

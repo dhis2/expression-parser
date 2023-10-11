@@ -2,15 +2,15 @@ package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.ast.Node
 import org.hisp.dhis.lib.expression.ast.VariableType
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.collectDataItems
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.collectUIDs
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.collectVariableNames
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.collectVariables
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.describe
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.evaluate
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.normalise
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.regenerate
-import org.hisp.dhis.lib.expression.eval.Evaluate.Companion.validate
+import org.hisp.dhis.lib.expression.eval.Evaluate.collectDataItems
+import org.hisp.dhis.lib.expression.eval.Evaluate.collectUIDs
+import org.hisp.dhis.lib.expression.eval.Evaluate.collectVariableNames
+import org.hisp.dhis.lib.expression.eval.Evaluate.collectVariables
+import org.hisp.dhis.lib.expression.eval.Evaluate.describe
+import org.hisp.dhis.lib.expression.eval.Evaluate.evaluate
+import org.hisp.dhis.lib.expression.eval.Evaluate.normalise
+import org.hisp.dhis.lib.expression.eval.Evaluate.regenerate
+import org.hisp.dhis.lib.expression.eval.Evaluate.validate
 import org.hisp.dhis.lib.expression.eval.NodeValidator
 import org.hisp.dhis.lib.expression.eval.ValueTypeVariableValue
 import org.hisp.dhis.lib.expression.spi.*

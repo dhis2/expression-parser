@@ -74,12 +74,12 @@ fun interface Fragment {
      * @return this block but with a name label attached to it
      */
     fun named(name: String): Fragment {
-        class Named(val name: String, body: Fragment) : Delegate(body) {
+        class Named(body: Fragment) : Delegate(body) {
             override fun name(): String {
                 return name
             }
         }
-        return Named(name, if (this is Named) to else this)
+        return Named(if (this is Named) to else this)
     }
 
     fun quoted(): Fragment {

@@ -257,7 +257,7 @@ internal class EvaluateFunction(
     private fun <T> eval(node: Node<*>, to: String, coerce: (Any?) -> T?): T? {
         var value: Any? = null
         return try {
-            value = node.eval(this)
+            value = node.eval(this::invoke)
             coerce(value)
         } catch (ex: IllegalExpressionException) {
             throw ex

@@ -30,7 +30,7 @@ internal class DescribeConsumer(
         if (isRoot) wasRoot = true
         out.append(group.getWhitespace().before)
         if (!isRoot) out.append('(')
-        group.walkChildren(this, null)
+        group.walkChildren(this::invoke, null)
         if (!isRoot) out.append(')')
         out.append(group.getWhitespace().after)
     }
@@ -38,17 +38,17 @@ internal class DescribeConsumer(
     override fun visitArgument(argument: Node<Int>) {
         out.append(argument.getWhitespace().before)
         argument.walkChildren(
-            this
+            this::invoke
         ) { c1: Node<*>, c2: Node<*> -> out.append(if (c1.getType() === NodeType.UID && c2.getType() === NodeType.UID) "&" else "") }
         out.append(argument.getWhitespace().after)
     }
 
     override fun visitBinaryOperator(operator: Node<BinaryOperator>) {
-        operator.child(0).walk(this)
+        operator.child(0).walk(this::invoke)
         out.append(operator.getWhitespace().before(" "))
         out.append(operator.getRawValue())
         out.append(operator.getWhitespace().after(" "))
-        operator.child(1).walk(this)
+        operator.child(1).walk(this::invoke)
     }
 
     override fun visitUnaryOperator(operator: Node<UnaryOperator>) {
@@ -58,13 +58,13 @@ internal class DescribeConsumer(
         out.append(operator.getWhitespace().before(ifDefault))
         out.append(rawValue)
         out.append(operator.getWhitespace().after(ifDefault))
-        operator.child(0).walk(this)
+        operator.child(0).walk(this::invoke)
     }
 
     override fun visitFunction(fn: Node<NamedFunction>) {
         out.append(fn.getWhitespace().before)
         out.append(fn.getValue().getName()).append('(')
-        fn.walkChildren(this) { _, _ -> out.append(',') }
+        fn.walkChildren(this::invoke) { _, _ -> out.append(',') }
         out.append(')')
         out.append(fn.getWhitespace().after)
     }
@@ -72,7 +72,7 @@ internal class DescribeConsumer(
     override fun visitModifier(modifier: Node<DataItemModifier>) {
         out.append(modifier.getWhitespace().before)
         out.append('.').append(modifier.getValue().name).append('(')
-        modifier.walkChildren(this) { _, _ -> out.append(',') }
+        modifier.walkChildren(this::invoke) { _, _ -> out.append(',') }
         out.append(')')
         out.append(modifier.getWhitespace().after)
     }
@@ -98,7 +98,7 @@ internal class DescribeConsumer(
         }
         for (i in 0 until item.size()) {
             if (i > 0) out.append('.')
-            item.child(i).walk(this)
+            item.child(i).walk(this::invoke)
         }
         if (!isEventDate) {
             out.append('}')
@@ -109,7 +109,7 @@ internal class DescribeConsumer(
     private fun visitModifiers(item: Node<*>) {
         for (mod in item.modifiers()) {
             if (mod.getValue() !== DataItemModifier.periodAggregation) {
-                mod.walk(this)
+                mod.walk(this::invoke)
             }
         }
     }
@@ -130,7 +130,7 @@ internal class DescribeConsumer(
             out.append(symbol)
             out.append('{')
         }
-        variable.child(0).walk(this)
+        variable.child(0).walk(this::invoke)
         if (hasSymbol) {
             out.append('}')
         }
@@ -188,13 +188,13 @@ internal class DescribeConsumer(
 
         fun toValueExpression(root: Node<*>, dataItemValues: Map<DataItem, Number>): String {
             val walker = DescribeConsumer(dataItemValues, mapOf())
-            root.walk(walker)
+            root.walk(walker::invoke)
             return walker.toString()
         }
 
         fun toDisplayExpression(root: Node<*>, displayNames: Map<String, String>): String {
             val walker = DescribeConsumer(mapOf(), displayNames)
-            root.walk(walker)
+            root.walk(walker::invoke)
             return walker.toString()
         }
     }
