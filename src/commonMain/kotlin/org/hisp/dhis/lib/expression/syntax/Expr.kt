@@ -127,7 +127,7 @@ class Expr(
 
     private fun recordWS() {
         if (annotate && wsStart >= 0) {
-            if (wsEnd - wsStart > 0) wsTokens.add(String(expr, wsStart, wsEnd - wsStart))
+            if (wsEnd - wsStart > 0) wsTokens.add(expr.concatToString(wsStart, wsEnd))
             wsStart = -1
             wsEnd = -1
         }
@@ -159,7 +159,7 @@ class Expr(
      * @return raw input as string
      */
     fun raw(start: Int): String {
-        return String(expr, start, pos - start)
+        return expr.concatToString(start, pos)
     }
 
     fun rawMatch(desc: String, test: (Char) -> Boolean): String {
@@ -205,7 +205,7 @@ class Expr(
             var posLineEnd = expr.pos
             while (posLineEnd < expr.expr.size && expr.expr[posLineEnd] != '\n') posLineEnd++
             val cutoutLength = posLineEnd - posLine0
-            val exprCutout = String(expr.expr, posLine0, cutoutLength)
+            val exprCutout = expr.expr.concatToString(posLine0, posLine0 + cutoutLength)
             val pointer = if (markLen <= 1) " ".repeat(offset0) + "^"
             else " ".repeat(offset0) + "^" + "-".repeat(0.coerceAtLeast(markLen - 2)) + "^"
             return "$desc\n\tat line:$line character:$offset0\n\t$exprCutout\n\t$pointer"
