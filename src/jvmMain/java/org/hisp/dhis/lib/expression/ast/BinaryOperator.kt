@@ -74,24 +74,20 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
 
 
     companion object {
-        /**
-         * Avoid defensive copy when finding operator by symbol
-         */
-        private val VALUES = listOf(*entries.toTypedArray())
-        @JvmStatic
+
         fun fromSymbol(symbol: String): BinaryOperator {
             return when (symbol) {
                 "and" -> AND
                 "or" -> OR
-                else -> VALUES.stream().filter { it.symbol == symbol } .findFirst().orElseThrow()
+                else -> entries.first { it.symbol == symbol }
             }
         }
 
         /*
-     Arithmetic Operations
-     (all numeric operations either return a Double or an Integer)
-     */
-        @JvmStatic
+        Arithmetic Operations
+        (all numeric operations either return a Double or an Integer)
+        */
+
         fun add(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of addition must not be null" }
             require(right != null) { "right operator of addition must not be null" }
@@ -99,7 +95,7 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
             else asBigDecimal(left).add(asBigDecimal(right)).toDouble()
         }
 
-        @JvmStatic
+
         fun subtract(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of subtraction must not be null" }
             require(right != null) { "right operator of subtraction must not be null" }
@@ -107,7 +103,7 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
             else asBigDecimal(left).subtract(asBigDecimal(right)).toDouble()
         }
 
-        @JvmStatic
+
         fun multiply(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of multiplication must not be null" }
             require(right != null) { "right operator of multiplication must not be null" }
@@ -115,7 +111,7 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
             else asBigDecimal(left).multiply(asBigDecimal(right)).toDouble()
         }
 
-        @JvmStatic
+
         fun divide(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of division must not be null" }
             require(right != null) { "right operator of division must not be null" }
@@ -123,7 +119,7 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
             else asBigDecimal(left).divide(asBigDecimal(right), MathContext.DECIMAL64).toDouble()
         }
 
-        @JvmStatic
+
         fun modulo(left: Number?, right: Number?): Number {
             require(left != null) { "left operator of modulo must not be null" }
             require(right != null) { "right operator of modulo must not be null" }
@@ -131,7 +127,7 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
             else asBigDecimal(left).remainder(asBigDecimal(right)).toDouble()
         }
 
-        @JvmStatic
+
         fun exp(base: Number?, exponent: Number?): Number {
             require(base != null) { "base operator of exponential function must not be null" }
             require(exponent != null) { "exponent operator of exponential function must not be null" }
@@ -149,11 +145,12 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
         private fun isSpecialDouble(n: Number?): Boolean {
             if (n == null) return false
             val d = n.toDouble()
-            return java.lang.Double.isNaN(d) || java.lang.Double.isInfinite(d)
+            return d.isNaN() || d.isInfinite()
         }
+
         /*
-    Logic Operations
-     */
+        Logic Operations
+        */
         /**
          * Any true with null is true, any false/null mix is null.
          *
@@ -161,53 +158,49 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
          * @param right right-hand side of the operator, maybe null
          * @return arguments combined with OR, maybe null
          */
-        @JvmStatic
         fun or(left: Boolean?, right: Boolean?): Boolean? {
-            if (left == null) {
-                return if (right === java.lang.Boolean.TRUE) true else null
-            }
-            return if (right == null) {
-                if (left === java.lang.Boolean.TRUE) true else null
-            }
-            else left || right
+            if (left == null)
+                return if (right == true) true else null
+            if (right == null)
+                return if (left == true) true else null
+            return left || right
         }
 
-        @JvmStatic
         fun and(left: Boolean?, right: Boolean?): Boolean? {
             return if (left == null || right == null) null else left && right
         }
 
         /*
-    Comparison Operations
-     */
-        @JvmStatic
+        Comparison Operations
+        */
+
         fun lessThan(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left < right
             else Typed.toNumberTypeCoercion(left)!! < Typed.toNumberTypeCoercion(right)!!
         }
 
-        @JvmStatic
+
         fun lessThanOrEqual(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left <= right
             else Typed.toNumberTypeCoercion(left)!! <= Typed.toNumberTypeCoercion(right)!!
         }
 
-        @JvmStatic
+
         fun greaterThan(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left > right
             else Typed.toNumberTypeCoercion(left)!! > Typed.toNumberTypeCoercion(right)!!
         }
 
-        @JvmStatic
+
         fun greaterThanOrEqual(left: Any?, right: Any?): Boolean {
             return if (left is String && right is String) left >= right
             else Typed.toNumberTypeCoercion(left)!! >= Typed.toNumberTypeCoercion(right)!!
         }
 
         /*
-    Equality Operations
-     */
-        @JvmStatic
+        Equality Operations
+        */
+
         fun equal(left: Any?, right: Any?): Boolean {
             if (left == null || right == null) {
                 return left == null && right == null
@@ -222,7 +215,7 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
             } else left == right
         }
 
-        @JvmStatic
+
         fun notEqual(left: Any?, right: Any?): Boolean {
             return !equal(left, right)
         }

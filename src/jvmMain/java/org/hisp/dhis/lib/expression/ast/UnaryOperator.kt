@@ -14,14 +14,9 @@ enum class UnaryOperator(val symbol: String, private val returnType: ValueType) 
     }
 
     companion object {
-        /**
-         * Avoid defensive copy when finding operator by symbol
-         */
-        private val VALUES = listOf(*entries.toTypedArray())
 
         fun fromSymbol(symbol: String): UnaryOperator {
-            return if ("not" == symbol) NOT else VALUES.stream().filter { op: UnaryOperator -> op.symbol == symbol }
-                .findFirst().orElseThrow()
+            return if ("not" == symbol) NOT else entries.first { op: UnaryOperator -> op.symbol == symbol }
         }
 
         fun negate(value: Number?): Number? {

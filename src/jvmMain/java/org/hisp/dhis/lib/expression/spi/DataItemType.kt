@@ -5,7 +5,7 @@ package org.hisp.dhis.lib.expression.spi
  *
  * @author Jan Bernitt
  */
-enum class DataItemType(@JvmField val symbol: String, private val parameterTypes: List<List<ID.Type>>) {
+enum class DataItemType(val symbol: String, private val parameterTypes: List<List<ID.Type>>) {
     // (data element for aggregate vs. program stage . data element for programs)
     DATA_ELEMENT(
         "#", listOf(
@@ -39,33 +39,17 @@ enum class DataItemType(@JvmField val symbol: String, private val parameterTypes
         listOf<List<ID.Type>>(listOf<ID.Type>(*parameterTypes))
     )
 
-    fun getSymbol(): String {
-        return symbol
-    }
-
     fun getType(numberOfIds: Int, index: Int): ID.Type {
-        val params = parameterTypes.stream().filter { l: List<ID.Type> -> l.size == numberOfIds }
-            .findFirst()
-            .orElseThrow {
-                IllegalArgumentException(
-                    String.format(
-                        "Data item %s cannot be used with %d ids",
-                        name,
-                        numberOfIds
-                    )
-                )
-            }
+        val params =
+            parameterTypes.firstOrNull { l: List<ID.Type> -> l.size == numberOfIds } ?: throw IllegalArgumentException(
+                String.format("Data item %s cannot be used with %d ids", name, numberOfIds))
         return params[index]
     }
 
     companion object {
-        /**
-         * Avoid defensive copy when finding operator by symbol
-         */
-        private val VALUES = listOf(*entries.toTypedArray())
-        @JvmStatic
+
         fun fromSymbol(symbol: String): DataItemType {
-            return VALUES.stream().filter { op: DataItemType -> op.symbol == symbol }.findFirst().orElseThrow()
+            return entries.first { op: DataItemType -> op.symbol == symbol }
         }
     }
 }

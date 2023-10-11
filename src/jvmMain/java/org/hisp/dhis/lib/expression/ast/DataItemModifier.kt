@@ -18,7 +18,6 @@ enum class DataItemModifier(vararg parameterTypes: ValueType) : Typed {
     periodAggregation,
     subExpression;
 
-    @JvmField
     val parameterTypes: List<ValueType>
 
     init {

@@ -244,6 +244,7 @@ fun interface ExpressionFunctions {
         var precision = precision
         if (value == null) return Double.NaN
         precision = precision ?: 0
+
         val roundedNumber = BigDecimal.valueOf(value.toDouble()).setScale(precision, RoundingMode.HALF_UP)
         return if (precision == 0 || roundedNumber.toInt().toDouble() == roundedNumber.toDouble()) roundedNumber.toInt()
             .toDouble()

@@ -5,7 +5,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType
 enum class NamedFunction(
     private val fnName: String,
     private val returnType: ValueType,
-    @JvmField val isVarargs: Boolean,
+    val isVarargs: Boolean,
     vararg parameterTypes: ValueType
 ) : Typed {
     // Base Functions
@@ -75,7 +75,6 @@ enum class NamedFunction(
     d2_zScoreWFA("d2:zScoreWFA", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING),
     d2_zScoreWFH("d2:zScoreWFH", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING);
 
-    @JvmField
     val parameterTypes: List<ValueType>
 
     constructor(name: String, returnType: ValueType, vararg parameterTypes: ValueType) : this(
@@ -102,13 +101,9 @@ enum class NamedFunction(
     }
 
     companion object {
-        /**
-         * Avoid defensive copy when finding function by name
-         */
-        private val VALUES = listOf(*entries.toTypedArray())
-        @JvmStatic
+
         fun fromName(name: String): NamedFunction {
-            return VALUES.stream().filter { it.fnName == name } .findFirst().orElseThrow()
+            return entries.first { it.fnName == name }
         }
     }
 }

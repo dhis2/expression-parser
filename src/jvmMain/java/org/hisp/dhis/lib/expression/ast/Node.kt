@@ -280,10 +280,9 @@ interface Node<T> : Typed, NodeAnnotations {
          * @see .groupUnaryOperators
          * @see .groupBinaryOperators
          */
-        @JvmStatic
         fun groupOperators(root: Node<*>) {
             groupBinaryOperators(root, BinaryOperator.EXP)
-            UnaryOperator.entries.stream().forEach { op: UnaryOperator -> groupUnaryOperators(root, op) }
+            UnaryOperator.entries.forEach { op: UnaryOperator -> groupUnaryOperators(root, op) }
             BinaryOperator.entries
                 .filter  { op: BinaryOperator -> op !== BinaryOperator.EXP }
                 .forEach { op: BinaryOperator -> groupBinaryOperators(root, op) }
@@ -302,7 +301,7 @@ interface Node<T> : Typed, NodeAnnotations {
         private fun groupUnaryOperators(root: Node<*>, op: UnaryOperator) {
             root.transform { _: Node<*>, children: List<Node<*>> ->
                 val isUnary = { child: Node<*> -> child.getValue() === op && child.isEmpty() }
-                if (children.stream().noneMatch(isUnary)) {
+                if (children.none(isUnary)) {
                     return@transform children
                 }
                 val grouped = ArrayDeque<Node<*>>()
@@ -334,7 +333,7 @@ interface Node<T> : Typed, NodeAnnotations {
         private fun groupBinaryOperators(root: Node<*>, op: BinaryOperator) {
             root.transform { _: Node<*>?, children: List<Node<*>> ->
                 val isBinary = { child: Node<*> -> child.getValue() === op && child.isEmpty() }
-                if (children.stream().noneMatch(isBinary)) {
+                if (children.none(isBinary)) {
                     return@transform children
                 }
                 val grouped: MutableList<Node<*>> = ArrayList(children.size)

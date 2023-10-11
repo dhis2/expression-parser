@@ -264,33 +264,15 @@ enum class GS1Elements(val element: String) {
     }
 
     companion object {
-        @JvmStatic
+
         fun fromKey(key: String): GS1Elements {
             return when (key) {
-                "gtin" -> {
-                    GTIN
-                }
-
-                "lot number", "batch number" -> {
-                    LOT_NUMBER
-                }
-
-                "production date" -> {
-                    PROD_DATE
-                }
-
-                "best before date" -> {
-                    BEST_BEFORE_DATE
-                }
-
-                "expiration date" -> {
-                    EXP_DATE
-                }
-
-                "serial number" -> {
-                    SERIAL_NUMBER
-                }
-
+                "gtin" -> GTIN
+                "lot number", "batch number" -> LOT_NUMBER
+                "production date" -> PROD_DATE
+                "best before date" -> BEST_BEFORE_DATE
+                "expiration date" -> EXP_DATE
+                "serial number" -> SERIAL_NUMBER
                 else -> {
                     for (gs1Elements in entries) {
                         val keyIsGs1Element = gs1Elements.element == key
@@ -317,7 +299,6 @@ enum class GS1Elements(val element: String) {
                 .replace("-", "")
         }
 
-        @JvmStatic
         fun getApplicationIdentifier(gs1Group: String): String {
             for (gs1Elements in entries) {
                 var ai = gs1Elements.element

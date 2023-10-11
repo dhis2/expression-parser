@@ -124,11 +124,11 @@ object AggregateMath {
     }
 
     private fun indexR7(p: Double, length: Int): Double {
-        return if (java.lang.Double.compare(p, 0.0) == 0) 0.0
-        else if (java.lang.Double.compare(
-                p,
-                1.0) == 0) length.toDouble()
-        else 1.0 + (length - 1) * p
+        return when (p) {
+            0.0 -> 0.0
+            1.0 -> length.toDouble()
+            else -> 1.0 + (length - 1) * p
+        }
     }
 
     /**

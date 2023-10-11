@@ -11,7 +11,7 @@ import java.time.LocalDate
  */
 object Nodes {
 
-    abstract class AbstractNode<T> @JvmOverloads internal constructor(
+    abstract class AbstractNode<T> internal constructor(
         private val type: NodeType,
         private val rawValue: String,
         converter: (String) -> T,
@@ -238,7 +238,7 @@ object Nodes {
 
     class DataItemNode(type: NodeType, rawValue: String) :
             ModifiedNode<DataItemType>(type, rawValue, DataItemType::fromSymbol, rethrowAs(
-                DataItemType::class.simpleName, DataItemType.entries, DataItemType::getSymbol
+                DataItemType::class.simpleName, DataItemType.entries, DataItemType::symbol
             )) {
         /**
          * Just to cache the result

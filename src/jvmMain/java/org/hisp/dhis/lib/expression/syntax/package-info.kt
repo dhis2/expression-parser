@@ -3,6 +3,6 @@
  *
  *
  * It declares the [org.hisp.dhis.lib.expression.syntax.ExpressionGrammar] and the
- * [org.hisp.dhis.lib.expression.syntax.Parser] to obtain the AST from a [java.lang.String].
+ * [org.hisp.dhis.lib.expression.syntax.Parser] to obtain the AST from a [String].
  */
 package org.hisp.dhis.lib.expression.syntax
