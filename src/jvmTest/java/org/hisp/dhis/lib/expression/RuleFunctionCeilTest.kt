@@ -1,8 +1,10 @@
 package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
-import kotlin.test.assertEquals
+import org.hisp.dhis.lib.expression.Expression.Mode
+
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /**
@@ -37,7 +39,7 @@ internal class RuleFunctionCeilTest {
 
     companion object {
         private fun evaluate(expression: String): Double {
-            return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate() as Double
+            return Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate() as Double
         }
     }
 }

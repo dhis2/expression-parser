@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression
 
-import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Tests focussed on use of comments in expressions.

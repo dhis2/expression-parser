@@ -23,7 +23,7 @@ import org.hisp.dhis.lib.expression.syntax.Parser
  *
  * @author Jan Bernitt
  */
-class Expression @JvmOverloads constructor(
+class Expression(
     private val expression: String,
     private val mode: Mode = Mode.PREDICTOR_GENERATOR_EXPRESSION,
     annotate: Boolean = false
@@ -97,7 +97,6 @@ class Expression @JvmOverloads constructor(
         return evaluate({ _: String? -> null }, ExpressionData())
     }
 
-    @Throws(IllegalExpressionException::class)
     fun evaluate(functions: ExpressionFunctions, data: ExpressionData): Any? {
         return evaluate(root, functions, data)
     }

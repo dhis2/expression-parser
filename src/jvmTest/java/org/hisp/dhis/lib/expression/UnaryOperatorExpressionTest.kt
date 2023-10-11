@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
-import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /**

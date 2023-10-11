@@ -1,7 +1,9 @@
 package org.hisp.dhis.lib.expression
 
-import kotlin.test.assertEquals
+import org.hisp.dhis.lib.expression.Expression.Mode
+
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Tests that program rule variables are identified and collected.
@@ -22,7 +24,7 @@ internal class ProgramRuleVariableExpressionTest {
 
     companion object {
         private fun evaluate(expression: String): Set<String> {
-            return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).collectProgramRuleVariableNames()
+            return Expression(expression, Mode.RULE_ENGINE_ACTION).collectProgramRuleVariableNames()
         }
     }
 }

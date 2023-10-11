@@ -4,8 +4,10 @@ import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import org.hisp.dhis.lib.expression.util.RuleVariableValue
-import kotlin.test.assertEquals
+import org.hisp.dhis.lib.expression.Expression.Mode
+
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Test of the `d2:hasValue` function.
@@ -37,7 +39,7 @@ internal class RuleFunctionHasValueTest {
 
     private fun assertHasValue(expression: String, values: Map<String, VariableValue>, expected: Boolean) {
         val data: ExpressionData = ExpressionData().copy(programRuleVariableValues = values)
-        val actual = Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate(
+        val actual = Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate(
             { _: String? -> null }, data)
         assertEquals(expected, actual)
     }

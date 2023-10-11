@@ -2,9 +2,11 @@ package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import org.hisp.dhis.lib.expression.spi.ValueType
+import org.hisp.dhis.lib.expression.Expression.Mode
+
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.Test
 
 /**
  * Tests the validation as used in rule engine.
@@ -209,7 +211,7 @@ internal class RuleEngineValidationTest {
         }
 
         fun validate(expression: String, variables: Map<String, ValueType> = mapOf()) {
-            val expr = Expression(expression, Expression.Mode.RULE_ENGINE_ACTION)
+            val expr = Expression(expression, Mode.RULE_ENGINE_ACTION)
             expr.validate(variables)
         }
     }

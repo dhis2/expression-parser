@@ -1,5 +1,6 @@
 package org.hisp.dhis.lib.expression.ast
 
+import org.hisp.dhis.lib.expression.ast.BinaryOperator
 import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.Variable
@@ -191,7 +192,6 @@ interface Node<T> : Typed, NodeAnnotations {
      * @throws IndexOutOfBoundsException     when there is no child at the given index
      * @throws UnsupportedOperationException when this node cannot have children
      */
-    @Throws(IndexOutOfBoundsException::class)
     fun child(index: Int): Node<*> {
         throw UnsupportedOperationException("Node of type " + getType() + " cannot have children.")
     }

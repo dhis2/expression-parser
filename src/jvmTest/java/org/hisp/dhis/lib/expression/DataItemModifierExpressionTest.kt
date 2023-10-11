@@ -6,8 +6,9 @@ import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.DataItemType
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
-import kotlin.test.assertEquals
+import org.hisp.dhis.lib.expression.Expression.Mode
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 /**
  * Tests [DataItem] which have non-standard [QueryModifiers].
@@ -24,7 +25,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(periodAggregation = true)
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("avg(#{u1234567890})", Expression.Mode.PREDICTOR_GENERATOR_EXPRESSION))
+            evaluate("avg(#{u1234567890})", Mode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
@@ -32,7 +33,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(aggregationType = AggregationType.sum)
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.aggregationType(sum)", Expression.Mode.INDICATOR_EXPRESSION))
+            evaluate("#{u1234567890}.aggregationType(sum)", Mode.INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -40,7 +41,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(maxDate = LocalDate.parse("1980-11-11"))
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.maxDate(1980-11-11)", Expression.Mode.PREDICTOR_GENERATOR_EXPRESSION))
+            evaluate("#{u1234567890}.maxDate(1980-11-11)", Mode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
@@ -48,7 +49,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(minDate = LocalDate.parse("1980-11-11"))
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.minDate(1980-11-11)", Expression.Mode.PREDICTOR_GENERATOR_EXPRESSION))
+            evaluate("#{u1234567890}.minDate(1980-11-11)", Mode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
@@ -56,7 +57,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(periodOffset = 42)
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.periodOffset(42)", Expression.Mode.INDICATOR_EXPRESSION))
+            evaluate("#{u1234567890}.periodOffset(42)", Mode.INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -64,7 +65,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(stageOffset = 42)
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.stageOffset(42)", Expression.Mode.PROGRAM_INDICATOR_EXPRESSION))
+            evaluate("#{u1234567890}.stageOffset(42)", Mode.PROGRAM_INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -72,7 +73,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy( yearToDate = true)
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.yearToDate()", Expression.Mode.INDICATOR_EXPRESSION))
+            evaluate("#{u1234567890}.yearToDate()", Mode.INDICATOR_EXPRESSION))
     }
 
     /*
@@ -83,7 +84,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(yearToDate = true, periodOffset = 42)
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.yearToDate().periodOffset(42)", Expression.Mode.INDICATOR_EXPRESSION))
+            evaluate("#{u1234567890}.yearToDate().periodOffset(42)", Mode.INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -91,7 +92,7 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(yearToDate = true, periodOffset = 42)
         assertEquals(
             setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("(#{u1234567890}).yearToDate().periodOffset(42)", Expression.Mode.INDICATOR_EXPRESSION))
+            evaluate("(#{u1234567890}).yearToDate().periodOffset(42)", Mode.INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -103,7 +104,7 @@ internal class DataItemModifierExpressionTest {
                 DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "v1234567890"), expected)),
             evaluate(
                 "(#{u1234567890} + #{v1234567890}).yearToDate().periodOffset(42)",
-                Expression.Mode.INDICATOR_EXPRESSION))
+                Mode.INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -118,7 +119,7 @@ internal class DataItemModifierExpressionTest {
                 DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "v1234567890"), expected)),
             evaluate(
                 "avg(#{u1234567890} + #{v1234567890}).minDate(1980-11-11).maxDate(2000-11-11)",
-                Expression.Mode.PREDICTOR_GENERATOR_EXPRESSION))
+                Mode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
@@ -131,7 +132,7 @@ internal class DataItemModifierExpressionTest {
                 DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "v1234567890"), expected2)),
             evaluate(
                 "(#{u1234567890}.yearToDate() + #{v1234567890}).periodOffset(42)",
-                Expression.Mode.INDICATOR_EXPRESSION))
+                Mode.INDICATOR_EXPRESSION))
     }
 
     companion object {

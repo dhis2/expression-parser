@@ -1,10 +1,8 @@
 package org.hisp.dhis.lib.expression.spi
 
 class IllegalExpressionException : IllegalArgumentException {
-    @Transient
-    private val errors: List<Issue>
 
-    @Transient
+    private val errors: List<Issue>
     private val warnings: List<Issue>
 
     constructor(message: String) : super(message) {

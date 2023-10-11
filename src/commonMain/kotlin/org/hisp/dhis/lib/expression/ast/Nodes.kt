@@ -1,8 +1,10 @@
 package org.hisp.dhis.lib.expression.ast
 
 import kotlinx.datetime.LocalDate
+import org.hisp.dhis.lib.expression.ast.NodeAnnotations.Whitespace
+import org.hisp.dhis.lib.expression.ast.AggregationType
+import org.hisp.dhis.lib.expression.ast.BinaryOperator
 import org.hisp.dhis.lib.expression.spi.*
-import org.hisp.dhis.lib.expression.ast.NodeAnnotations.Whitespace;
 
 /**
  * Implements the different [Node] types in the AST.
@@ -151,7 +153,7 @@ object Nodes {
     }
 
     class ArgumentNode(type: NodeType, rawValue: String) :
-            ComplexNode<Int>(type, rawValue, Integer::valueOf) {
+            ComplexNode<Int>(type, rawValue, String::toInt) {
         override fun getValueType(): ValueType {
             return if (size() == 1) child(0).getValueType() else ValueType.MIXED
         }
@@ -326,12 +328,16 @@ object Nodes {
                         c = chars[++i]
                         when (c) {
                             'u' -> {
-                                str.appendCodePoint(
-                                    String(charArrayOf(chars[++i], chars[++i], chars[++i], chars[++i])).toInt(16)
-                                )
+                                str.append(
+                                    Char(
+                                        charArrayOf(
+                                            chars[++i],
+                                            chars[++i],
+                                            chars[++i],
+                                            chars[++i]).concatToString().toInt(16)))
                             }
                             in '0'..'9' -> {
-                                str.appendCodePoint(String(charArrayOf(chars[++i], chars[++i], chars[++i])).toInt(8))
+                                str.append(Char(charArrayOf(chars[++i], chars[++i], chars[++i]).concatToString().toInt(8)))
                             }
                             else -> {
                                 when (c) {
@@ -447,7 +453,7 @@ object Nodes {
                                             .addChild(
                                                 TextNode(
                                                     NodeType.STRING,
-                                                    "@" + System.identityHashCode(node)
+                                                    "@TODO:SQL of the node"+node.hashCode()
                                                 )
                                             )
                                     )

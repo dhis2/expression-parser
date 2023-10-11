@@ -1,7 +1,9 @@
 package org.hisp.dhis.lib.expression
 
-import kotlin.test.assertEquals
+import org.hisp.dhis.lib.expression.Expression.Mode
+
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /**
@@ -51,7 +53,7 @@ internal class RuleFunctionExtractDataMatrixValueTest {
     companion object {
         private fun extractDataMatrixValue(key: String, value: String): String {
             val expression = "d2:extractDataMatrixValue('$key', '$value')"
-            return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate() as String
+            return Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate() as String
         }
     }
 }

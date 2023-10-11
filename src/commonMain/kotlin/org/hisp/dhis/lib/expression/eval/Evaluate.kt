@@ -20,7 +20,6 @@ class Evaluate private constructor() {
         /*
     Main functions to compute a result
      */
-        @Throws(IllegalExpressionException::class)
         fun evaluate(root: Node<*>, functions: ExpressionFunctions, data: ExpressionData): Any? {
             val value = root.eval(EvaluateFunction(functions, data))
             return if (value is VariableValue) value.valueOrDefault() else value

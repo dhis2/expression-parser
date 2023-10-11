@@ -53,7 +53,7 @@ internal class DescribeConsumer(
 
     override fun visitUnaryOperator(operator: Node<UnaryOperator>) {
         val rawValue: String = operator.getRawValue()
-        val isWord = Character.isLetter(rawValue[0])
+        val isWord = rawValue[0].isLetter()
         val ifDefault = if (isWord) " " else ""
         out.append(operator.getWhitespace().before(ifDefault))
         out.append(rawValue)

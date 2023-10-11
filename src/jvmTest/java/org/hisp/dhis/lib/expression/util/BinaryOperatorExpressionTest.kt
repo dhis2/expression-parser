@@ -2,8 +2,8 @@ package org.hisp.dhis.lib.expression.util
 
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.spi.ValueType
-import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 internal class BinaryOperatorExpressionTest {
 

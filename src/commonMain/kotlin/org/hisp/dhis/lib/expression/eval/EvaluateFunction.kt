@@ -116,7 +116,7 @@ internal class EvaluateFunction(
                 evalToString(fn.child(0)),
                 evalToInteger(fn.child(1)))
             NamedFunction.d2_round -> functions.d2_round(
-                evalToNumber(fn.child(0)), if (fn.size() <= 1) Integer.valueOf(0)
+                evalToNumber(fn.child(0)), if (fn.size() <= 1) 0
                 else evalToInteger(fn.child(1)))
             NamedFunction.d2_split -> functions.d2_split(
                 evalToString(fn.child(0)),

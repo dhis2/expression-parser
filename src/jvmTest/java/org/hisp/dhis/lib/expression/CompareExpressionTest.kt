@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression
 
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
-import kotlin.test.Test
 
 /**
  * Port of the ANTLR `CompareExpressionTest`.

@@ -245,8 +245,7 @@ object ExpressionGrammar {
         }
     }
 
-    @SafeVarargs
-    fun concat(vararg nonTerminals: List<Fragment>): List<Fragment> {
+    private fun concat(vararg nonTerminals: List<Fragment>): List<Fragment> {
         return nonTerminals.flatMap { it }
     }
 }
