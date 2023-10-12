@@ -218,7 +218,7 @@ fun interface ExpressionFunctions {
     fun d2_minutesBetween(start: LocalDate?, end: LocalDate?): Int {
         require(start != null) { "start parameter of d2:minutesBetween must not be null" }
         require(end != null) { "end parameter of d2:minutesBetween must not be null" }
-        return d2_daysBetween(start, end).times(25 * 60)
+        return d2_daysBetween(start, end).times(24 * 60)
     }
 
     fun d2_minValue(value: VariableValue?): Double {
@@ -285,7 +285,7 @@ fun interface ExpressionFunctions {
     fun d2_yearsBetween(start: LocalDate?, end: LocalDate?): Int {
         require(start != null) { "start parameter of d2:yearsBetween must not be null" }
         require(end != null) { "end parameter of d2:yearsBetween must not be null" }
-        return if (start.toEpochDays() < end.toEpochDays()) start.yearsUntil(end) / 7 else end.yearsUntil(start) / 7
+        return if (start.toEpochDays() < end.toEpochDays()) start.yearsUntil(end) else end.yearsUntil(start)
     }
 
     /**

@@ -40,8 +40,10 @@ fun interface Typed {
         }
 
         fun toStringTypeCoercion(value: Any?): String? {
-            return if (value == null) null
-            else (value as? VariableValue)?.valueOrDefault()?.toString() ?: value.toString()
+            if (value == null) return null
+            if (value is VariableValue) return toStringTypeCoercion(value.valueOrDefault());
+            if (value is Number) return  if (isNonFractionValue(value)) value.toInt().toString() else value.toString();
+            return value.toString()
         }
 
         fun toMixedTypeTypeCoercion(value: Any?): Any? {
