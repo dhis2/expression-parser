@@ -28,7 +28,7 @@ object Literals {
         }
     }
 
-    fun parseUnaryOp(expr: Expr): String {
+    private fun parseUnaryOp(expr: Expr): String {
         val c = expr.peek()
         if (isUnaryOperator(c)) {
             expr.error("unary operator")
@@ -82,7 +82,7 @@ object Literals {
         return expr.rawMatch("name", Chars::isName)
     }
 
-    fun parseInteger(expr: Expr): String {
+    private fun parseInteger(expr: Expr): String {
         val s = expr.position()
         expr.gobbleIf(Chars::isSignOperator)
         expr.skipWhile(Chars::isDigit)
@@ -109,11 +109,11 @@ object Literals {
         return expr.raw(s)
     }
 
-    fun parseBoolean(expr: Expr): String {
+    private fun parseBoolean(expr: Expr): String {
         return expr.rawMatch("boolean", if (expr.peek() == 't') "true" else "false")
     }
 
-    fun parseDate(expr: Expr): String {
+    private fun parseDate(expr: Expr): String {
         // [1-9] [0-9] [0-9] [0-9] '-' [0-1]? [0-9] '-' [0-3]? [0-9]
         val s = expr.position()
         expr.expect("digit", Chars::isDigit)

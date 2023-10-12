@@ -1,6 +1,7 @@
-package org.hisp.dhis.lib.expression
+package org.hisp.dhis.lib.expression.function
 
 import kotlinx.datetime.LocalDate
+import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import org.hisp.dhis.lib.expression.Expression.Mode
 
@@ -11,12 +12,11 @@ import kotlin.test.assertFailsWith
 /**
  * Test of the `d2:ceil` function.
  *
- *
  * Translated from existing test of same name in rule-engine.
  *
  * @author Jan Bernitt
  */
-internal class RuleFunctionAddDaysTest {
+internal class AddDaysTest {
     @Test
     fun return_new_date_with_days_added() {
         assertEquals(LocalDate.parse("2011-01-07"), evaluate("d2:addDays('2011-01-01', 6.0)"))

@@ -1,5 +1,6 @@
-package org.hisp.dhis.lib.expression
+package org.hisp.dhis.lib.expression.function
 
+import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.Expression.Mode
 
 import kotlin.test.Test
@@ -14,7 +15,7 @@ import kotlin.test.assertFailsWith
  *
  * @author Jan Bernitt
  */
-internal class RuleFunctionExtractDataMatrixValueTest {
+internal class ExtractDataMatrixValueTest {
     @Test
     fun throw_argument_exception_if_value_is_not_gs1() {
         assertFailsWith(IllegalArgumentException::class) { extractDataMatrixValue("serial number", "testingvalue") }

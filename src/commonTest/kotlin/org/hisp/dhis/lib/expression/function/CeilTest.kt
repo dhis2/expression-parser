@@ -1,5 +1,6 @@
-package org.hisp.dhis.lib.expression
+package org.hisp.dhis.lib.expression.function
 
+import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import org.hisp.dhis.lib.expression.Expression.Mode
 
@@ -15,7 +16,7 @@ import kotlin.test.assertFailsWith
  *
  * @author Jan Bernitt
  */
-internal class RuleFunctionCeilTest {
+internal class CeilTest {
     @Test
     fun evaluateMustReturnCeiledValue() {
         assertEquals(5.0, evaluate("d2:ceil(4.1)"))
