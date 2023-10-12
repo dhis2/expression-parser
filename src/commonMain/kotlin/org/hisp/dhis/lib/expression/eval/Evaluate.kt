@@ -20,7 +20,7 @@ object Evaluate {
     Main functions to compute a result
     */
     fun evaluate(root: Node<*>, functions: ExpressionFunctions, data: ExpressionData): Any? {
-        val value = root.eval(EvaluateFunction(functions, data)::invoke)
+        val value = root.eval(EvaluateFunction(functions, data)::evalNode)
         return if (value is VariableValue) value.valueOrDefault() else value
     }
 
@@ -52,7 +52,7 @@ object Evaluate {
         }
 
         // type check
-        root.visit(TypeCheckingConsumer(issues)::invoke)
+        root.visit(TypeCheckingConsumer(issues)::visitNode)
 
         // check result type
         val actualResultType = root.getValueType()
@@ -108,7 +108,7 @@ Support functions to collect identifiers to supply values to main functions
         return root.aggregate(
             LinkedHashSet(), Node<*>::toIDs,
             { set: LinkedHashSet<ID>, ids: Sequence<ID> ->
-                ids.filter { id: ID -> id.type.isUID() }.forEach { e: ID -> set.add(e) }
+                ids.filter { id: ID -> id.type.isUID() }.forEach(set::add)
             }
         ) { node: Node<*> -> node.getType() === NodeType.DATA_ITEM }
     }

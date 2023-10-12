@@ -13,7 +13,7 @@ import org.hisp.dhis.lib.expression.spi.DataItemType
 interface NodeVisitor {
 
     @Suppress("kotlin:S6530", "UNCHECKED_CAST")
-    fun invoke(node: Node<*>) {
+    fun visitNode(node: Node<*>) {
         when (node.getType()) {
             NodeType.UNARY_OPERATOR -> visitUnaryOperator(node as Node<UnaryOperator>)
             NodeType.BINARY_OPERATOR -> visitBinaryOperator(node as Node<BinaryOperator>)

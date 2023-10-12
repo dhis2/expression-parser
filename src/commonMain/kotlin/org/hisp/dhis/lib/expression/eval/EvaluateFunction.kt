@@ -257,7 +257,7 @@ internal class EvaluateFunction(
     private fun <T> eval(node: Node<*>, to: String, coerce: (Any?) -> T?): T? {
         var value: Any? = null
         return try {
-            value = node.eval(this::invoke)
+            value = node.eval(this::evalNode)
             coerce(value)
         } catch (ex: IllegalExpressionException) {
             throw ex
@@ -265,9 +265,8 @@ internal class EvaluateFunction(
             throw ex
         } catch (ex: RuntimeException) {
             val type = if (value == null) "" else value::class.simpleName
-            val msg = ex.message?.replace("java.time.format.DateTimeParseException: ", "")
             val expr = DescribeConsumer.toNormalisedExpression(node)
-            throw IllegalExpressionException("Failed to coerce value '$value' ($type) to $to: $msg\n\t in expression: $expr")
+            throw IllegalExpressionException("Failed to coerce value '$value' ($type) to $to in expression: $expr")
         }
     }
 

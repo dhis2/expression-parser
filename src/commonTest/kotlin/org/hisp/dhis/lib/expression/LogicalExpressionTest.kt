@@ -22,8 +22,7 @@ internal class LogicalExpressionTest {
     fun testDoubleAsBoolean() {
         val ex = assertFailsWith(IllegalArgumentException::class) { evaluate("1.1 and 2") }
         assertEquals(
-            "Failed to coerce value '1.1' (Double) to Boolean: Could not coerce Double '1.1' to Boolean\n" +
-                    "\t in expression: 1.1", ex.message)
+            "Failed to coerce value '1.1' (Double) to Boolean in expression: 1.1", ex.message)
     }
 
     @Test

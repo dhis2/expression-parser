@@ -17,7 +17,7 @@ object Nodes {
         private val type: NodeType,
         private val rawValue: String,
         converter: (String) -> T,
-        rethrowAs: (String, RuntimeException) -> RuntimeException = { _: String, ex: RuntimeException -> ex }
+        rethrowAs: (String, Exception) -> RuntimeException = { _: String, ex: Exception -> RuntimeException(ex) }
     ) : Node<T> {
         private var value: T
         private var start: Position? = null
@@ -27,7 +27,7 @@ object Nodes {
         init {
             try {
                 value = converter(rawValue)
-            } catch (ex: RuntimeException) {
+            } catch (ex: Exception) {
                 throw rethrowAs(rawValue, ex)
             }
         }
@@ -90,8 +90,8 @@ object Nodes {
                 name: String?,
                 values: Collection<E>,
                 toText: (E) -> String
-            ): (String, RuntimeException) -> RuntimeException {
-                return { rawValue: String, _: RuntimeException ->
+            ): (String, Exception) -> RuntimeException {
+                return { rawValue: String, _: Exception ->
                     IllegalArgumentException("Invalid $name option: '$rawValue'\n\toptions are: ${values.map(toText)}")
                 }
             }
@@ -109,7 +109,7 @@ object Nodes {
             type: NodeType,
             rawValue: String,
             converter: (String) -> T,
-            rethrowAs: (String, RuntimeException) -> RuntimeException
+            rethrowAs: (String, Exception) -> RuntimeException
         ) : super(type, rawValue, converter, rethrowAs)
 
         override fun size(): Int {
@@ -190,7 +190,7 @@ object Nodes {
             type: NodeType,
             rawValue: String,
             converter: (String) -> T,
-            rethrowAs: (String, RuntimeException) -> RuntimeException
+            rethrowAs: (String, Exception) -> RuntimeException
         ) : super(type, rawValue, converter, rethrowAs)
 
         override fun addModifier(modifier: Node<*>): Node<T> {
@@ -278,7 +278,7 @@ object Nodes {
             type: NodeType,
             rawValue: String,
             converter: (String) -> T,
-            rethrowAs: (String, RuntimeException) -> RuntimeException
+            rethrowAs: (String, Exception) -> RuntimeException
         ) : super(type, rawValue, converter, rethrowAs)
 
         override fun getValueType(): ValueType {

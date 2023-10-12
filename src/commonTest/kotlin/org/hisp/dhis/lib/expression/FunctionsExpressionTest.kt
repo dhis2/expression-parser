@@ -75,8 +75,7 @@ internal class FunctionsExpressionTest {
     fun testIf_NaN() {
         val ex = assertFailsWith(IllegalExpressionException::class) { evaluate("if(1%0, true, false)") }
         assertEquals(
-            "Failed to coerce value 'NaN' (Double) to Boolean: Could not coerce Double 'NaN' to Boolean\n" +
-                    "\t in expression: 1 % 0", ex.message)
+            "Failed to coerce value 'NaN' (Double) to Boolean in expression: 1 % 0", ex.message)
     }
 
     @Test

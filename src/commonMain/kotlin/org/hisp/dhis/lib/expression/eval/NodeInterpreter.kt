@@ -13,7 +13,7 @@ import org.hisp.dhis.lib.expression.spi.DataItemType
 interface NodeInterpreter<T> {
 
     @Suppress("kotlin:S6530", "UNCHECKED_CAST")
-    fun invoke(node: Node<*>): T? {
+    fun evalNode(node: Node<*>): T? {
         return when (node.getType()) {
             NodeType.UNARY_OPERATOR -> evalUnaryOperator(node as Node<UnaryOperator>)
             NodeType.BINARY_OPERATOR -> evalBinaryOperator(node as Node<BinaryOperator>)
@@ -36,11 +36,11 @@ interface NodeInterpreter<T> {
     }
 
     fun evalParentheses(group: Node<Unit>): T? {
-        return group.child(0).eval(this::invoke)
+        return group.child(0).eval(this::evalNode)
     }
 
     fun evalArgument(argument: Node<Int>): T? {
-        return argument.child(0).eval(this::invoke)
+        return argument.child(0).eval(this::evalNode)
     }
 
     fun evalBinaryOperator(operator: Node<BinaryOperator>): T?

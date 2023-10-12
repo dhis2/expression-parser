@@ -30,24 +30,21 @@ internal class RuleFunctionAddDaysTest {
     fun throw_runtime_exception_if_first_argument_is_invalid() {
         assertIllegalExpression(
             "d2:addDays('bad date', 6)",
-            "Failed to coerce value 'bad date' (String) to Date: Text 'bad date' could not be parsed at index 0\n" +
-                    "\t in expression: 'bad date'")
+            "Failed to coerce value 'bad date' (String) to Date in expression: 'bad date'")
     }
 
     @Test
     fun throw_illegal_argument_exception_if_second_argument_is_invalid() {
         assertIllegalExpression(
             "d2:addDays('2010-01-01', 'bad number')",
-            "Failed to coerce value 'bad number' (String) to Double: For input string: \"bad number\"\n" +
-                    "\t in expression: 'bad number'")
+            "Failed to coerce value 'bad number' (String) to Double in expression: 'bad number'")
     }
 
     @Test
     fun throw_illegal_argument_exception_if_first_and_second_argument_is_invalid() {
         assertIllegalExpression(
             "d2:addDays('bad date', 'bad number')",
-            "Failed to coerce value 'bad date' (String) to Date: Text 'bad date' could not be parsed at index 0\n" +
-                    "\t in expression: 'bad date'")
+            "Failed to coerce value 'bad date' (String) to Date in expression: 'bad date'")
     }
 
     private fun assertIllegalExpression(expression: String, expectedMessage: String) {
