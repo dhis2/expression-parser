@@ -13,12 +13,11 @@ import kotlin.test.assertEquals
 /**
  * Test of the `d2:hasValue` function.
  *
- *
  * Translated from existing test of same name in rule-engine.
  *
  * @author Jan Bernitt
  */
-internal class HasValueTest {
+internal class HasValueTest : VariableTest() {
     @Test
     fun return_false_for_non_existing_variable() {
         assertHasValue("d2:hasValue(#{nonexisting})", mapOf(), false)
@@ -39,9 +38,6 @@ internal class HasValueTest {
     }
 
     private fun assertHasValue(expression: String, values: Map<String, VariableValue>, expected: Boolean) {
-        val data: ExpressionData = ExpressionData().copy(programRuleVariableValues = values)
-        val actual = Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate(
-            { _: String? -> null }, data)
-        assertEquals(expected, actual)
+        assertEquals(expected, evaluate(expression, values))
     }
 }
