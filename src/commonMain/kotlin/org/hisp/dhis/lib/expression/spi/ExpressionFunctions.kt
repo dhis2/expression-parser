@@ -99,7 +99,7 @@ fun interface ExpressionFunctions {
         return VectorAggreation.max(values)
     }
 
-    fun median(values: DoubleArray): Double {
+    fun median(values: DoubleArray): Double? {
         return VectorAggreation.median(values)
     }
 
@@ -156,9 +156,9 @@ fun interface ExpressionFunctions {
         return value?.candidates()?.size ?: 0
     }
 
-    fun d2_countIfValue(value: VariableValue?, booleanOrNumber: Any?): Int {
-        return if (value == null || booleanOrNumber == null) 0
-        else value.candidates().count { e -> e == booleanOrNumber }
+    fun d2_countIfValue(value: VariableValue?, sample: String?): Int {
+        return if (value == null || sample == null) 0
+        else value.candidates().count { e -> e == sample }
     }
 
     fun d2_countIfZeroPos(value: VariableValue?): Int {
@@ -241,17 +241,17 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_right(input: String?, length: Int?): String? {
-        return if (input == null || length == null) "" else input.substring(input.length - length)
+        return if (input == null || length == null) "" else input.substring((input.length - length).coerceAtLeast(0))
     }
 
     fun d2_round(value: Number?, precision: Int?): Double {
         var precision = precision
-        if (value == null) return Double.NaN
+        if (value == null || value.toDouble().isNaN() || value.toDouble().isInfinite()) return Double.NaN
         precision = precision ?: 0
 
         val roundedNumber = BigDecimal.fromDouble(value.toDouble()).scale(precision.toLong())
-        if (precision == 0 || roundedNumber.intValue().toDouble() == roundedNumber.doubleValue())
-            return roundedNumber.intValue().toDouble()
+        if (precision == 0 || roundedNumber.isWholeNumber())
+            return roundedNumber.toStringExpanded().toDouble()
         val str = roundedNumber.toStringExpanded()
         if (!str.contains('.')) return str.toDouble()
         var len = str.length
@@ -269,7 +269,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_substring(input: String?, beginIndex: Int?, endIndex: Int?): String? {
-        return input?.substring(beginIndex!!, endIndex?: input.length) ?: ""
+        return input?.substring(beginIndex?.coerceAtLeast(0)?: 0, endIndex?.coerceAtMost(input.length)?: input.length) ?: ""
     }
 
     fun d2_validatePattern(input: String?, regex: String?): Boolean {
@@ -299,9 +299,8 @@ fun interface ExpressionFunctions {
      * Returns the number of numeric zero and positive values among the given object arguments. Can be provided with any
      * number of arguments.
      */
-    fun d2_zpvc(values: List<Number?>): Double {
+    fun d2_zpvc(values: List<Number?>): Int {
         return values.count { n -> n != null && n.toDouble() >= 0.0 }
-            .toDouble()
     }
 
     fun d2_zScoreHFA(parameter: Number?, weight: Number?, gender: String?): Double {

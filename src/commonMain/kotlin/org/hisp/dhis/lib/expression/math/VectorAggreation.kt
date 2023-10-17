@@ -36,9 +36,8 @@ object VectorAggreation {
         return values.filter { v: Double -> !v.isNaN() }.maxOrNull() ?: Double.NaN
     }
 
-    fun median(values: DoubleArray?): Double {
-        //TODO implement
-        return 0.0
+    fun median(values: DoubleArray): Double? {
+        return percentileCont(values, 0.5)
     }
 
     /**

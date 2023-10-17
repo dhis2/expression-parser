@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class AvgTest : AggregateFunctionTest() {
+internal class AvgTest : AbstractAggregateFunctionTest() {
 
     @Test
     fun testAvg_Single() {

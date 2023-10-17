@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class MinTest : AggregateFunctionTest() {
+internal class MinTest : AbstractAggregateFunctionTest() {
 
     @Test
     fun testMin() {

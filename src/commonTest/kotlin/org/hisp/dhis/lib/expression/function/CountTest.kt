@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class CountTest : AggregateFunctionTest() {
+internal class CountTest : AbstractAggregateFunctionTest() {
 
     @Test
     fun testCount() {

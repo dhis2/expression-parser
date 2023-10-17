@@ -18,9 +18,7 @@ internal class StringExpressionTest {
     """.trimIndent(), evaluate("'hello\\nworld!\\uD83D\\uDE31 I think it works!'"))
     }
 
-    companion object {
-        private fun evaluate(expression: String): String? {
-            return Expression(expression).evaluate() as String?
-        }
+    private fun evaluate(expression: String): String? {
+        return Expression(expression).evaluate() as String?
     }
 }
