@@ -241,7 +241,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_right(input: String?, length: Int?): String? {
-        return if (input == null || length == null) "" else input.substring(input.length - length)
+        return if (input == null || length == null) "" else input.substring((input.length - length).coerceAtLeast(0))
     }
 
     fun d2_round(value: Number?, precision: Int?): Double {
