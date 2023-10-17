@@ -77,7 +77,7 @@ internal class EvaluateFunction(
             NamedFunction.d2_count -> functions.d2_count(evalToVar(fn.child(0)))
             NamedFunction.d2_countIfValue -> functions.d2_countIfValue(
                 evalToVar(fn.child(0)),
-                evalToMixed(fn.child(1)))
+                evalToString(fn.child(1)))
             NamedFunction.d2_countIfZeroPos -> functions.d2_countIfZeroPos(evalToVar(fn.child(0)))
             NamedFunction.d2_daysBetween -> functions.d2_daysBetween(
                 evalToDate(fn.child(0)),

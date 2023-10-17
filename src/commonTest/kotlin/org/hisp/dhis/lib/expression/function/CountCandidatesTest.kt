@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class CountVarTest : VariableTest() {
+internal class CountCandidatesTest : AbstractVariableBasedTest() {
 
     @Test
     fun testCount_NoCandidates() {

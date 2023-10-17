@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class SumTest : AggregateFunctionTest() {
+internal class SumTest : AbstractAggregateFunctionTest() {
 
     @Test
     fun testSum() {

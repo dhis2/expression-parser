@@ -1,11 +1,8 @@
 package org.hisp.dhis.lib.expression.function
 
-import org.hisp.dhis.lib.expression.Expression
-import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import org.hisp.dhis.lib.expression.util.RuleVariableValue
-import org.hisp.dhis.lib.expression.Expression.Mode
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,7 +14,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class HasValueTest : VariableTest() {
+internal class HasValueTest : AbstractVariableBasedTest() {
     @Test
     fun return_false_for_non_existing_variable() {
         assertHasValue("d2:hasValue(#{nonexisting})", mapOf(), false)

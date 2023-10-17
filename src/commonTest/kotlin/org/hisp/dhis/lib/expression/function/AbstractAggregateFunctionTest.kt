@@ -3,7 +3,7 @@ package org.hisp.dhis.lib.expression.function
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.spi.*
 
-abstract class AggregateFunctionTest {
+abstract class AbstractAggregateFunctionTest {
 
     fun evaluate(expression: String, dataValues: Map<DataItem, Any>): Double? {
         return Expression(expression).evaluate(

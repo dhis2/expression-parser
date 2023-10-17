@@ -156,9 +156,9 @@ fun interface ExpressionFunctions {
         return value?.candidates()?.size ?: 0
     }
 
-    fun d2_countIfValue(value: VariableValue?, booleanOrNumber: Any?): Int {
-        return if (value == null || booleanOrNumber == null) 0
-        else value.candidates().count { e -> e == booleanOrNumber }
+    fun d2_countIfValue(value: VariableValue?, sample: String?): Int {
+        return if (value == null || sample == null) 0
+        else value.candidates().count { e -> e == sample }
     }
 
     fun d2_countIfZeroPos(value: VariableValue?): Int {
