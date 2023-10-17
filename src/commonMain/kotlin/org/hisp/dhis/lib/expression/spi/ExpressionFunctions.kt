@@ -269,7 +269,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_substring(input: String?, beginIndex: Int?, endIndex: Int?): String? {
-        return input?.substring(beginIndex!!, endIndex?: input.length) ?: ""
+        return input?.substring(beginIndex?.coerceAtLeast(0)?: 0, endIndex?.coerceAtMost(input.length)?: input.length) ?: ""
     }
 
     fun d2_validatePattern(input: String?, regex: String?): Boolean {
