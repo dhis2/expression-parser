@@ -99,7 +99,7 @@ fun interface ExpressionFunctions {
         return VectorAggreation.max(values)
     }
 
-    fun median(values: DoubleArray): Double {
+    fun median(values: DoubleArray): Double? {
         return VectorAggreation.median(values)
     }
 
