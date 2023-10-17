@@ -95,7 +95,7 @@ internal class EvaluateFunction(
                 data.programRuleVariableValues["org_unit"],
                 data.supplementaryValues)
             NamedFunction.d2_lastEventDate -> functions.d2_lastEventDate(
-                data.programRuleVariableValues[evalToString(fn.child(0))])
+                evalToVar(fn.child(0)))
             NamedFunction.d2_left -> functions.d2_left(
                 evalToString(fn.child(0)),
                 evalToInteger(fn.child(1)))
