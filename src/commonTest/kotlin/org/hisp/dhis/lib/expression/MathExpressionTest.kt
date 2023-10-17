@@ -82,17 +82,14 @@ internal class MathExpressionTest {
         assertEquals(-2.25141952945498701E18, evaluate("(1+2)*-3^(9*4)*5+6"))
         assertEquals(-787313.0, evaluate("1+2*-3^9*4*5+6"))
     }
-
-    companion object {
-        private fun assertEquals(expected: Double, actual: Number) {
-            kotlin.test.assertEquals(expected, actual.toDouble(), 0.000001)
-        }
-
-        private fun evaluate(expression: String): Number {
-            val expr = Expression(expression)
-            val clean: (String) -> String = { str: String -> str.replace("\\s+".toRegex(), "") }
-            kotlin.test.assertEquals(clean(expression), clean(expr.normalise()))
-            return expr.evaluate() as Number
-        }
+    private fun assertEquals(expected: Double, actual: Number) {
+        kotlin.test.assertEquals(expected, actual.toDouble(), 0.000001)
     }
+    private fun evaluate(expression: String): Number {
+        val expr = Expression(expression)
+        val clean: (String) -> String = { str: String -> str.replace("\\s+".toRegex(), "") }
+        kotlin.test.assertEquals(clean(expression), clean(expr.normalise()))
+        return expr.evaluate() as Number
+    }
+
 }
