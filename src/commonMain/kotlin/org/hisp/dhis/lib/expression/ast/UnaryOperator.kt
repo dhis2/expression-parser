@@ -12,7 +12,6 @@ enum class UnaryOperator(val symbol: String, private val returnType: ValueType) 
     override fun getValueType(): ValueType {
         return returnType
     }
-
     companion object {
 
         fun fromSymbol(symbol: String): UnaryOperator {
@@ -23,7 +22,7 @@ enum class UnaryOperator(val symbol: String, private val returnType: ValueType) 
             if (value == null) {
                 return null
             }
-            return if (value is Int) -value.toInt() else -value.toDouble()
+            return -value.toDouble()
         }
     }
 }

@@ -57,7 +57,7 @@ fun interface Typed {
             else value
         }
 
-        private fun isNonFractionValue(value: Number): Boolean {
+        fun isNonFractionValue(value: Number): Boolean {
             return value.toDouble() % 1.0 == 0.0
         }
     }
