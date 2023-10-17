@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-class MaxValueTest : AbstractVariableBasedTest() {
+internal class MaxValueTest : AbstractVariableBasedTest() {
 
     @Test
     fun testMaxValue_Empty() {

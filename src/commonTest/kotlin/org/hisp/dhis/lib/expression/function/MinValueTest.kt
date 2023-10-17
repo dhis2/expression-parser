@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-class MinValueTest : AbstractVariableBasedTest() {
+internal class MinValueTest : AbstractVariableBasedTest() {
 
     @Test
     fun testMinValue_Empty() {
