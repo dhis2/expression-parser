@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
 /**
- * Test of the `d2:ceil` function.
+ * Test of the `d2:addDays` function.
  *
  * Translated from existing test of same name in rule-engine.
  *

@@ -83,9 +83,7 @@ internal class ValidExpressionTest {
                 """.trimIndent(), ex.message)
     }
 
-    companion object {
-        private fun evaluate(expression: String): Any? {
-            return Expression(expression, Mode.PROGRAM_INDICATOR_EXPRESSION).evaluate()
-        }
+    private fun evaluate(expression: String): Any? {
+        return Expression(expression, Mode.PROGRAM_INDICATOR_EXPRESSION).evaluate()
     }
 }

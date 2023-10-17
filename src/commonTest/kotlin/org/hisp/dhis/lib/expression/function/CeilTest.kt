@@ -11,7 +11,6 @@ import kotlin.test.assertFailsWith
 /**
  * Test of the `d2:ceil` function.
  *
- *
  * Translated from existing test of same name in rule-engine.
  *
  * @author Jan Bernitt
@@ -38,9 +37,7 @@ internal class CeilTest {
         assertEquals(Double.NaN, evaluate("d2:ceil(1%0)"))
     }
 
-    companion object {
-        private fun evaluate(expression: String): Double {
-            return Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate() as Double
-        }
+    private fun evaluate(expression: String): Double {
+        return Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate() as Double
     }
 }

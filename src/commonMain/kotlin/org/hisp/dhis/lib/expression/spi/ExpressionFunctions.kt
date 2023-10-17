@@ -246,12 +246,12 @@ fun interface ExpressionFunctions {
 
     fun d2_round(value: Number?, precision: Int?): Double {
         var precision = precision
-        if (value == null) return Double.NaN
+        if (value == null || value.toDouble().isNaN() || value.toDouble().isInfinite()) return Double.NaN
         precision = precision ?: 0
 
         val roundedNumber = BigDecimal.fromDouble(value.toDouble()).scale(precision.toLong())
-        if (precision == 0 || roundedNumber.intValue().toDouble() == roundedNumber.doubleValue())
-            return roundedNumber.intValue().toDouble()
+        if (precision == 0 || roundedNumber.isWholeNumber())
+            return roundedNumber.toStringExpanded().toDouble()
         val str = roundedNumber.toStringExpanded()
         if (!str.contains('.')) return str.toDouble()
         var len = str.length
@@ -299,9 +299,8 @@ fun interface ExpressionFunctions {
      * Returns the number of numeric zero and positive values among the given object arguments. Can be provided with any
      * number of arguments.
      */
-    fun d2_zpvc(values: List<Number?>): Double {
+    fun d2_zpvc(values: List<Number?>): Int {
         return values.count { n -> n != null && n.toDouble() >= 0.0 }
-            .toDouble()
     }
 
     fun d2_zScoreHFA(parameter: Number?, weight: Number?, gender: String?): Double {

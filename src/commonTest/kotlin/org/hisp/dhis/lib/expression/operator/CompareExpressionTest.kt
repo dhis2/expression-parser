@@ -1,5 +1,6 @@
-package org.hisp.dhis.lib.expression
+package org.hisp.dhis.lib.expression.operator
 
+import org.hisp.dhis.lib.expression.Expression
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
