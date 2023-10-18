@@ -49,7 +49,7 @@ fun interface Typed {
         fun toMixedTypeTypeCoercion(value: Any?): Any? {
             if (value == null) return null
             return if (value is VariableValue) {
-                when (value.valueType()) {
+                when (value.valueType) {
                     ValueType.NUMBER -> toNumberTypeCoercion(value.valueOrDefault())
                     ValueType.BOOLEAN -> toBooleanTypeCoercion(value.valueOrDefault())
                     ValueType.DATE -> toDateTypeCoercion(value.valueOrDefault())

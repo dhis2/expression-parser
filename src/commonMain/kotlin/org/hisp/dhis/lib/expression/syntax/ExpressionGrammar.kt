@@ -75,7 +75,9 @@ object ExpressionGrammar {
         fn(NamedFunction.percentileCont, expr, expr),
         fn(NamedFunction.stddevPop, expr),
         fn(NamedFunction.stddevSamp, expr),
-        fn(NamedFunction.variance, expr)
+        fn(NamedFunction.variance, expr),
+        fn(NamedFunction.normDistCum, expr, expr.maybe(), expr.maybe()),
+        fn(NamedFunction.normDistDen, expr, expr.maybe(), expr.maybe()),
     )
     private val CommonD2Functions = listOf( // (alphabetical)
         fn(NamedFunction.d2_count, dataItem),

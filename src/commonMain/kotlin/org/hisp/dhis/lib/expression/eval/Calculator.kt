@@ -11,7 +11,7 @@ import org.hisp.dhis.lib.expression.spi.*
  *
  * @author Jan Bernitt
  */
-internal class EvaluateFunction(
+internal class Calculator(
     private val functions: ExpressionFunctions,
     private val data: ExpressionData
 ) : NodeInterpreter<Any?> {
@@ -265,7 +265,7 @@ internal class EvaluateFunction(
             throw ex
         } catch (ex: RuntimeException) {
             val type = if (value == null) "" else value::class.simpleName
-            val expr = DescribeConsumer.toNormalisedExpression(node)
+            val expr = Describer.toNormalisedExpression(node)
             throw IllegalExpressionException("Failed to coerce value '$value' ($type) to $to in expression: $expr")
         }
     }

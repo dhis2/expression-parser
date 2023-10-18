@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression.spi
 
 import org.hisp.dhis.lib.expression.ast.Node
-import org.hisp.dhis.lib.expression.eval.Evaluate
+import org.hisp.dhis.lib.expression.eval.Api
 
 data class Issues(
     val errors: MutableList<Issue>,
@@ -34,7 +34,7 @@ data class Issues(
 
     companion object {
         private fun position(node: Node<*>): () -> String {
-            return { Evaluate.normalise(node) }
+            return { Api.normalise(node) }
         }
     }
 }

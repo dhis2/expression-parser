@@ -17,6 +17,8 @@ enum class NamedFunction(
     least("least", ValueType.NUMBER, true, ValueType.NUMBER),
     log("log", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
     log10("log10", ValueType.NUMBER, ValueType.NUMBER),
+    normDistCum("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
+    normDistDen("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
     orgUnit_ancestor("orgUnit.ancestor", ValueType.BOOLEAN, true, ValueType.STRING),
     orgUnit_dataSet("orgUnit.dataSet", ValueType.BOOLEAN, true, ValueType.STRING),
     orgUnit_group("orgUnit.group", ValueType.BOOLEAN, true, ValueType.STRING),

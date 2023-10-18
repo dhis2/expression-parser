@@ -2,17 +2,16 @@ package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.ast.Node
 import org.hisp.dhis.lib.expression.ast.VariableType
-import org.hisp.dhis.lib.expression.eval.Evaluate.collectDataItems
-import org.hisp.dhis.lib.expression.eval.Evaluate.collectUIDs
-import org.hisp.dhis.lib.expression.eval.Evaluate.collectVariableNames
-import org.hisp.dhis.lib.expression.eval.Evaluate.collectVariables
-import org.hisp.dhis.lib.expression.eval.Evaluate.describe
-import org.hisp.dhis.lib.expression.eval.Evaluate.evaluate
-import org.hisp.dhis.lib.expression.eval.Evaluate.normalise
-import org.hisp.dhis.lib.expression.eval.Evaluate.regenerate
-import org.hisp.dhis.lib.expression.eval.Evaluate.validate
+import org.hisp.dhis.lib.expression.eval.Api.collectDataItems
+import org.hisp.dhis.lib.expression.eval.Api.collectUIDs
+import org.hisp.dhis.lib.expression.eval.Api.collectVariableNames
+import org.hisp.dhis.lib.expression.eval.Api.collectVariables
+import org.hisp.dhis.lib.expression.eval.Api.describe
+import org.hisp.dhis.lib.expression.eval.Api.evaluate
+import org.hisp.dhis.lib.expression.eval.Api.normalise
+import org.hisp.dhis.lib.expression.eval.Api.regenerate
+import org.hisp.dhis.lib.expression.eval.Api.validate
 import org.hisp.dhis.lib.expression.eval.NodeValidator
-import org.hisp.dhis.lib.expression.eval.ValueTypeVariableValue
 import org.hisp.dhis.lib.expression.spi.*
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
 import org.hisp.dhis.lib.expression.syntax.Fragment
@@ -128,8 +127,7 @@ class Expression(
     fun validate(displayNamesKeys: Map<String, ValueType>) {
         val programRuleVariableValues: MutableMap<String, VariableValue> = HashMap()
         displayNamesKeys.forEach { (key: String, value: ValueType) ->
-            programRuleVariableValues[key] = ValueTypeVariableValue(
-                value)
+            programRuleVariableValues[key] = VariableValue(value)
         }
         val data: ExpressionData = ExpressionData()
             .copy(programRuleVariableValues = programRuleVariableValues)
