@@ -9,7 +9,7 @@ import kotlin.test.assertNull
  *
  * @author Jan Bernitt
  */
-internal class MedianTest : AbstractAggregateFunctionTest() {
+internal class VectorMedianTest : AbstractVectorBasedTest() {
 
     @Test
     fun testMedian_Empty() {
