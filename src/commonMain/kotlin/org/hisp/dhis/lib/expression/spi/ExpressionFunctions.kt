@@ -112,7 +112,7 @@ fun interface ExpressionFunctions {
     }
 
     fun stddev(values: DoubleArray): Double {
-        return VectorAggregation.stddev(values)
+        return VectorAggregation.stddevSamp(values)
     }
 
     fun stddevPop(values: DoubleArray): Double {
