@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class SumTest : AbstractAggregateFunctionTest() {
+internal class VectorSumTest : AbstractVectorBasedTest() {
 
     @Test
     fun testSum() {

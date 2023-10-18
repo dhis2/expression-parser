@@ -8,7 +8,7 @@ import kotlin.test.assertEquals
  *
  * @author Jan Bernitt
  */
-internal class MaxTest : AbstractAggregateFunctionTest() {
+internal class VectorMaxTest : AbstractVectorBasedTest() {
 
     @Test
     fun testMax() {

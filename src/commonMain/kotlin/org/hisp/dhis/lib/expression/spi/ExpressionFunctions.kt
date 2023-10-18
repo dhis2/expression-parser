@@ -3,7 +3,7 @@ package org.hisp.dhis.lib.expression.spi
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import kotlinx.datetime.*
 import org.hisp.dhis.lib.expression.ast.BinaryOperator.Companion.modulo
-import org.hisp.dhis.lib.expression.math.VectorAggreation
+import org.hisp.dhis.lib.expression.math.VectorAggregation
 import org.hisp.dhis.lib.expression.math.GS1Elements.Companion.fromKey
 import org.hisp.dhis.lib.expression.math.ZScore
 import kotlin.math.ceil
@@ -88,47 +88,48 @@ fun interface ExpressionFunctions {
     Aggregate functions...
      */
     fun avg(values: DoubleArray): Double {
-        return VectorAggreation.avg(values)
+        return VectorAggregation.avg(values)
     }
 
     fun count(values: DoubleArray): Double {
-        return VectorAggreation.count(values)
+        return VectorAggregation.count(values)
     }
 
     fun max(values: DoubleArray): Double {
-        return VectorAggreation.max(values)
+        return VectorAggregation.max(values)
     }
 
     fun median(values: DoubleArray): Double? {
-        return VectorAggreation.median(values)
+        return VectorAggregation.median(values)
     }
 
     fun min(values: DoubleArray): Double {
-        return VectorAggreation.min(values)
+        return VectorAggregation.min(values)
     }
 
     fun percentileCont(values: DoubleArray, fraction: Double?): Double? {
-        return VectorAggreation.percentileCont(values, fraction)
+        return VectorAggregation.percentileCont(values, fraction)
     }
 
     fun stddev(values: DoubleArray): Double {
-        return VectorAggreation.stddev(values)
+        return VectorAggregation.stddevSamp(values)
     }
 
     fun stddevPop(values: DoubleArray): Double {
-        return VectorAggreation.stddevPop(values)
+        return VectorAggregation.stddevPop(values)
     }
 
     fun stddevSamp(values: DoubleArray): Double {
-        return VectorAggreation.stddevSamp(values)
+        return VectorAggregation.stddevSamp(values)
     }
 
     fun sum(values: DoubleArray): Double {
-        return VectorAggreation.sum(values)
+        return VectorAggregation.sum(values)
     }
 
-    fun variance(values: DoubleArray): Double {
-        return VectorAggreation.variance(values)
+    fun variance(values: DoubleArray): Double? {
+        if (values.isEmpty()) return null
+        return VectorAggregation.variance(values)
     }
 
     /*
