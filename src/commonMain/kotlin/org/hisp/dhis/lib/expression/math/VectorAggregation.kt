@@ -10,7 +10,7 @@ import kotlin.math.floor
  *
  * @author Jan Bernitt
  */
-object VectorAggreation {
+object VectorAggregation {
 
     fun avg(values: DoubleArray): Double {
         val sampleSize = values.size.toDouble()
@@ -101,9 +101,12 @@ object VectorAggreation {
         return values.sum()
     }
 
-    fun variance(values: DoubleArray?): Double {
-        //TODO implement
-        return 0.0
+    fun variance(values: DoubleArray): Double {
+        val mean = values.sum() / values.size;
+        val meanDelta = values.map { x -> x - mean }
+        val meanDeltaSquared = meanDelta.map { x -> x * x }
+        val variance = meanDeltaSquared.sum() / (values.size - 1)
+        return variance
     }
 
     private fun estimate(work: DoubleArray, pivotsHeap: IntArray, pos: Double): Double {
