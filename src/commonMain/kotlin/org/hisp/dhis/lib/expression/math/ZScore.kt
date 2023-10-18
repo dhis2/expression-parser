@@ -13,10 +13,11 @@ object ZScore {
         requireNotNull(gender) { "Gender cannot be null" }
         requireNotNull(parameter) { "Parameter cannot be null" }
         requireNotNull(weight) { "Weight cannot be null" }
-        return getZScore(mode, parameter.toFloat(), weight.toFloat(), if (GENDER_CODES.contains(gender)) 0 else 1)
+        return getZScore(mode, parameter.toFloat(), weight.toFloat(), if (GENDER_MALE_CODES.contains(gender)) 0 else 1)
     }
 
-    private val GENDER_CODES = setOf("male", "MALE", "Male", "ma", "m", "M", "0", "false")
+    private val GENDER_MALE_CODES = setOf("male", "MALE", "Male", "ma", "m", "M", "0", "false")
+
     private fun getZScore(mode: Mode, parameter: Float, weight: Float, gender: Int): Double {
         val key = ZScoreTable.Key(gender, parameter)
         val table = (if (gender == 1) mode.girl[key] else mode.boy[key])
