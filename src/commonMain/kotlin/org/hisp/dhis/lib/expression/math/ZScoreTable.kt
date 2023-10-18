@@ -2,7 +2,7 @@ package org.hisp.dhis.lib.expression.math
 
 /**
  * @author Zubair Asghar (original in rule engine)
- * @author Jan Bernitt (imported into expression parser)
+ * @author Jan Bernitt (imported into expression parser and converted to kotlin)
  */
 object ZScoreTable {
 
@@ -12,6 +12,18 @@ object ZScoreTable {
     val Z_SCORE_HFA_TABLE_BOY = newZScoreHFATableBoy()
     val Z_SCORE_WFH_TABLE_GIRL = newZScoreWFHTableGirl()
     val Z_SCORE_WFH_TABLE_BOY = newZScoreWFHTableBoy()
+
+    data class Key(
+        val gender: Int,
+        val parameter: Float
+    )
+
+    data class Entry(
+        val sdMap: Map<Float, Int>,
+        val min: Float,
+        val max: Float,
+        val sortedKeys: List<Float>
+    )
 
     private fun newZScoreWFATableGirl(): Map<Key, Entry> {
         val res: MutableMap<Key, Entry> = HashMap()
@@ -601,7 +613,7 @@ object ZScoreTable {
         sd2: Float,
         sd3: Float
     ): Entry {
-        val sdMap = mutableMapOf(
+        val sdMap = mapOf(
             sd3neg to 3,
             sd2neg to 2,
             sd1neg to 1,
@@ -609,22 +621,7 @@ object ZScoreTable {
             sd1 to 1,
             sd2 to 2,
             sd3 to 3)
-        val list: MutableSet<Float> = sdMap.keys
+        val list: Set<Float> = sdMap.keys
         return Entry(sdMap, list.min(), list.max(), list.sorted())
     }
-
-    /**
-     * @author Zubair Asghar.
-     */
-    data class Key(
-        val gender: Int,
-        val parameter: Float
-    )
-
-    data class Entry(
-        val sdMap: Map<Float, Int>,
-        val min: Float,
-        val max: Float,
-        val sortedKeys: List<Float>
-    )
 }
