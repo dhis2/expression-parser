@@ -77,8 +77,7 @@ object VectorAggregation {
     }
 
     fun stddevPop(values: DoubleArray): Double {
-        //TODO implement
-        return 0.0
+        return kotlin.math.sqrt(variance(values, false))
     }
 
     fun stddevSamp(values: DoubleArray): Double {
@@ -95,11 +94,12 @@ object VectorAggregation {
         return values.sum()
     }
 
-    fun variance(values: DoubleArray): Double {
+    fun variance(values: DoubleArray, biasCorrected: Boolean = true): Double {
         val mean = values.sum() / values.size;
         val meanDelta = values.map { x -> x - mean }
         val meanDeltaSquared = meanDelta.map { x -> x * x }
-        return meanDeltaSquared.sum() / (values.size - 1)
+        val correction = if (biasCorrected) 1 else 0
+        return meanDeltaSquared.sum() / (values.size - correction)
     }
 
     private fun estimate(work: DoubleArray, pivotsHeap: IntArray, pos: Double): Double {
