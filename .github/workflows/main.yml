@@ -13,6 +13,10 @@ jobs:
           java-version: 17
           distribution: temurin
           cache: 'gradle'
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
       - name: Change wrapper permission
         run: chmod +x ./gradlew
       - name: Test
@@ -30,6 +34,10 @@ jobs:
           java-version: 17
           distribution: temurin
           cache: 'gradle'
+      - name: Set up Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
       - name: Change wrapper permission
         run: chmod +x ./gradlew
       - name: Release Maven package
