@@ -16,6 +16,8 @@ import org.hisp.dhis.lib.expression.spi.*
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
 import org.hisp.dhis.lib.expression.syntax.Fragment
 import org.hisp.dhis.lib.expression.syntax.Parser
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 
 /**
  * Facade API for working with DHIS2 expressions.
@@ -93,7 +95,7 @@ class Expression(
      * @see .evaluate
      */
     fun evaluate(): Any? {
-        return evaluate({ _: String? -> null }, ExpressionData())
+        return evaluate({ _: String -> null }, ExpressionData())
     }
 
     fun evaluate(functions: ExpressionFunctions, data: ExpressionData): Any? {

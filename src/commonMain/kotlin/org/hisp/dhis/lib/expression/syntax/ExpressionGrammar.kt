@@ -54,7 +54,9 @@ object ExpressionGrammar {
         fn(NamedFunction.least, expr.plus()),
         fn(NamedFunction.log, expr, expr.maybe()),
         fn(NamedFunction.log10, expr),
-        fn(NamedFunction.removeZeros, expr)
+        fn(NamedFunction.removeZeros, expr),
+        fn(NamedFunction.normDistCum, expr, expr.maybe(), expr.maybe()),
+        fn(NamedFunction.normDistDen, expr, expr.maybe(), expr.maybe()),
     )
     private val ValidationRuleFunctions = listOf(
         fn(NamedFunction.orgUnit_ancestor, UID.plus()),
@@ -75,9 +77,7 @@ object ExpressionGrammar {
         fn(NamedFunction.percentileCont, expr, expr),
         fn(NamedFunction.stddevPop, expr),
         fn(NamedFunction.stddevSamp, expr),
-        fn(NamedFunction.variance, expr),
-        fn(NamedFunction.normDistCum, expr, expr.maybe(), expr.maybe()),
-        fn(NamedFunction.normDistDen, expr, expr.maybe(), expr.maybe()),
+        fn(NamedFunction.variance, expr)
     )
     private val CommonD2Functions = listOf( // (alphabetical)
         fn(NamedFunction.d2_count, dataItem),

@@ -5,7 +5,10 @@ import kotlinx.datetime.*
 import org.hisp.dhis.lib.expression.ast.BinaryOperator.Companion.modulo
 import org.hisp.dhis.lib.expression.math.VectorAggregation
 import org.hisp.dhis.lib.expression.math.GS1Elements.Companion.fromKey
+import org.hisp.dhis.lib.expression.math.NormalDistribution
 import org.hisp.dhis.lib.expression.math.ZScore
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.ln
@@ -80,16 +83,6 @@ fun interface ExpressionFunctions {
         return if (n == null) Double.NaN else kotlin.math.log10(n.toDouble())
     }
 
-    fun normDistCum(n: Number?, mean: Number?, stddev: Number?): Double {
-        //TODO
-        return 1.0;
-    }
-
-    fun normDistDen(n: Number?, mean: Number?, stddev: Number?): Double {
-        //TODO
-        return 1.0;
-    }
-
     fun removeZeros(n: Number?): Number? {
         return if (n != null && n.toDouble() == 0.0) null else n
     }
@@ -140,6 +133,18 @@ fun interface ExpressionFunctions {
     fun variance(values: DoubleArray): Double? {
         if (values.isEmpty()) return null
         return VectorAggregation.variance(values)
+    }
+
+    fun normDistCum(x: Number?, mean: Number?, stddev: Number?): Double {
+        require(x != null) { "x parameter of normDistCum must not be null" }
+        require(mean != null) { "x parameter of normDistCum must not be null" }
+        require(stddev != null) { "x parameter of normDistCum must not be null" }
+        return NormalDistribution.cumulativeProbability(x.toDouble(), mean.toDouble(), stddev.toDouble())
+    }
+
+    fun normDistDen(x: Number?, mean: Number?, stddev: Number?): Double {
+        //TODO
+        return 1.0;
     }
 
     /*

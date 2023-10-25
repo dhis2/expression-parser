@@ -482,7 +482,7 @@ object Nodes {
     fun propagateModifiers(root: Node<*>) {
         root.transform { node: Node<*>, children: List<Node<*>> ->
             val isModifier = { child: Node<*> -> child.getType() === NodeType.MODIFIER }
-            if (node.getValue() is NamedFunction && (node.getValue() as NamedFunction).isAggregating()) {
+            if (node.getValue() is NamedFunction && (node.getValue() as NamedFunction).isRequiringAggregationData()) {
                 children.forEach { child: Node<*> ->
                     child.visit(NodeType.DATA_ITEM) { modified: Node<*> ->
                         modified.addModifier(

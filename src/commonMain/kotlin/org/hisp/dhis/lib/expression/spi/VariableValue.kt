@@ -4,6 +4,7 @@ package org.hisp.dhis.lib.expression.spi
  * A variable value as used int he rule-engine.
  */
 data class VariableValue(
+    val valueType: ValueType,
     /**
      * variable value, maybe null
      */
@@ -17,10 +18,10 @@ data class VariableValue(
     /**
      * associated event date, maybe null
      */
-    val eventDate: String?,
-    val valueType: ValueType
+    val eventDate: String?
+
 ) {
-    constructor(valueType: ValueType) : this(null, listOf(), null, valueType)
+    constructor(valueType: ValueType) : this(valueType,null, listOf(), null)
 
     init {
         require(valueType != ValueType.SAME && valueType != ValueType.MIXED)

@@ -149,13 +149,29 @@ internal class Calculator(
                 evalToNumber(fn.child(0)),
                 evalToNumber(fn.child(1)),
                 evalToString(fn.child(2)))
+            NamedFunction.normDistCum -> functions.normDistCum(
+                evalToNumber(fn.child(0)),
+                if (fn.size() > 1) evalToNumber(fn.child(1))
+                else
+                    evalAggFunction(Nodes.FunctionNode(NodeType.FUNCTION, "avg").addChild(fn.child(0))),
+                if (fn.size() > 2) evalToNumber(fn.child(2))
+                else
+                    evalAggFunction(Nodes.FunctionNode(NodeType.FUNCTION, "stddev").addChild(fn.child(0))))
+            NamedFunction.normDistDen -> functions.normDistDen(
+                evalToNumber(fn.child(0)),
+                if (fn.size() > 1) evalToNumber(fn.child(1))
+                else
+                    evalAggFunction(Nodes.FunctionNode(NodeType.FUNCTION, "avg").addChild(fn.child(0))),
+                if (fn.size() > 2) evalToNumber(fn.child(2))
+                else
+                    evalAggFunction(Nodes.FunctionNode(NodeType.FUNCTION, "stddev").addChild(fn.child(0))))
             else -> functions.unsupported(fnInfo.getName())
         }
     }
 
     private fun evalAggFunction(fn: Node<NamedFunction>): Double? {
         val items: MutableList<DataItem> = mutableListOf()
-        fn.visit(NodeType.DATA_ITEM) { node: Node<*> ->
+        fn.child(0).visit(NodeType.DATA_ITEM) { node: Node<*> ->
             run {
                 val item = node.toDataItem()
                 if (item != null)

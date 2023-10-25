@@ -196,6 +196,10 @@ interface Node<T> : Typed, NodeAnnotations {
         throw UnsupportedOperationException("Node of type " + getType() + " cannot have children.")
     }
 
+    fun childOrNull(index: Int): Node<*>? {
+        return if (index < size()) child(index) else null;
+    }
+
     /**
      * Stream process this node's children.
      *

@@ -17,8 +17,6 @@ enum class NamedFunction(
     least("least", ValueType.NUMBER, true, ValueType.NUMBER),
     log("log", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
     log10("log10", ValueType.NUMBER, ValueType.NUMBER),
-    normDistCum("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
-    normDistDen("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
     orgUnit_ancestor("orgUnit.ancestor", ValueType.BOOLEAN, true, ValueType.STRING),
     orgUnit_dataSet("orgUnit.dataSet", ValueType.BOOLEAN, true, ValueType.STRING),
     orgUnit_group("orgUnit.group", ValueType.BOOLEAN, true, ValueType.STRING),
@@ -38,6 +36,10 @@ enum class NamedFunction(
     stddevSamp("stddevSamp", ValueType.NUMBER, ValueType.NUMBER),
     sum("sum", ValueType.NUMBER, ValueType.NUMBER),
     variance("variance", ValueType.NUMBER, ValueType.NUMBER),
+
+    // Somewhat aggregation functions but not quite
+    normDistCum("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
+    normDistDen("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
 
     // Program Functions
     d2_addDays("d2:addDays", ValueType.DATE, ValueType.DATE, ValueType.NUMBER),
@@ -92,6 +94,10 @@ enum class NamedFunction(
 
     override fun getValueType(): ValueType {
         return returnType
+    }
+
+    fun isRequiringAggregationData(): Boolean {
+        return ordinal >= avg.ordinal && ordinal <= normDistDen.ordinal;
     }
 
     fun isAggregating(): Boolean {

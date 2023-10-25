@@ -50,6 +50,6 @@ internal class InOrgUnitGroupTest {
         val data: ExpressionData = ExpressionData().copy(
             supplementaryValues = supplementaryValues,
             programRuleVariableValues = programRuleVariableValues)
-        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate( { _: String? -> null }, data) as Boolean
+        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate( { _: String -> null }, data) as Boolean
     }
 }
