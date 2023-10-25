@@ -4,7 +4,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-data class VariableValue(
+data class VariableValueJs(
     val valueType: String,
     val value: String?,
     val candidates: Array<String> ,

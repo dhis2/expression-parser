@@ -5,7 +5,7 @@ import org.hisp.dhis.lib.expression.ast.AggregationType
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-data class QueryModifiers(
+data class QueryModifiersJs(
     val periodAggregation: Boolean,
     val aggregationType: String?,
     val maxDate: String?,

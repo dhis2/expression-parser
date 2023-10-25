@@ -8,7 +8,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-class Expression(expression: String , mode: String) {
+class ExpressionJs(expression: String, mode: String) {
 
     private val expr: Expression
 
@@ -17,7 +17,7 @@ class Expression(expression: String , mode: String) {
         expr = Expression(expression, Expression.Mode.valueOf(mode))
     }
 
-    fun collectDataItems(): Array<DataItem> {
+    fun collectDataItems(): Array<DataItemJs> {
         return expr.collectDataItems().map(::toDataItemJS).toTypedArray()
     }
 
@@ -29,15 +29,15 @@ class Expression(expression: String , mode: String) {
         return expr.collectProgramVariablesNames().toTypedArray()
     }
 
-    fun evaluate(unsupported: (String)-> Any?, data: ExpressionData): Any? {
+    fun evaluate(unsupported: (String)-> Any?, data: ExpressionDataJs): Any? {
         return expr.evaluate({ name: String -> unsupported(name) }, toExpressionDataJava(data))
     }
 
-    fun collectProgramVariables(): Array<Variable> {
+    fun collectProgramVariables(): Array<VariableJs> {
         return expr.collectProgramVariables().map(::toVariableJS).toTypedArray()
     }
 
-    fun collectUIDs(): Array<ID> {
+    fun collectUIDs(): Array<IDJs> {
         return expr.collectUIDs().map(::toIdJS).toTypedArray()
     }
 
@@ -49,11 +49,11 @@ class Expression(expression: String , mode: String) {
         expr.validate(toMap(displayNamesKeys, { it }, { e -> ValueType.valueOf(e) }))
     }
 
-    fun collectDataItemForRegenerate(): Array<DataItem> {
+    fun collectDataItemForRegenerate(): Array<DataItemJs> {
         return expr.collectDataItemForRegenerate().map(::toDataItemJS).toTypedArray()
     }
 
-    fun regenerate(dataItemValues: Array<Entry<DataItem, Double>>): String {
+    fun regenerate(dataItemValues: Array<Entry<DataItemJs, Double>>): String {
         return expr.regenerate(toMap(dataItemValues, ::toDataItemJava) { it })
     }
 
@@ -74,7 +74,7 @@ class Expression(expression: String , mode: String) {
             return res;
         }
 
-        internal fun toDataItemJava(item: DataItem) : org.hisp.dhis.lib.expression.spi.DataItem {
+        internal fun toDataItemJava(item: DataItemJs) : org.hisp.dhis.lib.expression.spi.DataItem {
             return org.hisp.dhis.lib.expression.spi.DataItem(
                 type = DataItemType.valueOf(item.type),
                 uid0 = toIdJava(item.uid0),
@@ -83,8 +83,8 @@ class Expression(expression: String , mode: String) {
                 modifiers = toQueryModifiersJava(item.modifiers))
         }
 
-        internal fun toDataItemJS(item: org.hisp.dhis.lib.expression.spi.DataItem) : DataItem {
-            return DataItem(
+        internal fun toDataItemJS(item: org.hisp.dhis.lib.expression.spi.DataItem) : DataItemJs {
+            return DataItemJs(
                 type = item.type.name,
                 uid0 = toIdJS(item.uid0),
                 uid1 = item.uid1.map(::toIdJS).toTypedArray(),
@@ -92,22 +92,22 @@ class Expression(expression: String , mode: String) {
                 modifiers = toQueryModifiersJS(item.modifiers))
         }
 
-        internal fun toVariableJS(variable: org.hisp.dhis.lib.expression.spi.Variable) : Variable {
-            return Variable(
+        internal fun toVariableJS(variable: org.hisp.dhis.lib.expression.spi.Variable) : VariableJs {
+            return VariableJs(
                 name = variable.name.name,
                 modifiers = toQueryModifiersJS(variable.modifiers))
         }
 
-        internal fun toIdJS(id: org.hisp.dhis.lib.expression.spi.ID) : ID {
-            return ID(type = id.type.name, value = id.value)
+        internal fun toIdJS(id: org.hisp.dhis.lib.expression.spi.ID) : IDJs {
+            return IDJs(type = id.type.name, value = id.value)
         }
 
-        private fun toIdJava(id: ID) : org.hisp.dhis.lib.expression.spi.ID {
+        private fun toIdJava(id: IDJs) : org.hisp.dhis.lib.expression.spi.ID {
             return org.hisp.dhis.lib.expression.spi.ID(type = org.hisp.dhis.lib.expression.spi.ID.Type.valueOf(id.type), id.value)
         }
 
-        private fun toQueryModifiersJS(modifiers: org.hisp.dhis.lib.expression.spi.QueryModifiers) : QueryModifiers {
-            return QueryModifiers(
+        private fun toQueryModifiersJS(modifiers: org.hisp.dhis.lib.expression.spi.QueryModifiers) : QueryModifiersJs {
+            return QueryModifiersJs(
                 periodAggregation = modifiers.periodAggregation,
                 aggregationType = modifiers.aggregationType?.name,
                 maxDate = modifiers.maxDate?.toString(),
@@ -118,7 +118,7 @@ class Expression(expression: String , mode: String) {
                 subExpression = modifiers.subExpression)
         }
 
-        private fun toQueryModifiersJava(modifiers: QueryModifiers) : org.hisp.dhis.lib.expression.spi.QueryModifiers {
+        private fun toQueryModifiersJava(modifiers: QueryModifiersJs) : org.hisp.dhis.lib.expression.spi.QueryModifiers {
             return org.hisp.dhis.lib.expression.spi.QueryModifiers(
                 periodAggregation =  modifiers.periodAggregation,
                 aggregationType = modifiers.aggregationType?.map(AggregationType::valueOf),
@@ -130,7 +130,7 @@ class Expression(expression: String , mode: String) {
                 subExpression = modifiers.subExpression)
         }
 
-        internal fun toExpressionDataJava(data: ExpressionData) : org.hisp.dhis.lib.expression.spi.ExpressionData {
+        internal fun toExpressionDataJava(data: ExpressionDataJs) : org.hisp.dhis.lib.expression.spi.ExpressionData {
             return org.hisp.dhis.lib.expression.spi.ExpressionData(
                 programRuleVariableValues = toMap(data.programRuleVariableValues, {it}, ::toVariableValueJava),
                 programVariableValues = toMap(data.programVariableValues, {it}, {it}),
@@ -139,7 +139,7 @@ class Expression(expression: String , mode: String) {
                 namedValues = toMap(data.namedValues, {it}, {it}))
         }
 
-        private fun toVariableValueJava(value: VariableValue) : org.hisp.dhis.lib.expression.spi.VariableValue {
+        private fun toVariableValueJava(value: VariableValueJs) : org.hisp.dhis.lib.expression.spi.VariableValue {
             return org.hisp.dhis.lib.expression.spi.VariableValue(
                 valueType = ValueType.valueOf(value.valueType),
                 value = value.value,

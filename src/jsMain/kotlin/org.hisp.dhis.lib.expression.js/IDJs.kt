@@ -4,7 +4,7 @@ import org.hisp.dhis.lib.expression.spi.ID
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-data class ID(
+data class IDJs(
     val type: String,
     val value: String
 ) {

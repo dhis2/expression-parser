@@ -32,9 +32,10 @@ jobs:
           cache: 'gradle'
       - name: Change wrapper permission
         run: chmod +x ./gradlew
-      - name: Release Maven package
-        #run: ./gradlew publishJvmPublicationToSonatypeRepository
+      - name: Build
         run: ./gradlew assemble
+      - name: Release Maven package
+        run: ./gradlew publishJvmPublicationToSonatypeRepository
         env:
           OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}

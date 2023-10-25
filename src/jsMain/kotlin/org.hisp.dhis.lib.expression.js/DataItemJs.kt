@@ -4,12 +4,12 @@ import org.hisp.dhis.lib.expression.spi.DataItemType
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-data class DataItem(
+data class DataItemJs(
     val type: String,
-    val uid0: ID,
-    val uid1: Array<ID>,
-    val uid2: Array<ID>,
-    val modifiers: QueryModifiers
+    val uid0: IDJs,
+    val uid1: Array<IDJs>,
+    val uid2: Array<IDJs>,
+    val modifiers: QueryModifiersJs
 ) {
 
     init {

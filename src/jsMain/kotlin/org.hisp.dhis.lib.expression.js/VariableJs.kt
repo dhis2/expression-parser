@@ -4,9 +4,9 @@ import org.hisp.dhis.lib.expression.ast.ProgramVariable
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-data class Variable(
+data class VariableJs(
     val name: String,
-    val modifiers: QueryModifiers) {
+    val modifiers: QueryModifiersJs) {
 
     init {
         require(NAMES.contains(name)) { "Variable name must be one of: $NAMES" }
