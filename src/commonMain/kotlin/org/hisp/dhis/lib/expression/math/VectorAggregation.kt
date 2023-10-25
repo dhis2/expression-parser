@@ -36,6 +36,10 @@ object VectorAggregation {
         return values.filter { v: Double -> !v.isNaN() }.maxOrNull() ?: Double.NaN
     }
 
+    fun mean(values: DoubleArray): Double {
+        return values.sum() / values.size
+    }
+
     fun median(values: DoubleArray): Double? {
         return percentileCont(values, 0.5)
     }
@@ -95,7 +99,7 @@ object VectorAggregation {
     }
 
     fun variance(values: DoubleArray, biasCorrected: Boolean = true): Double {
-        val mean = values.sum() / values.size;
+        val mean = mean(values)
         val meanDelta = values.map { x -> x - mean }
         val meanDeltaSquared = meanDelta.map { x -> x * x }
         val correction = if (biasCorrected) 1 else 0

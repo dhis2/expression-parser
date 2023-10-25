@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.spi.ValueType
-import org.hisp.dhis.lib.expression.util.RuleVariableValue
+import org.hisp.dhis.lib.expression.spi.VariableValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -14,22 +14,22 @@ internal class CountTest : AbstractVariableBasedTest() {
 
     @Test
     fun testCount_NoCandidates() {
-        val values = mapOf("v1" to RuleVariableValue(ValueType.STRING).copy(value = "value"))
+        val values = mapOf("v1" to VariableValue(ValueType.STRING).copy(value = "value"))
         assertEquals(0, evaluate("d2:count(#{v1})", values))
     }
 
     @Test
     fun testCount_EmptyCandidates() {
-        val values = mapOf("v1" to RuleVariableValue(ValueType.STRING).copy(candidates = listOf()))
+        val values = mapOf("v1" to VariableValue(ValueType.STRING).copy(candidates = listOf()))
         assertEquals(0, evaluate("d2:count(#{v1})", values))
     }
 
     @Test
     fun testCount_Candidates() {
-        val values = mapOf("v1" to RuleVariableValue(ValueType.NUMBER).copy(candidates = listOf("1")))
+        val values = mapOf("v1" to VariableValue(ValueType.NUMBER).copy(candidates = listOf("1")))
         assertEquals(1, evaluate("d2:count(#{v1})", values))
 
-        val values2 = mapOf("v1" to RuleVariableValue(ValueType.NUMBER).copy(candidates = listOf("1", "2")))
+        val values2 = mapOf("v1" to VariableValue(ValueType.NUMBER).copy(candidates = listOf("1", "2")))
         assertEquals(2, evaluate("d2:count(#{v1})", values2))
     }
 }

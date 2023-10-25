@@ -11,7 +11,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType
  *
  * @author Jan Bernitt
  */
-internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
+internal class TypeChecker(private val issues: Issues) : NodeVisitor {
 
     override fun visitUnaryOperator(operator: Node<UnaryOperator>) {
         val operand = operator.child(0)
@@ -20,7 +20,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
         if (!actual.isAssignableTo(expected)) {
             if (isStaticallyDefined(operand)) {
                 checkEvaluateToType(expected, operand) {
-                    "Literal expression `${Evaluate.normalise(operand)}` cannot be converted to type $expected expected by operator `${operator.getRawValue()}`"
+                    "Literal expression `${Api.normalise(operand)}` cannot be converted to type $expected expected by operator `${operator.getRawValue()}`"
                 }
             }
             else {
@@ -42,7 +42,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
         if (!leftActual.isAssignableTo(expected)) {
             if (isStaticallyDefined(operand)) {
                 checkEvaluateToType(expected, operand) {
-                    "Literal expression `${Evaluate.normalise(operand)}` cannot be converted to type $expected expected by operator `${operator.getRawValue()}`"
+                    "Literal expression `${Api.normalise(operand)}` cannot be converted to type $expected expected by operator `${operator.getRawValue()}`"
                 }
             }
             else {
@@ -110,7 +110,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
             val value = argument.getValue() as Int
             if (isStaticallyDefined(argument)) {
                 checkEvaluateToType(expected, argument) {
-                    "Literal expression `${Evaluate.normalise(argument)}` cannot be converted to type $expected expected by function `${called.getRawValue()}`"
+                    "Literal expression `${Api.normalise(argument)}` cannot be converted to type $expected expected by function `${called.getRawValue()}`"
                 }
             }
             else {
@@ -131,7 +131,7 @@ internal class TypeCheckingConsumer(private val issues: Issues) : NodeVisitor {
     }
 
     private fun evalTo(expected: ValueType): (Node<*>) -> Unit {
-        val eval = EvaluateFunction({_ -> null}, ExpressionData())
+        val eval = Calculator({ _ -> null}, ExpressionData())
         return when (expected) {
             ValueType.STRING -> eval::evalToString
             ValueType.DATE -> eval::evalToDate

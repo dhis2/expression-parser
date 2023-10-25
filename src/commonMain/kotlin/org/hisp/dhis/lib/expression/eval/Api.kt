@@ -5,7 +5,6 @@ import org.hisp.dhis.lib.expression.ast.NodeType
 import org.hisp.dhis.lib.expression.ast.Nodes.VariableNode
 import org.hisp.dhis.lib.expression.ast.VariableType
 import org.hisp.dhis.lib.expression.spi.*
-import kotlin.collections.HashSet
 import kotlin.collections.LinkedHashSet
 
 /**
@@ -14,26 +13,26 @@ import kotlin.collections.LinkedHashSet
  *
  * @author Jan Bernitt
  */
-object Evaluate {
+object Api {
 
     /*
     Main functions to compute a result
     */
     fun evaluate(root: Node<*>, functions: ExpressionFunctions, data: ExpressionData): Any? {
-        val value = root.eval(EvaluateFunction(functions, data)::evalNode)
+        val value = root.eval(Calculator(functions, data)::evalNode)
         return if (value is VariableValue) value.valueOrDefault() else value
     }
 
     fun normalise(root: Node<*>): String {
-        return DescribeConsumer.toNormalisedExpression(root)
+        return Describer.toNormalisedExpression(root)
     }
 
     fun regenerate(root: Node<*>, dataItemValues: Map<DataItem, Number>): String {
-        return DescribeConsumer.toValueExpression(root, dataItemValues)
+        return Describer.toValueExpression(root, dataItemValues)
     }
 
     fun describe(root: Node<*>, displayNames: Map<String, String>): String {
-        return DescribeConsumer.toDisplayExpression(root, displayNames)
+        return Describer.toDisplayExpression(root, displayNames)
     }
 
     fun validate(
@@ -47,12 +46,12 @@ object Evaluate {
         root.visit(NodeType.VARIABLE) { variable ->
             val value = data.programRuleVariableValues[variable.child(0).getRawValue()]
             if (value != null) {
-                (variable as VariableNode).setActualValueType(value.valueType())
+                (variable as VariableNode).setActualValueType(value.valueType)
             }
         }
 
         // type check
-        root.visit(TypeCheckingConsumer(issues)::visitNode)
+        root.visit(TypeChecker(issues)::visitNode)
 
         // check result type
         val actualResultType = root.getValueType()

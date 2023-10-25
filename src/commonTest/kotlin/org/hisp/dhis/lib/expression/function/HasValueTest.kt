@@ -2,7 +2,6 @@ package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
-import org.hisp.dhis.lib.expression.util.RuleVariableValue
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -24,14 +23,14 @@ internal class HasValueTest : AbstractVariableBasedTest() {
     fun return_false_for_existing_variable_without_value() {
         assertHasValue(
             "d2:hasValue(#{non_value_var})",
-            mapOf("non_value_var" to RuleVariableValue(ValueType.STRING)), false)
+            mapOf("non_value_var" to VariableValue(ValueType.STRING)), false)
     }
 
     @Test
     fun return_true_for_existing_variable_with_value() {
         assertHasValue(
             "d2:hasValue(#{with_value_var})",
-            mapOf("with_value_var" to RuleVariableValue(ValueType.STRING).copy(value = "value")), true)
+            mapOf("with_value_var" to VariableValue(ValueType.STRING).copy(value = "value")), true)
     }
 
     private fun assertHasValue(expression: String, values: Map<String, VariableValue>, expected: Boolean) {

@@ -37,6 +37,10 @@ enum class NamedFunction(
     sum("sum", ValueType.NUMBER, ValueType.NUMBER),
     variance("variance", ValueType.NUMBER, ValueType.NUMBER),
 
+    // Somewhat aggregation functions but not quite
+    normDistCum("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
+    normDistDen("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
+
     // Program Functions
     d2_addDays("d2:addDays", ValueType.DATE, ValueType.DATE, ValueType.NUMBER),
     d2_ceil("d2:ceil", ValueType.NUMBER, ValueType.NUMBER),
@@ -90,6 +94,10 @@ enum class NamedFunction(
 
     override fun getValueType(): ValueType {
         return returnType
+    }
+
+    fun isRequiringAggregationData(): Boolean {
+        return ordinal >= avg.ordinal && ordinal <= normDistDen.ordinal;
     }
 
     fun isAggregating(): Boolean {

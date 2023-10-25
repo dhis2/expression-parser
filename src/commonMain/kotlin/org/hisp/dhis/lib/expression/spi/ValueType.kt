@@ -11,22 +11,22 @@ import kotlinx.datetime.LocalDate
  *
  * @author Jan Bernitt
  */
-enum class ValueType {
+enum class ValueType(val default: Any) {
     /**
      * Type can be at least two of the following: numbers, booleans, dates, strings, list/array of these. This is also
      * used in case a type is unknown or cannot be determined statically.
      */
-    MIXED,
-    NUMBER,
-    BOOLEAN,
-    DATE,
-    STRING,
+    MIXED(""),
+    NUMBER(0.0),
+    BOOLEAN(false),
+    DATE("2020-01-01"),
+    STRING(""),
 
     /**
      * Means the type can be mixed but all SAME argument should be of the same actual type. If the return type is also
      * SAME it is the actual type of the SAME parameter type.
      */
-    SAME;
+    SAME("");
 
     fun isSame(): Boolean {
         return this == SAME

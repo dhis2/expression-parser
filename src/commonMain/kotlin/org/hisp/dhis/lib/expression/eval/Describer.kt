@@ -10,7 +10,7 @@ import org.hisp.dhis.lib.expression.spi.DataItemType
  *
  * @author Jan Bernitt
  */
-internal class DescribeConsumer(
+internal class Describer(
     private val dataItemValues: Map<DataItem, Number>,
     private val displayNames: Map<String, String>
 ) : NodeVisitor {
@@ -187,13 +187,13 @@ internal class DescribeConsumer(
         }
 
         fun toValueExpression(root: Node<*>, dataItemValues: Map<DataItem, Number>): String {
-            val walker = DescribeConsumer(dataItemValues, mapOf())
+            val walker = Describer(dataItemValues, mapOf())
             root.walk(walker::visitNode)
             return walker.toString()
         }
 
         fun toDisplayExpression(root: Node<*>, displayNames: Map<String, String>): String {
-            val walker = DescribeConsumer(mapOf(), displayNames)
+            val walker = Describer(mapOf(), displayNames)
             root.walk(walker::visitNode)
             return walker.toString()
         }

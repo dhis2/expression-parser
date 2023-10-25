@@ -3,21 +3,31 @@ package org.hisp.dhis.lib.expression.spi
 /**
  * A variable value as used int he rule-engine.
  */
-interface VariableValue {
+data class VariableValue(
+    val valueType: ValueType,
     /**
-     * @return variable value, maybe null
+     * variable value, maybe null
      */
-    fun value(): String?
-    fun valueOrDefault(): Any?
+    val value: String?,
 
     /**
-     * @return list of candidates, never null
+     * list of candidates, never null
      */
-    fun candidates(): List<String>
+    val candidates: List<String> ,
 
     /**
-     * @return associated event date, maybe null
+     * associated event date, maybe null
      */
-    fun eventDate(): String?
-    fun valueType(): ValueType
+    val eventDate: String?
+
+) {
+    constructor(valueType: ValueType) : this(valueType,null, listOf(), null)
+
+    init {
+        require(valueType != ValueType.SAME && valueType != ValueType.MIXED)
+    }
+
+    fun valueOrDefault() : Any {
+        return value?: valueType.default
+    }
 }

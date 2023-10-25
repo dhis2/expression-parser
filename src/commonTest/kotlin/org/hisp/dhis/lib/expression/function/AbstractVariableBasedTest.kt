@@ -8,6 +8,6 @@ abstract class AbstractVariableBasedTest {
 
     fun evaluate(expression: String, values: Map<String, VariableValue>) : Any? {
         val data: ExpressionData = ExpressionData().copy(programRuleVariableValues = values)
-        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate( { _: String? -> null }, data)
+        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate( { _: String -> null }, data)
     }
 }

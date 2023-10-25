@@ -5,7 +5,10 @@ import kotlinx.datetime.*
 import org.hisp.dhis.lib.expression.ast.BinaryOperator.Companion.modulo
 import org.hisp.dhis.lib.expression.math.VectorAggregation
 import org.hisp.dhis.lib.expression.math.GS1Elements.Companion.fromKey
+import org.hisp.dhis.lib.expression.math.NormalDistribution
 import org.hisp.dhis.lib.expression.math.ZScore
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.ln
@@ -37,7 +40,7 @@ fun interface ExpressionFunctions {
      * @return maximum value or null if all values are null
      */
     fun greatest(values: List<Number?>): Number? {
-        return values.filterNotNull().maxByOrNull { obj: Number -> obj.toDouble() }
+        return values.filterNotNull().maxByOrNull(Number::toDouble)
     }
 
     /**
@@ -69,7 +72,7 @@ fun interface ExpressionFunctions {
      * @return minimum value or null if all values are null
      */
     fun least(values: List<Number?>): Number? {
-        return values.filterNotNull().minByOrNull { obj: Number -> obj.toDouble() }
+        return values.filterNotNull().minByOrNull(Number::toDouble)
     }
 
     fun log(n: Number?): Double {
@@ -132,6 +135,18 @@ fun interface ExpressionFunctions {
         return VectorAggregation.variance(values)
     }
 
+    fun normDistCum(x: Number?, mean: Number?, stddev: Number?): Double {
+        require(x != null) { "x parameter of normDistCum must not be null" }
+        require(mean != null) { "x parameter of normDistCum must not be null" }
+        require(stddev != null) { "x parameter of normDistCum must not be null" }
+        return NormalDistribution.cumulativeProbability(x.toDouble(), mean.toDouble(), stddev.toDouble())
+    }
+
+    fun normDistDen(x: Number?, mean: Number?, stddev: Number?): Double {
+        //TODO
+        return 1.0;
+    }
+
     /*
     D2 functions...
      */
@@ -154,16 +169,16 @@ fun interface ExpressionFunctions {
      * @return the number of [VariableValue.candidates]
      */
     fun d2_count(value: VariableValue?): Int {
-        return value?.candidates()?.size ?: 0
+        return value?.candidates?.size ?: 0
     }
 
     fun d2_countIfValue(value: VariableValue?, sample: String?): Int {
         return if (value == null || sample == null) 0
-        else value.candidates().count { e -> e == sample }
+        else value.candidates.count { e -> e == sample }
     }
 
     fun d2_countIfZeroPos(value: VariableValue?): Int {
-        return value?.candidates()?.count { n: String -> n.toDouble() >= 0.0 } ?: 0
+        return value?.candidates?.count { n: String -> n.toDouble() >= 0.0 } ?: 0
     }
 
     fun d2_daysBetween(start: LocalDate?, end: LocalDate?): Int {
@@ -186,7 +201,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_hasValue(value: VariableValue?): Boolean {
-        return value?.value() != null
+        return value?.value != null
     }
 
     fun d2_inOrgUnitGroup(
@@ -195,12 +210,12 @@ fun interface ExpressionFunctions {
         supplementaryValues: Map<String, List<String>>
     ): Boolean {
         val members = supplementaryValues[group]
-        val uid = if (orgUnit == null) "" else orgUnit.value()?.replace("'", "")
+        val uid = if (orgUnit == null) "" else orgUnit.value?.replace("'", "")
         return members != null && members.contains(uid)
     }
 
     fun d2_lastEventDate(value: VariableValue?): LocalDate? {
-        return if (value?.eventDate() == null) null else LocalDate.parse(value.eventDate()!!)
+        return if (value?.eventDate == null) null else LocalDate.parse(value.eventDate)
     }
 
     fun d2_left(input: String?, length: Int?): String? {
@@ -213,7 +228,7 @@ fun interface ExpressionFunctions {
 
     fun d2_maxValue(value: VariableValue?): Double {
         return if (value == null) Double.NaN
-        else value.candidates().maxOfOrNull { str -> str.toDouble() } ?: Double.NaN
+        else value.candidates.maxOfOrNull(String::toDouble) ?: Double.NaN
     }
 
     fun d2_minutesBetween(start: LocalDate?, end: LocalDate?): Int {
@@ -224,7 +239,7 @@ fun interface ExpressionFunctions {
 
     fun d2_minValue(value: VariableValue?): Double {
         return if (value == null) Double.NaN
-        else value.candidates().minOfOrNull { str -> str.toDouble() } ?: Double.NaN
+        else value.candidates.minOfOrNull(String::toDouble) ?: Double.NaN
     }
 
     fun d2_modulus(left: Number?, right: Number?): Double {
