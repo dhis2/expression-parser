@@ -40,7 +40,12 @@ jobs:
           node-version: '18.12.1'
       - name: Change wrapper permission
         run: chmod +x ./gradlew
+      - name: Release NPM package
+        run: ./gradlew publishJsPackageToNpmjsRegistry
+        env:
+          NPMJS_TOKEN: ${{ secrets.DHIS2_BOT_NPM_TOKEN }}
       - name: Release Maven package
+        if: false
         run: ./gradlew publishAllPublicationsToSonatypeRepository
         env:
           OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}

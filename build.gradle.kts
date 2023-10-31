@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     signing
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
+    id("dev.petuska.npm.publish") version "3.4.1"
     id("org.jetbrains.dokka") version "1.9.0"
 }
 
@@ -32,6 +33,7 @@ kotlin {
         nodejs()
         useEsModules()
         binaries.library()
+        generateTypeScriptDefinitions()
     }
     val hostOs = System.getProperty("os.name")
     val isArm64 = System.getProperty("os.arch") == "aarch64"
@@ -73,6 +75,7 @@ val ossrhUsername: String? = System.getenv("OSSRH_USERNAME")
 val ossrhPassword: String? = System.getenv("OSSRH_PASSWORD")
 val signingPrivateKey: String? = System.getenv("SIGNING_PRIVATE_KEY")
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
+val npmjsToken: String? = System.getenv("NPMJS_TOKEN")
 
 val dokkaHtml = tasks.findByName("dokkaHtml")!!
 
@@ -89,6 +92,16 @@ nexusPublishing {
         sonatype {
             username.set(ossrhUsername)
             password.set(ossrhPassword)
+        }
+    }
+}
+
+npmPublish {
+    organization.set("dhis2")
+    registries {
+        npmjs {
+            authToken.set(npmjsToken)
+            dry.set(true)
         }
     }
 }
