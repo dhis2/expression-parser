@@ -1,10 +1,7 @@
 plugins {
-    kotlin("multiplatform") version "1.9.0"
-    `maven-publish`
-    signing
-    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
-    id("dev.petuska.npm.publish") version "3.4.1"
-    id("org.jetbrains.dokka") version "1.9.0"
+    kotlin("multiplatform")
+    id("maven-publish-conventions")
+    id("npm-publish-conventions")
 }
 
 repositories {
@@ -67,47 +64,4 @@ kotlin {
         val nativeMain by getting
         val nativeTest by getting
     }
-}
-
-// Publication
-
-val ossrhUsername: String? = System.getenv("OSSRH_USERNAME")
-val ossrhPassword: String? = System.getenv("OSSRH_PASSWORD")
-val signingPrivateKey: String? = System.getenv("SIGNING_PRIVATE_KEY")
-val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
-val npmjsToken: String? = System.getenv("NPMJS_TOKEN")
-
-val dokkaHtml = tasks.findByName("dokkaHtml")!!
-
-val dokkaHtmlJar = tasks.register<Jar>("dokkaHtmlJar") {
-    dependsOn(dokkaHtml)
-    from(dokkaHtml.outputs)
-    archiveClassifier.set("docs")
-}
-
-publicationConfig(dokkaHtmlJar)
-
-nexusPublishing {
-    this.repositories {
-        sonatype {
-            username.set(ossrhUsername)
-            password.set(ossrhPassword)
-        }
-    }
-}
-
-npmPublish {
-    organization.set("dhis2")
-    registries {
-        npmjs {
-            authToken.set(npmjsToken)
-            dry.set(true)
-        }
-    }
-}
-
-signing {
-    isRequired = isReleaseVersion
-    useInMemoryPgpKeys(signingPrivateKey, signingPassword)
-    sign(publishing.publications)
 }
