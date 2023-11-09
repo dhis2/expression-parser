@@ -34,7 +34,6 @@ project.afterEvaluate {
         registries {
             npmjs {
                 authToken.set(npmjsToken)
-                dry.set(true)
             }
         }
     }
