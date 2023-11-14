@@ -14,9 +14,10 @@ project.afterEvaluate {
                 scope.set("dhis2")
                 readme.set(File("./README.md"))
                 packageJson {
-                    "main" by "${project.name}.mjs"
+                    "module" by "${project.name}.mjs"
+                    "main" by ""
                     "exports" by {
-                        "import" by "${project.name}.mjs"
+                        "import" by "./${project.name}.mjs"
                     }
                     "author" by "${Props.AUTHOR_NAME} <${Props.AUTHOR_EMAIL}>"
                     "description" by Props.DESCRIPTION
@@ -35,6 +36,15 @@ project.afterEvaluate {
             npmjs {
                 authToken.set(npmjsToken)
             }
+        }
+    }
+
+    tasks.named("assembleJsPackage") {
+        doLast {
+            val file = file("${layout.buildDirectory.get()}/packages/js/package.json")
+            val mainRegex = "\n    \"main\": \"\","
+            val removedMain = file.readText().replace(mainRegex, "")
+            file.writeText(removedMain)
         }
     }
 }
