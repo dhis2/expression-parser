@@ -29,8 +29,8 @@ class ExpressionJs(expression: String, mode: String) {
         return expr.collectProgramVariablesNames().toTypedArray()
     }
 
-    fun evaluate(unsupported: (String)-> Any?, data: ExpressionDataJs): Any? {
-        return expr.evaluate({ name: String -> unsupported(name) }, toExpressionDataJava(data))
+    fun evaluate(unsupported: (String) -> Any?, data: ExpressionDataJs): Any? {
+        return expr.evaluate(unsupported, toExpressionDataJava(data))
     }
 
     fun collectProgramVariables(): Array<VariableJs> {

@@ -98,15 +98,15 @@ class Expression(
         return evaluate({ _: String -> null }, ExpressionData())
     }
 
-    fun evaluate(functions: ExpressionFunctions, data: ExpressionData): Any? {
-        return evaluate(root, functions, data)
+    fun evaluate(unsupported: (String) -> Any?, data: ExpressionData): Any? {
+        return evaluate(root, { name: String -> unsupported(name) }, data)
     }
 
     fun collectProgramVariables(): Set<Variable> {
         return collectVariables(root, VariableType.PROGRAM)
     }
 
-    fun generateSQL(functions: ExpressionFunctions, sqlByProgramVariable: Map<Variable, String>): String {
+    fun generateSQL(unsupported: (String) -> Any?, sqlByProgramVariable: Map<Variable, String>): String {
         return "" //TODO
     }
 
