@@ -36,10 +36,15 @@ jobs:
       - name: Change wrapper permission
         run: chmod +x ./gradlew
       - name: Release Maven package
-        #run: ./gradlew publishJvmPublicationToSonatypeRepository -PremoveSnapshot
+        #run: ./gradlew publishAllPublicationsToSonatypeRepository -PremoveSnapshot
         run: ./gradlew assemble
         env:
           OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
           SIGNING_PRIVATE_KEY: ${{ secrets.PGP_PRIVATE_KEY }}
           SIGNING_PASSWORD: ${{ secrets.PGP_PASSPHRASE }}
+      - name: Release NPM package
+        #run: ./gradlew publishJsPackageToNpmjsRegistry -PremoveSnapshot
+        run: ./gradlew packJsPackage
+        env:
+          NPMJS_TOKEN: ${{ secrets.DHIS2_BOT_NPM_TOKEN }}
