@@ -313,7 +313,7 @@ internal class Calculator(
     }
 
     private fun evalToVar(node: Node<*>): VariableValue? {
-        return eval(node, "Variable") { v: Any? -> v as VariableValue? }
+        return eval(node, "Variable") { v: Any? -> if (v is String) data.programRuleVariableValues[v] else v as VariableValue? }
     }
 
     private fun evalToMixed(nodes: Sequence<Node<*>>): List<*> {
