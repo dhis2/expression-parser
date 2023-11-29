@@ -32,6 +32,8 @@ For an equivalent of a (ANTLR) grammar definition look at `ExpressionGrammar`.
 The public API of the library is encapsulated by `Expression` which refers to types 
 in the `org.hisp.dhis.lib.expression.spi` package.
 
+For JavaScript the main entry point to the API is called `ExpressionJs`. 
+
 ### Modes
 DHIS2 has several expression language, each supporting a different set of functions.
 To select which expression is used the `Expression` is parameterized with a `Mode`.
