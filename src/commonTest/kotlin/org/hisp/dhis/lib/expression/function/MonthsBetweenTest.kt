@@ -19,7 +19,11 @@ internal class MonthsBetweenTest {
         assertEquals(1, evaluate("d2:monthsBetween(\"2020-01-01\", \"2020-02-01\")"))
         assertEquals(1, evaluate("d2:monthsBetween(\"2020-02-01\", \"2020-03-01\")"))
         assertEquals(12, evaluate("d2:monthsBetween(\"2020-01-01\", \"2021-01-01\")"))
-        assertEquals(12, evaluate("d2:monthsBetween(\"2021-01-01\", \"2020-01-01\")"))
+    }
+
+    @Test
+    fun testMonthsBetween_Negative() {
+        assertEquals(-12, evaluate("d2:monthsBetween(\"2021-01-01\", \"2020-01-01\")"))
     }
 
     @Test

@@ -15,10 +15,14 @@ internal class DaysBetweenTest {
     @Test
     fun testDaysBetween() {
         assertEquals(6, evaluate("d2:daysBetween(\"2020-01-01\", \"2020-01-07\")"))
-        assertEquals(6, evaluate("d2:daysBetween(\"2020-01-07\", \"2020-01-01\")"))
         assertEquals(31, evaluate("d2:daysBetween(\"2020-01-01\", \"2020-02-01\")"))
         assertEquals(29, evaluate("d2:daysBetween(\"2020-02-01\", \"2020-03-01\")"))
         assertEquals(366, evaluate("d2:daysBetween(\"2020-01-01\", \"2021-01-01\")"))
+    }
+
+    @Test
+    fun testDaysBetween_Negative() {
+        assertEquals(-6, evaluate("d2:daysBetween(\"2020-01-07\", \"2020-01-01\")"))
     }
 
     @Test
