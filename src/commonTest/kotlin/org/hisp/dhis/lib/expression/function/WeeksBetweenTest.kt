@@ -19,7 +19,11 @@ internal class WeeksBetweenTest {
         assertEquals(4, evaluate("d2:weeksBetween(\"2020-01-01\", \"2020-02-01\")"))
         assertEquals(4, evaluate("d2:weeksBetween(\"2020-02-01\", \"2020-03-01\")"))
         assertEquals(52, evaluate("d2:weeksBetween(\"2020-01-01\", \"2021-01-01\")"))
-        assertEquals(52, evaluate("d2:weeksBetween(\"2021-01-01\", \"2020-01-01\")"))
+    }
+
+    @Test
+    fun testWeeksBetween_Negative() {
+        assertEquals(-52, evaluate("d2:weeksBetween(\"2021-01-01\", \"2020-01-01\")"))
     }
 
     @Test

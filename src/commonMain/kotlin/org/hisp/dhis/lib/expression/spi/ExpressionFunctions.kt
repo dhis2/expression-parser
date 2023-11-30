@@ -184,7 +184,7 @@ fun interface ExpressionFunctions {
     fun d2_daysBetween(start: LocalDate?, end: LocalDate?): Int {
         require(start != null) { "start parameter of d2:daysBetween must not be null" }
         require(end != null) { "end parameter of d2:daysBetween must not be null" }
-        return if (start.toEpochDays() < end.toEpochDays()) start.daysUntil(end) else end.daysUntil(start)
+        return start.daysUntil(end)
     }
 
     fun d2_extractDataMatrixValue(gs1Key: String?, value: String?): String? {
@@ -249,7 +249,7 @@ fun interface ExpressionFunctions {
     fun d2_monthsBetween(start: LocalDate?, end: LocalDate?): Int {
         require(start != null) { "start parameter of d2:monthsBetween must not be null" }
         require(end != null) { "end parameter of d2:monthsBetween must not be null" }
-        return if (start.toEpochDays() < end.toEpochDays()) start.monthsUntil(end) else end.monthsUntil(start)
+        return start.monthsUntil(end)
     }
 
     fun d2_oizp(value: Number?): Double {
@@ -301,7 +301,7 @@ fun interface ExpressionFunctions {
     fun d2_yearsBetween(start: LocalDate?, end: LocalDate?): Int {
         require(start != null) { "start parameter of d2:yearsBetween must not be null" }
         require(end != null) { "end parameter of d2:yearsBetween must not be null" }
-        return if (start.toEpochDays() < end.toEpochDays()) start.yearsUntil(end) else end.yearsUntil(start)
+        return start.yearsUntil(end)
     }
 
     /**
