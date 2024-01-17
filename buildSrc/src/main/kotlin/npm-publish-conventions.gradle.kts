@@ -11,7 +11,7 @@ project.afterEvaluate {
         access.set(NpmAccess.PUBLIC)
         packages {
             named("js") {
-                scope.set("dhis2")
+                scope.set("vgarciabnz")
                 readme.set(File("./README.md"))
                 packageJson {
                     "module" by "${project.name}.mjs"
