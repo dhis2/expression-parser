@@ -3,7 +3,7 @@ name: Pull request
 on: [pull_request]
 
 jobs:
-  unit-test:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -13,7 +13,17 @@ jobs:
           java-version: 17
           distribution: temurin
           cache: 'gradle'
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
       - name: Change wrapper permission
         run: chmod +x ./gradlew
-      - name: Test
-        run: ./gradlew clean allTests
+
+      - name: Pack
+        run: ./gradlew clean packJsPackage
+      - name: Publish beta to NPMJS
+        run:
+          chmod +x ./scripts/publish-beta.sh
+          ./scripts/publish-beta.sh
+

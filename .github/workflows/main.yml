@@ -20,4 +20,3 @@ jobs:
         run: chmod +x ./gradlew
       - name: Test
         run: ./gradlew clean allTests
-  
