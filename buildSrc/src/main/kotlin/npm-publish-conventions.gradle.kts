@@ -4,8 +4,6 @@ plugins {
     id("dev.petuska.npm.publish")
 }
 
-val npmjsToken: String? = System.getenv("NPMJS_TOKEN")
-
 project.afterEvaluate {
     npmPublish {
         access.set(NpmAccess.PUBLIC)
@@ -30,11 +28,6 @@ project.afterEvaluate {
                         "access" by "public"
                     }
                 }
-            }
-        }
-        registries {
-            npmjs {
-                authToken.set(npmjsToken)
             }
         }
     }
