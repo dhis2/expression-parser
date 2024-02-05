@@ -12,7 +12,7 @@ group = "org.hisp.dhis.lib.expression"
 
 
 if (project.hasProperty("version")) {
-    println("Our input argument with project property ["+project.version+"]")
+    println("--- Version passed from semantic-release: "+project.version)
     version = project.version
 }
 
