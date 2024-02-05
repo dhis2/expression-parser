@@ -9,12 +9,13 @@ repositories {
 }
 
 group = "org.hisp.dhis.lib.expression"
-version = "1.1.0-SNAPSHOT"
 
-val isReleaseVersion = project.hasProperty("removeSnapshot")
-if (isReleaseVersion) {
-    version = (version as String).replace("-SNAPSHOT", "")
+
+if (project.hasProperty("version")) {
+    println("Our input argument with project property ["+project.version+"]")
+    version = project.version
 }
+
 
 kotlin {
     jvm {

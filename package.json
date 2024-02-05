@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "release": {
+    "branches": [
+      "master",
+      "main",
+      {
+        "name": "beta",
+        "prerelease": true
+      },
+      {
+        "name": "alpha",
+        "prerelease": true
+      }
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "verifyRelease": "./gradlew packJsPackage -Pversion=${nextRelease.version}",
+          "publishCmd": "./gradlew publishJsPackageToNpmjsRegistry"
+        }
+      ],[
+        "@semantic-release/changelog",
+        {
+          "changelogFile": "docs/CHANGELOG.md"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": ["docs/CHANGELOG.md", "package.json"]
+        }
+      ]
+    ]
+  },
+  "scripts": {
+    "release": "semantic-release"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/exec": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^11.0.2",
+    "gradle-semantic-release-plugin": "^1.9.1",
+    "semantic-release": "^23.0.0"
+  }
+}
