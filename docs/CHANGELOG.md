@@ -1,3 +1,10 @@
+# [1.0.0-alpha.3](https://github.com/kabaros/expression-parser/compare/v1.0.0-alpha.2...v1.0.0-alpha.3) (2024-02-05)
+
+
+### Bug Fixes
+
+* test release ([caa093b](https://github.com/kabaros/expression-parser/commit/caa093b71c2229edf21e0ab897dc6554922f489b))
+
 # [1.0.0-alpha.2](https://github.com/kabaros/expression-parser/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2024-02-05)
 
 
