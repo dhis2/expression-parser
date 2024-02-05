@@ -1,9 +1,9 @@
-name: Main branch
+name: Beta branch
 
 on:
   push:
     branches:
-      - 'main'
+      - 'beta'
 
 jobs:
   unit-test:
