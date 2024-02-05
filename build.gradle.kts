@@ -9,12 +9,13 @@ repositories {
 }
 
 group = "org.hisp.dhis.lib.expression"
-version = "1.1.0-SNAPSHOT"
 
-val isReleaseVersion = project.hasProperty("removeSnapshot")
-if (isReleaseVersion) {
-    version = (version as String).replace("-SNAPSHOT", "")
+
+if (project.hasProperty("version")) {
+    println("--- Version passed from semantic-release: "+project.version)
+    version = project.version
 }
+
 
 kotlin {
     jvm {
