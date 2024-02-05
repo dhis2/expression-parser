@@ -1,3 +1,10 @@
+# [1.0.0-alpha.2](https://github.com/kabaros/expression-parser/compare/v1.0.0-alpha.1...v1.0.0-alpha.2) (2024-02-05)
+
+
+### Bug Fixes
+
+* update verifyReleaseCmd ([cc8fa9d](https://github.com/kabaros/expression-parser/commit/cc8fa9dfa165f9ff300d9e1360242b1ea9c86050))
+
 # 1.0.0-alpha.1 (2024-02-05)
 
 
