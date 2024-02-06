@@ -26,12 +26,12 @@ jobs:
         run: ./gradlew :nyxMark
 
       - name: Publish Maven
-        run: ./.github/workflows/publish-maven.sh
+        run: ./.github/workflows/scripts/publish-maven.sh
         env:
           OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
 
       - name: Publish NPMJS
-        run: ./.github/workflows/publish-npm.sh
+        run: ./.github/workflows/scripts/publish-npm.sh
         env:
           NPMJS_TOKEN: ${{ secrets.DHIS2_BOT_NPM_TOKEN }}

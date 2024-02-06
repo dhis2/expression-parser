@@ -25,4 +25,4 @@ jobs:
         run: chmod +x ./gradlew
       - id: newVersion
         name: Check new version
-        run: ./.github/workflows/check-new-version.sh
+        run: ./.github/workflows/scripts/check-new-version.sh
