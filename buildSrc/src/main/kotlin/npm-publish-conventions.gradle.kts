@@ -29,6 +29,7 @@ project.afterEvaluate {
                     "publishConfig" by {
                         "access" by "public"
                     }
+                    "private" by false
                 }
             }
         }
