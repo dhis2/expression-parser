@@ -22,8 +22,10 @@ jobs:
         with:
           node-version: 14.x
 
-      - name: Create version tag
-        run: ./gradlew :nyxMark
+      - name: Create tag and publish Github release
+        run: ./gradlew :nyxPublish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish Maven
         run: ./.github/workflows/scripts/publish-maven.sh

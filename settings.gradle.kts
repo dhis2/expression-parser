@@ -10,8 +10,4 @@ plugins {
     id("com.mooltiverse.oss.nyx") version "2.5.2"
 }
 
-configure<com.mooltiverse.oss.nyx.gradle.NyxExtension> {
-    preset.set("extended")
-}
-
 rootProject.name = "expression-parser"
