@@ -40,7 +40,11 @@ kotlin {
     }
     js {
         nodejs()
-        useEsModules()
+        if (project.hasProperty("useCommonJs")) {
+            useCommonJs()
+        } else {
+            useEsModules()
+        }
         binaries.library()
         generateTypeScriptDefinitions()
     }
