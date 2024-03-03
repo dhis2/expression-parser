@@ -24,6 +24,26 @@ fun interface ExpressionFunctions {
     fun unsupported(name: String): Any?
 
     /**
+     * Returns true if first arg contains all others as substrings.
+     */
+    fun contains(values: List<String?>): Boolean {
+        val targetValue = values[0] ?: ""
+        val containedValues = values.drop(1)
+
+        return containedValues.all { it != null && targetValue.contains(it) }
+    }
+
+    /**
+     * Returns true if first arg split by commas contains all others as exact matches.
+     */
+    fun containsItems(values: List<String?>): Boolean {
+        val targetValues = (values[0] ?: "").split(",")
+        val containedValues = values.drop(1)
+
+        return containedValues.all { targetValues.contains(it) }
+    }
+
+    /**
      * Returns first non-null value (of similar typed values).
      *
      * @param values zero or more values
