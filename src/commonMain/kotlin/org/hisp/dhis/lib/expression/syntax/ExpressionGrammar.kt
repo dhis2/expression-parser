@@ -46,8 +46,8 @@ object ExpressionGrammar {
     private val SUB_EXPRESSION = fn(NamedFunction.subExpression, expr)
 
     private val CommonFunctions = listOf( // (alphabetical)
-        fn(NamedFunction.contains, expr, expr, expr.plus()),
-        fn(NamedFunction.containsItems, expr, expr, expr.plus()),
+        fn(NamedFunction.contains, expr, expr.plus()),
+        fn(NamedFunction.containsItems, expr, expr.plus()),
         fn(NamedFunction.firstNonNull, expr.plus()),
         fn(NamedFunction.greatest, expr.plus()),
         fn(NamedFunction.ifThenElse, expr, expr, expr),

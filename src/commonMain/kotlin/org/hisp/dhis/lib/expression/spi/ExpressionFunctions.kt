@@ -24,23 +24,26 @@ fun interface ExpressionFunctions {
     fun unsupported(name: String): Any?
 
     /**
-     * Returns true if first arg contains all others as substrings.
+     * @param pattern the string checked to contain the all the other substrings
+     * @param allOf the substrings that are checked to be contained
+     * @return true, the pattern parameter contains all the values of the #allOf parameter
      */
-    fun contains(values: List<String?>): Boolean {
-        val targetValue = values[0] ?: ""
-        val containedValues = values.drop(1)
-
-        return containedValues.all { it != null && targetValue.contains(it) }
+    fun contains(pattern: String?, allOf: List<String?>): Boolean {
+        require(pattern != null) { "pattern parameter of contains must not be null" }
+        require(allOf.isNotEmpty()) { "allOf parameter of contains contain at least one value" }
+        return allOf.all { it != null && pattern.contains(it) }
     }
 
     /**
-     * Returns true if first arg split by commas contains all others as exact matches.
+     * @param pattern the string checked to contain the all the other substrings
+     * @param allOf the substrings that are checked to be contained
+     * @return true if pattern split by comma contains all others as exact matches.
      */
-    fun containsItems(values: List<String?>): Boolean {
-        val targetValues = (values[0] ?: "").split(",")
-        val containedValues = values.drop(1)
-
-        return containedValues.all { targetValues.contains(it) }
+    fun containsItems(pattern: String?, allOf: List<String?>): Boolean {
+        require(pattern != null) { "pattern parameter of contains must not be null" }
+        require(allOf.isNotEmpty()) { "allOf parameter of contains contain at least one value" }
+        val patterns = pattern.split(",")
+        return allOf.all { patterns.contains(it) }
     }
 
     /**

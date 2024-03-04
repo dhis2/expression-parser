@@ -56,8 +56,8 @@ internal class Calculator(
             null // return value of only data item in the expression from map
         }
         else when (fnInfo) {
-            NamedFunction.contains -> functions.contains(evalToStrings(fn.children()))
-            NamedFunction.containsItems -> functions.containsItems(evalToStrings(fn.children()))
+            NamedFunction.contains -> functions.contains(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
+            NamedFunction.containsItems -> functions.containsItems(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
             NamedFunction.firstNonNull -> functions.firstNonNull(evalToMixed(fn.children()))
             NamedFunction.greatest -> functions.greatest(evalToNumbers(fn.children()))
             NamedFunction.ifThenElse -> functions.ifThenElse(
