@@ -24,6 +24,29 @@ fun interface ExpressionFunctions {
     fun unsupported(name: String): Any?
 
     /**
+     * @param pattern the string checked to contain the all the other substrings
+     * @param allOf the substrings that are checked to be contained
+     * @return true, the pattern parameter contains all the values of the #allOf parameter
+     */
+    fun contains(pattern: String?, allOf: List<String?>): Boolean {
+        require(pattern != null) { "pattern parameter of contains must not be null" }
+        require(allOf.isNotEmpty()) { "allOf parameter of contains contain at least one value" }
+        return allOf.all { it != null && pattern.contains(it) }
+    }
+
+    /**
+     * @param pattern the string checked to contain the all the other substrings
+     * @param allOf the substrings that are checked to be contained
+     * @return true if pattern split by comma contains all others as exact matches.
+     */
+    fun containsItems(pattern: String?, allOf: List<String?>): Boolean {
+        require(pattern != null) { "pattern parameter of contains must not be null" }
+        require(allOf.isNotEmpty()) { "allOf parameter of contains contain at least one value" }
+        val patterns = pattern.split(",")
+        return allOf.all { patterns.contains(it) }
+    }
+
+    /**
      * Returns first non-null value (of similar typed values).
      *
      * @param values zero or more values
