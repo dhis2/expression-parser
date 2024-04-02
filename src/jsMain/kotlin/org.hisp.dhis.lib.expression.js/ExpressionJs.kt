@@ -1,5 +1,6 @@
 package org.hisp.dhis.lib.expression.js
 
+import js.collections.JsMap
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.ast.AggregationType
@@ -41,11 +42,11 @@ class ExpressionJs(expression: String, mode: String) {
         return expr.collectUIDs().map(::toIdJS).toTypedArray()
     }
 
-    fun describe(displayNames: Array<Entry<String, String>>): String {
+    fun describe(displayNames: JsMap<String, String>): String {
         return expr.describe(toMap(displayNames, { it }, { it }))
     }
 
-    fun validate(displayNamesKeys: Array<Entry<String, String>>) {
+    fun validate(displayNamesKeys: JsMap<String, String>) {
         expr.validate(toMap(displayNamesKeys, { it }, { e -> ValueType.valueOf(e) }))
     }
 
@@ -53,7 +54,7 @@ class ExpressionJs(expression: String, mode: String) {
         return expr.collectDataItemForRegenerate().map(::toDataItemJS).toTypedArray()
     }
 
-    fun regenerate(dataItemValues: Array<Entry<DataItemJs, Double>>): String {
+    fun regenerate(dataItemValues: JsMap<DataItemJs, Double>): String {
         return expr.regenerate(toMap(dataItemValues, ::toDataItemJava) { it })
     }
 
@@ -68,9 +69,9 @@ class ExpressionJs(expression: String, mode: String) {
     companion object {
         val MODES = Expression.Mode.entries.map { it.name }.toTypedArray()
 
-        internal fun <Kf, Vf, K, V> toMap(map: Array<Entry<Kf, Vf>>, key: (Kf) -> K, value: (Vf) -> V): Map<K, V> {
+        internal fun <Kf, Vf, K, V> toMap(map: JsMap<Kf, Vf>, key: (Kf) -> K, value: (Vf) -> V): Map<K, V> {
             val res : MutableMap<K, V> = mutableMapOf()
-            map.forEach { e -> res[key(e.key)] = value(e.value) }
+            map.forEach { v, k -> res[key(k)] = value(v) }
             return res;
         }
 
