@@ -3,10 +3,9 @@ package org.hisp.dhis.lib.expression.js
 import js.collections.JsMap
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.Expression
-import org.hisp.dhis.lib.expression.ast.AggregationType
+import org.hisp.dhis.lib.expression.spi.AggregationType
 import org.hisp.dhis.lib.expression.spi.DataItemType
 import org.hisp.dhis.lib.expression.spi.ID
-import org.hisp.dhis.lib.expression.spi.IDType
 import org.hisp.dhis.lib.expression.spi.ValueType
 
 @OptIn(ExperimentalJsExport::class)
@@ -79,7 +78,7 @@ class ExpressionJs(expression: String, mode: String) {
 
         internal fun toDataItemJava(item: DataItemJs) : org.hisp.dhis.lib.expression.spi.DataItem {
             return org.hisp.dhis.lib.expression.spi.DataItem(
-                type = DataItemType.valueOf(item.type),
+                type = item.type,
                 uid0 = item.uid0,
                 uid1 = item.uid1.toList(),
                 uid2 = item.uid2.toList(),
@@ -88,7 +87,7 @@ class ExpressionJs(expression: String, mode: String) {
 
         internal fun toDataItemJS(item: org.hisp.dhis.lib.expression.spi.DataItem) : DataItemJs {
             return DataItemJs(
-                type = item.type.name,
+                type = item.type,
                 uid0 = item.uid0,
                 uid1 = item.uid1.toTypedArray(),
                 uid2 = item.uid2.toTypedArray(),
@@ -97,14 +96,14 @@ class ExpressionJs(expression: String, mode: String) {
 
         internal fun toVariableJS(variable: org.hisp.dhis.lib.expression.spi.Variable) : VariableJs {
             return VariableJs(
-                name = variable.name.name,
+                name = variable.name,
                 modifiers = toQueryModifiersJS(variable.modifiers))
         }
 
         private fun toQueryModifiersJS(modifiers: org.hisp.dhis.lib.expression.spi.QueryModifiers) : QueryModifiersJs {
             return QueryModifiersJs(
                 periodAggregation = modifiers.periodAggregation,
-                aggregationType = modifiers.aggregationType?.name,
+                aggregationType = modifiers.aggregationType,
                 maxDate = modifiers.maxDate?.toString(),
                 minDate = modifiers.minDate?.toString(),
                 periodOffset = modifiers.periodOffset,
@@ -116,7 +115,7 @@ class ExpressionJs(expression: String, mode: String) {
         private fun toQueryModifiersJava(modifiers: QueryModifiersJs) : org.hisp.dhis.lib.expression.spi.QueryModifiers {
             return org.hisp.dhis.lib.expression.spi.QueryModifiers(
                 periodAggregation =  modifiers.periodAggregation,
-                aggregationType = modifiers.aggregationType?.map(AggregationType::valueOf),
+                aggregationType = modifiers.aggregationType,
                 maxDate = modifiers.maxDate?.map(LocalDate::parse),
                 minDate = modifiers.minDate?.map(LocalDate::parse),
                 periodOffset = modifiers.periodOffset,
@@ -136,7 +135,7 @@ class ExpressionJs(expression: String, mode: String) {
 
         private fun toVariableValueJava(value: VariableValueJs) : org.hisp.dhis.lib.expression.spi.VariableValue {
             return org.hisp.dhis.lib.expression.spi.VariableValue(
-                valueType = ValueType.valueOf(value.valueType),
+                valueType = value.valueType,
                 value = value.value,
                 candidates = value.candidates.toList(),
                 eventDate = value.eventDate)

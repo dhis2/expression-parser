@@ -1,5 +1,10 @@
-package org.hisp.dhis.lib.expression.ast
+package org.hisp.dhis.lib.expression.spi
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 enum class ProgramVariable {
     /*
     OBS! These are the names as they are expected in the syntax

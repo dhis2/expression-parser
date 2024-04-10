@@ -2,8 +2,7 @@ package org.hisp.dhis.lib.expression.ast
 
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.NodeAnnotations.Whitespace
-import org.hisp.dhis.lib.expression.ast.AggregationType
-import org.hisp.dhis.lib.expression.ast.BinaryOperator
+import org.hisp.dhis.lib.expression.spi.AggregationType
 import org.hisp.dhis.lib.expression.spi.*
 
 /**

@@ -5,16 +5,7 @@ import org.hisp.dhis.lib.expression.spi.ValueType
 @OptIn(ExperimentalJsExport::class)
 @JsExport
 data class VariableValueJs(
-    val valueType: String,
+    val valueType: ValueType,
     val value: String?,
     val candidates: Array<String> ,
-    val eventDate: String?
-) {
-    init {
-        require(VALUE_TYPES.contains(valueType)) { "VariableValue valueType must be one of $VALUE_TYPES" }
-    }
-
-    companion object {
-        val VALUE_TYPES = ValueType.entries.map { it.name }.toTypedArray()
-    }
-}
+    val eventDate: String?)

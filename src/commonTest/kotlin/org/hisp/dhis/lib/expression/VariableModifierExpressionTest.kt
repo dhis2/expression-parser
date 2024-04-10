@@ -1,6 +1,6 @@
 package org.hisp.dhis.lib.expression
 
-import org.hisp.dhis.lib.expression.ast.ProgramVariable
+import org.hisp.dhis.lib.expression.spi.ProgramVariable
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
 import org.hisp.dhis.lib.expression.spi.Variable
 import org.hisp.dhis.lib.expression.Expression.Mode

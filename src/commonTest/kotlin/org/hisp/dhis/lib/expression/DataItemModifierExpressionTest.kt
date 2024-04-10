@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression
 
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.lib.expression.ast.AggregationType
+import org.hisp.dhis.lib.expression.spi.AggregationType
 import org.hisp.dhis.lib.expression.Expression.Mode
 import org.hisp.dhis.lib.expression.spi.*
 import kotlin.test.Test
