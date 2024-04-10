@@ -68,7 +68,7 @@ class Expression(
      * Collects all ID that are UID values.
      *
      *
-     * OBS! This does not include [ID]s that are not [ID.IDType.isUID].
+     * OBS! This does not include [ID]s that are not [IDType.isUID].
      *
      * @return A set of [ID]s used in the expression.
      */
