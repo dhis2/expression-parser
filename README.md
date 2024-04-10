@@ -46,3 +46,24 @@ To select which expression is used the `Expression` is parameterized with a `Mod
 * `PROGRAM_INDICATOR_EXPRESSION`: Computes a number for a program indicator expression (persisted aggregate data computation)
 * `RULE_ENGINE_CONDITION`: Computes a boolean to check if a rule applies
 * `RULE_ENGINE_ACTION`: Computes a boolean, string, number or date from a rule
+
+## Development
+This library implements the semantic release setup, which means that version numbers are not manually maintained but 
+derived from the commit/PR history.
+
+Branches:
+- `main`: a push to `main` branch will trigger a new production release (both Maven and NPMJS).
+- `beta`: a push to `beta` branch will trigger a SNAPSHOT release in Maven and a new beta release in NPMJS.
+
+Version number are determined by the presence of commits with these suffixes:
+- `fit:`: it will increase the patch number.
+- `feat:`: it will increase the minor version number.
+- `feat!:`: it will increase the major version number.
+
+If there is not any commit with any of this tags between the previous version and the current commit, nothing will be published.
+
+Typical workflow:
+1. Do work in a feature branch. There is no need to add tags to the commits.
+2. Create a PR to `beta` branch including a tag in the PR title depending on the kind of changes.
+3. Merge the PR using **Squash and merge**. It will publish a SNAPSHOT/BETA release if there is a version change.
+4. Create a PR to `main` branch. Once merged, it will publish a production release. 
