@@ -2,7 +2,7 @@ package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
-import org.hisp.dhis.lib.expression.Expression.Mode
+import org.hisp.dhis.lib.expression.ExpressionMode
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -38,6 +38,6 @@ internal class CeilTest {
     }
 
     private fun evaluate(expression: String): Double {
-        return Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate() as Double
+        return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).evaluate() as Double
     }
 }

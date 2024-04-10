@@ -1,7 +1,5 @@
 package org.hisp.dhis.lib.expression
 
-import org.hisp.dhis.lib.expression.Expression.Mode
-
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -38,7 +36,7 @@ internal class DescriptionExpressionTest {
 
     companion object {
         private fun describe(expression: String, displayNames: Map<String, String> = mapOf()): String {
-            return Expression(expression, Mode.RULE_ENGINE_ACTION).describe(displayNames)
+            return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).describe(displayNames)
         }
     }
 }

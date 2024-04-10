@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.Expression
+import org.hisp.dhis.lib.expression.ExpressionMode
 import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -37,6 +38,6 @@ internal class ValidatePatternTest {
     }
 
     private fun evaluate(expression: String): Boolean {
-        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate() as Boolean
+        return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).evaluate() as Boolean
     }
 }

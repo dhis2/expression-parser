@@ -68,7 +68,7 @@ internal class AnnotatedExpressionTest {
 
     companion object {
         private fun evaluate(expression: String): Expression {
-            return Expression(expression, Expression.Mode.PROGRAM_INDICATOR_EXPRESSION, true)
+            return Expression(expression, ExpressionMode.PROGRAM_INDICATOR_EXPRESSION, true)
         }
     }
 }

@@ -11,10 +11,7 @@ import org.hisp.dhis.lib.expression.eval.Api.evaluate
 import org.hisp.dhis.lib.expression.eval.Api.normalise
 import org.hisp.dhis.lib.expression.eval.Api.regenerate
 import org.hisp.dhis.lib.expression.eval.Api.validate
-import org.hisp.dhis.lib.expression.eval.NodeValidator
 import org.hisp.dhis.lib.expression.spi.*
-import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
-import org.hisp.dhis.lib.expression.syntax.Fragment
 import org.hisp.dhis.lib.expression.syntax.Parser
 
 /**
@@ -24,50 +21,9 @@ import org.hisp.dhis.lib.expression.syntax.Parser
  */
 class Expression(
     private val expression: String,
-    private val mode: Mode = Mode.PREDICTOR_GENERATOR_EXPRESSION,
+    private val mode: ExpressionMode = ExpressionMode.PREDICTOR_GENERATOR_EXPRESSION,
     annotate: Boolean = false
 ) {
-    enum class Mode(val fragments: List<Fragment>, val validators: List<NodeValidator>, vararg resultTypes: ValueType) {
-        // analyses data values for validity
-        VALIDATION_RULE_EXPRESSION(ExpressionGrammar.ValidationRuleExpressionMode, ValueType.NUMBER),
-        VALIDATION_RULE_RESULT_TEST(ExpressionGrammar.SimpleTestMode, ValueType.BOOLEAN),
-
-        // data value generators
-        PREDICTOR_GENERATOR_EXPRESSION(ExpressionGrammar.PredictorExpressionMode, ValueType.NUMBER, ValueType.STRING),
-
-        // do a section in the data needs skipping (ignore)
-        PREDICTOR_SKIP_TEST(ExpressionGrammar.PredictorSkipTestMode, ValueType.BOOLEAN),
-
-        // ad-hoc calculated (no DB)
-        // query analytics to compute some aggregate value
-        INDICATOR_EXPRESSION(ExpressionGrammar.IndicatorExpressionMode, ValueType.NUMBER),
-
-        // always SQL for entire expression
-        // query analytics to compute some aggregate value
-        PROGRAM_INDICATOR_EXPRESSION(ExpressionGrammar.ProgramIndicatorExpressionMode, ValueType.NUMBER),
-
-        // never SQL (also we need JS)
-        // PROGRAM_RULE_EXPRESSION
-        RULE_ENGINE_CONDITION(ExpressionGrammar.RuleEngineMode, NodeValidator.RuleEngineMode, ValueType.BOOLEAN),
-        RULE_ENGINE_ACTION(
-            ExpressionGrammar.RuleEngineMode,
-            NodeValidator.RuleEngineMode,
-            ValueType.BOOLEAN,
-            ValueType.STRING,
-            ValueType.NUMBER,
-            ValueType.DATE);
-
-        val resultTypes: Set<ValueType>
-
-        constructor(fragments: List<Fragment>, vararg resultTypes: ValueType) : this(
-            fragments,
-            listOf<NodeValidator>(),
-            *resultTypes)
-
-        init {
-            this.resultTypes = setOf(*resultTypes)
-        }
-    }
 
     private val root: Node<*>
 

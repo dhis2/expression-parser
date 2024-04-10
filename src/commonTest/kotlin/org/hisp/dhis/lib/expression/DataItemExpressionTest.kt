@@ -176,7 +176,7 @@ internal class DataItemExpressionTest {
 
     companion object {
         private fun evaluate(expression: String): Set<DataItem> {
-            return Expression(expression, Expression.Mode.INDICATOR_EXPRESSION).collectDataItems()
+            return Expression(expression, ExpressionMode.INDICATOR_EXPRESSION).collectDataItems()
         }
     }
 }

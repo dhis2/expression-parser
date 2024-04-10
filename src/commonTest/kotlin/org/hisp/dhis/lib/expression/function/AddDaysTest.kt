@@ -3,7 +3,7 @@ package org.hisp.dhis.lib.expression.function
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
-import org.hisp.dhis.lib.expression.Expression.Mode
+import org.hisp.dhis.lib.expression.ExpressionMode
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -54,7 +54,7 @@ internal class AddDaysTest {
 
     companion object {
         private fun evaluate(expression: String): LocalDate {
-            return Expression(expression, Mode.RULE_ENGINE_ACTION).evaluate() as LocalDate
+            return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).evaluate() as LocalDate
         }
     }
 }

@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.Expression
+import org.hisp.dhis.lib.expression.ExpressionMode
 import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import kotlin.test.*
@@ -32,6 +33,6 @@ internal class HasUserRoleTest {
 
     private fun evaluate(expression: String, supplementaryValues: Map<String, List<String>>): Boolean {
         val data: ExpressionData = ExpressionData().copy(supplementaryValues = supplementaryValues)
-        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate( { _: String -> null }, data) as Boolean
+        return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).evaluate( { _: String -> null }, data) as Boolean
     }
 }

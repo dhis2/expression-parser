@@ -3,21 +3,15 @@ package org.hisp.dhis.lib.expression.js
 import js.collections.JsMap
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.Expression
-import org.hisp.dhis.lib.expression.spi.AggregationType
-import org.hisp.dhis.lib.expression.spi.DataItemType
+import org.hisp.dhis.lib.expression.ExpressionMode
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.ValueType
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-class ExpressionJs(expression: String, mode: String) {
+class ExpressionJs(expression: String, mode: ExpressionMode) {
 
-    private val expr: Expression
-
-    init {
-        require(MODES.contains(mode)) { "Mode must be one of: $MODES"}
-        expr = Expression(expression, Expression.Mode.valueOf(mode))
-    }
+    private val expr: Expression = Expression(expression, mode)
 
     fun collectDataItems(): Array<DataItemJs> {
         return expr.collectDataItems().map(::toDataItemJS).toTypedArray()
@@ -68,7 +62,7 @@ class ExpressionJs(expression: String, mode: String) {
     }
 
     companion object {
-        val MODES = Expression.Mode.entries.map { it.name }.toTypedArray()
+        val MODES = ExpressionMode.entries.map { it.name }.toTypedArray()
 
         internal fun <Kf, Vf, K, V> toMap(map: JsMap<Kf, Vf>, key: (Kf) -> K, value: (Vf) -> V): Map<K, V> {
             val res : MutableMap<K, V> = mutableMapOf()

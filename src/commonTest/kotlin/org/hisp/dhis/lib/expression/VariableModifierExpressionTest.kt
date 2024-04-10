@@ -3,7 +3,6 @@ package org.hisp.dhis.lib.expression
 import org.hisp.dhis.lib.expression.spi.ProgramVariable
 import org.hisp.dhis.lib.expression.spi.QueryModifiers
 import org.hisp.dhis.lib.expression.spi.Variable
-import org.hisp.dhis.lib.expression.Expression.Mode
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,7 +27,7 @@ internal class VariableModifierExpressionTest {
 
     companion object {
         private fun evaluate(expression: String): Set<Variable> {
-            val expr = Expression(expression, Mode.PROGRAM_INDICATOR_EXPRESSION)
+            val expr = Expression(expression, ExpressionMode.PROGRAM_INDICATOR_EXPRESSION)
             return expr.collectProgramVariables()
         }
     }
