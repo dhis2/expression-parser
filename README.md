@@ -56,7 +56,7 @@ Branches:
 - `beta`: a push to `beta` branch will trigger a SNAPSHOT release in Maven and a new beta release in NPMJS.
 
 Version number are determined by the presence of commits with these suffixes:
-- `fit:`: it will increase the patch number.
+- `fix:`: it will increase the patch number.
 - `feat:`: it will increase the minor version number.
 - `feat!:`: it will increase the major version number.
 
