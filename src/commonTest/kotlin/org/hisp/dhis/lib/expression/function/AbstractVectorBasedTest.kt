@@ -13,7 +13,7 @@ abstract class AbstractVectorBasedTest {
 
     fun newDeDataItem(u1234567890: String): DataItem {
         return DataItem(
-            DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, u1234567890),
+            DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, u1234567890),
             QueryModifiers().copy(periodAggregation = true))
     }
 }

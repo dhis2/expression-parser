@@ -5,6 +5,7 @@ import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.ast.AggregationType
 import org.hisp.dhis.lib.expression.spi.DataItemType
+import org.hisp.dhis.lib.expression.spi.IDType
 import org.hisp.dhis.lib.expression.spi.ValueType
 
 @OptIn(ExperimentalJsExport::class)
@@ -104,7 +105,7 @@ class ExpressionJs(expression: String, mode: String) {
         }
 
         private fun toIdJava(id: IDJs) : org.hisp.dhis.lib.expression.spi.ID {
-            return org.hisp.dhis.lib.expression.spi.ID(type = org.hisp.dhis.lib.expression.spi.ID.Type.valueOf(id.type), id.value)
+            return org.hisp.dhis.lib.expression.spi.ID(type = IDType.valueOf(id.type), id.value)
         }
 
         private fun toQueryModifiersJS(modifiers: org.hisp.dhis.lib.expression.spi.QueryModifiers) : QueryModifiersJs {

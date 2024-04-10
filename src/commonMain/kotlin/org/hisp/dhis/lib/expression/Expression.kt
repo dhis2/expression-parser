@@ -16,8 +16,6 @@ import org.hisp.dhis.lib.expression.spi.*
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
 import org.hisp.dhis.lib.expression.syntax.Fragment
 import org.hisp.dhis.lib.expression.syntax.Parser
-import kotlin.js.ExperimentalJsExport
-import kotlin.js.JsExport
 
 /**
  * Facade API for working with DHIS2 expressions.
@@ -114,7 +112,7 @@ class Expression(
      * Collects all ID that are UID values.
      *
      *
-     * OBS! This does not include [ID]s that are not [ID.Type.isUID].
+     * OBS! This does not include [ID]s that are not [ID.IDType.isUID].
      *
      * @return A set of [ID]s used in the expression.
      */
