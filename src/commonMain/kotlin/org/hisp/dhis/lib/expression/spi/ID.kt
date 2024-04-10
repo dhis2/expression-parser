@@ -1,5 +1,8 @@
 package org.hisp.dhis.lib.expression.spi
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+
 /**
  * An identifier of some type as used in [DataItem]s.
  *
@@ -7,6 +10,8 @@ package org.hisp.dhis.lib.expression.spi
  *
  * @author Jan Bernitt
  */
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 data class ID(
     val type: IDType,
     val value: String

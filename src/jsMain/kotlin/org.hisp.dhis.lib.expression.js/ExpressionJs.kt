@@ -5,6 +5,7 @@ import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.Expression
 import org.hisp.dhis.lib.expression.ast.AggregationType
 import org.hisp.dhis.lib.expression.spi.DataItemType
+import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.IDType
 import org.hisp.dhis.lib.expression.spi.ValueType
 
@@ -39,8 +40,8 @@ class ExpressionJs(expression: String, mode: String) {
         return expr.collectProgramVariables().map(::toVariableJS).toTypedArray()
     }
 
-    fun collectUIDs(): Array<IDJs> {
-        return expr.collectUIDs().map(::toIdJS).toTypedArray()
+    fun collectUIDs(): Array<ID> {
+        return expr.collectUIDs().toTypedArray()
     }
 
     fun describe(displayNames: JsMap<String, String>): String {
@@ -79,18 +80,18 @@ class ExpressionJs(expression: String, mode: String) {
         internal fun toDataItemJava(item: DataItemJs) : org.hisp.dhis.lib.expression.spi.DataItem {
             return org.hisp.dhis.lib.expression.spi.DataItem(
                 type = DataItemType.valueOf(item.type),
-                uid0 = toIdJava(item.uid0),
-                uid1 = item.uid1.map(::toIdJava).toList(),
-                uid2 = item.uid2.map(::toIdJava).toList(),
+                uid0 = item.uid0,
+                uid1 = item.uid1.toList(),
+                uid2 = item.uid2.toList(),
                 modifiers = toQueryModifiersJava(item.modifiers))
         }
 
         internal fun toDataItemJS(item: org.hisp.dhis.lib.expression.spi.DataItem) : DataItemJs {
             return DataItemJs(
                 type = item.type.name,
-                uid0 = toIdJS(item.uid0),
-                uid1 = item.uid1.map(::toIdJS).toTypedArray(),
-                uid2 = item.uid2.map(::toIdJS).toTypedArray(),
+                uid0 = item.uid0,
+                uid1 = item.uid1.toTypedArray(),
+                uid2 = item.uid2.toTypedArray(),
                 modifiers = toQueryModifiersJS(item.modifiers))
         }
 
@@ -98,14 +99,6 @@ class ExpressionJs(expression: String, mode: String) {
             return VariableJs(
                 name = variable.name.name,
                 modifiers = toQueryModifiersJS(variable.modifiers))
-        }
-
-        internal fun toIdJS(id: org.hisp.dhis.lib.expression.spi.ID) : IDJs {
-            return IDJs(type = id.type.name, value = id.value)
-        }
-
-        private fun toIdJava(id: IDJs) : org.hisp.dhis.lib.expression.spi.ID {
-            return org.hisp.dhis.lib.expression.spi.ID(type = IDType.valueOf(id.type), id.value)
         }
 
         private fun toQueryModifiersJS(modifiers: org.hisp.dhis.lib.expression.spi.QueryModifiers) : QueryModifiersJs {

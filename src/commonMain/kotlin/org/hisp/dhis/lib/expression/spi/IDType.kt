@@ -1,5 +1,10 @@
 package org.hisp.dhis.lib.expression.spi
 
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 enum class IDType {
     AttributeUID,
     AttributeOptionComboUID,
