@@ -1,6 +1,5 @@
 package org.hisp.dhis.lib.expression.spi
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 /**
@@ -10,7 +9,6 @@ import kotlin.js.JsExport
  *
  * @author Jan Bernitt
  */
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 data class ID(
     val type: IDType,

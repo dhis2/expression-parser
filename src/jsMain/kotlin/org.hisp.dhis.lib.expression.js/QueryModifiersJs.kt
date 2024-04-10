@@ -3,7 +3,6 @@ package org.hisp.dhis.lib.expression.js
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.spi.AggregationType
 
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 data class QueryModifiersJs(
     val periodAggregation: Boolean,

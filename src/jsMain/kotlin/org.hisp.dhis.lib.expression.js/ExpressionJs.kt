@@ -7,7 +7,6 @@ import org.hisp.dhis.lib.expression.ExpressionMode
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.ValueType
 
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 class ExpressionJs(expression: String, mode: ExpressionMode) {
 

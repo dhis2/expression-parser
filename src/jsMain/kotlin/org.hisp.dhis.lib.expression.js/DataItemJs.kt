@@ -3,7 +3,6 @@ package org.hisp.dhis.lib.expression.js
 import org.hisp.dhis.lib.expression.spi.DataItemType
 import org.hisp.dhis.lib.expression.spi.ID
 
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 data class DataItemJs(
     val type: DataItemType,

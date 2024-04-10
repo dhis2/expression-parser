@@ -1,6 +1,5 @@
 package org.hisp.dhis.lib.expression.spi
 
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 /**
@@ -8,7 +7,6 @@ import kotlin.js.JsExport
  *
  * @author Jan Bernitt
  */
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 enum class DataItemType(internal val symbol: String, private val parameterTypes: List<List<IDType>>) {
 

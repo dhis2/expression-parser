@@ -2,7 +2,6 @@ package org.hisp.dhis.lib.expression.spi
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 /**
@@ -13,7 +12,6 @@ import kotlin.js.JsExport
  *
  * @author Jan Bernitt
  */
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 enum class ValueType(internal val default: Any) {
     /**

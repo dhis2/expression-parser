@@ -5,7 +5,6 @@ import org.hisp.dhis.lib.expression.ast.NodeType
 import org.hisp.dhis.lib.expression.ast.Nodes.VariableNode
 import org.hisp.dhis.lib.expression.ast.VariableType
 import org.hisp.dhis.lib.expression.spi.*
-import kotlin.collections.LinkedHashSet
 
 /**
  * This is the exposed API of the evaluation package. It contains all high level functions to turn a [Node]-tree

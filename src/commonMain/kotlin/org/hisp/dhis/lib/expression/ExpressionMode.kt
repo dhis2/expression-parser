@@ -4,10 +4,8 @@ import org.hisp.dhis.lib.expression.eval.NodeValidator
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
 import org.hisp.dhis.lib.expression.syntax.Fragment
-import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 enum class ExpressionMode(
     internal val fragments: List<Fragment>,
