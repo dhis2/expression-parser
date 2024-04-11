@@ -2,6 +2,7 @@ package org.hisp.dhis.lib.expression.spi
 
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
+import kotlin.js.JsExport
 
 /**
  * A rough classification of what values building blocks expect and return.
@@ -11,7 +12,8 @@ import kotlinx.datetime.LocalDate
  *
  * @author Jan Bernitt
  */
-enum class ValueType(val default: Any) {
+@JsExport
+enum class ValueType(internal val default: Any) {
     /**
      * Type can be at least two of the following: numbers, booleans, dates, strings, list/array of these. This is also
      * used in case a type is unknown or cannot be determined statically.

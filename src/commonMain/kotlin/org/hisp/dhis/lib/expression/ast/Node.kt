@@ -1,6 +1,6 @@
 package org.hisp.dhis.lib.expression.ast
 
-import org.hisp.dhis.lib.expression.ast.BinaryOperator
+import org.hisp.dhis.lib.expression.ast.Node.Factory
 import org.hisp.dhis.lib.expression.spi.DataItem
 import org.hisp.dhis.lib.expression.spi.ID
 import org.hisp.dhis.lib.expression.spi.Variable

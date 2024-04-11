@@ -1,9 +1,6 @@
 package org.hisp.dhis.lib.expression
 
-import org.hisp.dhis.lib.expression.spi.DataItem
-import org.hisp.dhis.lib.expression.spi.DataItemType
-import org.hisp.dhis.lib.expression.spi.ID
-import org.hisp.dhis.lib.expression.spi.QueryModifiers
+import org.hisp.dhis.lib.expression.spi.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -20,7 +17,7 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.DataElementUID, "u1234567890"))),
+                    ID(IDType.DataElementUID, "u1234567890"))),
             evaluate("#{u1234567890}"))
     }
 
@@ -30,10 +27,10 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.DataElementUID, "u1234567890")),
+                    ID(IDType.DataElementUID, "u1234567890")),
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.DataElementUID, "v1234567890"))),
+                    ID(IDType.DataElementUID, "v1234567890"))),
             evaluate("#{u1234567890} + #{v1234567890}"))
     }
 
@@ -43,7 +40,7 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.DateElementGroupUID, "u1234567890"))),
+                    ID(IDType.DateElementGroupUID, "u1234567890"))),
             evaluate("#{deGroup:u1234567890}"))
     }
 
@@ -53,8 +50,8 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.ProgramStageUID, "u1234567890"),
-                    ID(ID.Type.DataElementUID, "v1234567890"))),
+                    ID(IDType.ProgramStageUID, "u1234567890"),
+                    ID(IDType.DataElementUID, "v1234567890"))),
             evaluate("#{u1234567890.v1234567890}"))
     }
 
@@ -64,8 +61,8 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.ProgramStageUID, "u1234567890"),
-                    ID(ID.Type.CategoryOptionUID, "v1234567890"))),
+                    ID(IDType.ProgramStageUID, "u1234567890"),
+                    ID(IDType.CategoryOptionUID, "v1234567890"))),
             evaluate("#{u1234567890.co:v1234567890}"))
     }
 
@@ -75,10 +72,10 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.ProgramStageUID, "u1234567890"),
+                    ID(IDType.ProgramStageUID, "u1234567890"),
                     listOf(
-                        ID(ID.Type.CategoryOptionGroupUID, "v1234567890"),
-                        ID(ID.Type.CategoryOptionGroupUID, "w1234567890")), listOf(),
+                        ID(IDType.CategoryOptionGroupUID, "v1234567890"),
+                        ID(IDType.CategoryOptionGroupUID, "w1234567890")), listOf(),
                     QueryModifiers())),
             evaluate("#{u1234567890.coGroup:v1234567890&w1234567890}"))
     }
@@ -89,9 +86,9 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.DATA_ELEMENT,
-                    ID(ID.Type.DataElementUID, "u1234567890"),
-                    ID(ID.Type.CategoryOptionUID, "v1234567890"),
-                    ID(ID.Type.AttributeOptionComboUID, "w1234567890"))),
+                    ID(IDType.DataElementUID, "u1234567890"),
+                    ID(IDType.CategoryOptionUID, "v1234567890"),
+                    ID(IDType.AttributeOptionComboUID, "w1234567890"))),
             evaluate("#{u1234567890.v1234567890.w1234567890}"))
     }
 
@@ -101,7 +98,7 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.ATTRIBUTE,
-                    ID(ID.Type.AttributeUID, "u1234567890"))),
+                    ID(IDType.AttributeUID, "u1234567890"))),
             evaluate("A{u1234567890}"))
     }
 
@@ -111,8 +108,8 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.ATTRIBUTE,
-                    ID(ID.Type.ProgramUID, "u1234567890"),
-                    ID(ID.Type.AttributeUID, "v1234567890"))),
+                    ID(IDType.ProgramUID, "u1234567890"),
+                    ID(IDType.AttributeUID, "v1234567890"))),
             evaluate("A{u1234567890.v1234567890}"))
     }
 
@@ -122,7 +119,7 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.CONSTANT,
-                    ID(ID.Type.ConstantUID, "u1234567890"))),
+                    ID(IDType.ConstantUID, "u1234567890"))),
             evaluate("C{u1234567890}"))
     }
 
@@ -132,8 +129,8 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.PROGRAM_DATA_ELEMENT,
-                    ID(ID.Type.ProgramUID, "u1234567890"),
-                    ID(ID.Type.DataElementUID, "v1234567890"))),
+                    ID(IDType.ProgramUID, "u1234567890"),
+                    ID(IDType.DataElementUID, "v1234567890"))),
             evaluate("D{u1234567890.v1234567890}"))
     }
 
@@ -143,7 +140,7 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.PROGRAM_INDICATOR,
-                    ID(ID.Type.ProgramIndicatorUID, "u1234567890"))),
+                    ID(IDType.ProgramIndicatorUID, "u1234567890"))),
             evaluate("I{u1234567890}"))
     }
 
@@ -153,7 +150,7 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.INDICATOR,
-                    ID(ID.Type.IndicatorUID, "u1234567890"))),
+                    ID(IDType.IndicatorUID, "u1234567890"))),
             evaluate("N{u1234567890}"))
     }
 
@@ -163,7 +160,7 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.ORG_UNIT_GROUP,
-                    ID(ID.Type.OrganisationUnitGroupUID, "u1234567890"))),
+                    ID(IDType.OrganisationUnitGroupUID, "u1234567890"))),
             evaluate("OUG{u1234567890}"))
     }
 
@@ -173,13 +170,13 @@ internal class DataItemExpressionTest {
             setOf(
                 DataItem(
                     DataItemType.REPORTING_RATE,
-                    ID(ID.Type.DataSetUID, "u1234567890"), ID(ID.Type.ReportingRateType, "ACTUAL_REPORTS"))),
+                    ID(IDType.DataSetUID, "u1234567890"), ID(IDType.ReportingRateType, "ACTUAL_REPORTS"))),
             evaluate("R{u1234567890.ACTUAL_REPORTS}"))
     }
 
     companion object {
         private fun evaluate(expression: String): Set<DataItem> {
-            return Expression(expression, Expression.Mode.INDICATOR_EXPRESSION).collectDataItems()
+            return Expression(expression, ExpressionMode.INDICATOR_EXPRESSION).collectDataItems()
         }
     }
 }

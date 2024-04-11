@@ -9,6 +9,8 @@ enum class NamedFunction(
     vararg parameterTypes: ValueType
 ) : Typed {
     // Base Functions
+    contains("contains", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
+    containsItems("containsItems", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
     firstNonNull("firstNonNull", ValueType.SAME, true, ValueType.SAME),
     greatest("greatest", ValueType.NUMBER, true, ValueType.NUMBER),
     ifThenElse("if", ValueType.SAME, ValueType.BOOLEAN, ValueType.SAME, ValueType.SAME),

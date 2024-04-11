@@ -1,6 +1,6 @@
 package org.hisp.dhis.lib.expression.ast
 
-import org.hisp.dhis.lib.expression.spi.ID
+import org.hisp.dhis.lib.expression.spi.IDType
 
 /**
  * Tags allowed to use in data item positions before a UID.
@@ -8,10 +8,10 @@ import org.hisp.dhis.lib.expression.spi.ID
  * tag:UID
 </pre> *
  */
-enum class Tag(val idType: ID.Type) {
+enum class Tag(val idType: IDType) {
 
-    deGroup(ID.Type.DateElementGroupUID),
-    coGroup(ID.Type.CategoryOptionGroupUID),
-    co(ID.Type.CategoryOptionUID),
-    PS_EVENTDATE(ID.Type.ProgramStageUID)
+    deGroup(IDType.DateElementGroupUID),
+    coGroup(IDType.CategoryOptionGroupUID),
+    co(IDType.CategoryOptionUID),
+    PS_EVENTDATE(IDType.ProgramStageUID)
 }

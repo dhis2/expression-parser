@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.Expression
+import org.hisp.dhis.lib.expression.ExpressionMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -35,6 +36,6 @@ internal class WeeksBetweenTest {
     }
     
     private fun evaluate(expression: String): Any? {
-        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate()
+        return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).evaluate()
     }
 }

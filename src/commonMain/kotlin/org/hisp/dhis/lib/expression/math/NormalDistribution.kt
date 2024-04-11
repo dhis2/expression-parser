@@ -1,7 +1,5 @@
 package org.hisp.dhis.lib.expression.math
 
-import kotlin.math.abs
-
 /**
  * Uses z-tables as found on https://en.wikipedia.org/wiki/Standard_normal_table
  *

@@ -1,7 +1,6 @@
 package org.hisp.dhis.lib.expression.spi
 
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.lib.expression.ast.AggregationType
 
 data class QueryModifiers (
     /**

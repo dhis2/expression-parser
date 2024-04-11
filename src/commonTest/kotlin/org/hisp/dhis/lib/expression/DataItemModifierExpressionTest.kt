@@ -1,12 +1,8 @@
 package org.hisp.dhis.lib.expression
 
 import kotlinx.datetime.LocalDate
-import org.hisp.dhis.lib.expression.ast.AggregationType
-import org.hisp.dhis.lib.expression.spi.DataItem
-import org.hisp.dhis.lib.expression.spi.DataItemType
-import org.hisp.dhis.lib.expression.spi.ID
-import org.hisp.dhis.lib.expression.spi.QueryModifiers
-import org.hisp.dhis.lib.expression.Expression.Mode
+import org.hisp.dhis.lib.expression.spi.AggregationType
+import org.hisp.dhis.lib.expression.spi.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -24,56 +20,56 @@ internal class DataItemModifierExpressionTest {
     fun testPeriodAggregation() {
         val expected: QueryModifiers = QueryModifiers().copy(periodAggregation = true)
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("avg(#{u1234567890})", Mode.PREDICTOR_GENERATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("avg(#{u1234567890})", ExpressionMode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
     fun testAggregationType() {
         val expected: QueryModifiers = QueryModifiers().copy(aggregationType = AggregationType.sum)
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.aggregationType(sum)", Mode.INDICATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("#{u1234567890}.aggregationType(sum)", ExpressionMode.INDICATOR_EXPRESSION))
     }
 
     @Test
     fun testMaxDate() {
         val expected: QueryModifiers = QueryModifiers().copy(maxDate = LocalDate.parse("1980-11-11"))
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.maxDate(1980-11-11)", Mode.PREDICTOR_GENERATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("#{u1234567890}.maxDate(1980-11-11)", ExpressionMode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
     fun testMinDate() {
         val expected: QueryModifiers = QueryModifiers().copy(minDate = LocalDate.parse("1980-11-11"))
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.minDate(1980-11-11)", Mode.PREDICTOR_GENERATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("#{u1234567890}.minDate(1980-11-11)", ExpressionMode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
     fun testPeriodOffset() {
         val expected: QueryModifiers = QueryModifiers().copy(periodOffset = 42)
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.periodOffset(42)", Mode.INDICATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("#{u1234567890}.periodOffset(42)", ExpressionMode.INDICATOR_EXPRESSION))
     }
 
     @Test
     fun testStageOffset() {
         val expected: QueryModifiers = QueryModifiers().copy(stageOffset = 42)
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.stageOffset(42)", Mode.PROGRAM_INDICATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("#{u1234567890}.stageOffset(42)", ExpressionMode.PROGRAM_INDICATOR_EXPRESSION))
     }
 
     @Test
     fun testYearToDate() {
         val expected: QueryModifiers = QueryModifiers().copy( yearToDate = true)
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.yearToDate()", Mode.INDICATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("#{u1234567890}.yearToDate()", ExpressionMode.INDICATOR_EXPRESSION))
     }
 
     /*
@@ -83,16 +79,16 @@ internal class DataItemModifierExpressionTest {
     fun testMultipleModifiersDirectlyApplied() {
         val expected: QueryModifiers = QueryModifiers().copy(yearToDate = true, periodOffset = 42)
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("#{u1234567890}.yearToDate().periodOffset(42)", Mode.INDICATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("#{u1234567890}.yearToDate().periodOffset(42)", ExpressionMode.INDICATOR_EXPRESSION))
     }
 
     @Test
     fun testMultipleModifiersIndirectlyApplied() {
         val expected: QueryModifiers = QueryModifiers().copy(yearToDate = true, periodOffset = 42)
         assertEquals(
-            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected)),
-            evaluate("(#{u1234567890}).yearToDate().periodOffset(42)", Mode.INDICATOR_EXPRESSION))
+            setOf(DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected)),
+            evaluate("(#{u1234567890}).yearToDate().periodOffset(42)", ExpressionMode.INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -100,11 +96,11 @@ internal class DataItemModifierExpressionTest {
         val expected: QueryModifiers = QueryModifiers().copy(yearToDate = true, periodOffset = 42)
         assertEquals(
             setOf(
-                DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected),
-                DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "v1234567890"), expected)),
+                DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected),
+                DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "v1234567890"), expected)),
             evaluate(
                 "(#{u1234567890} + #{v1234567890}).yearToDate().periodOffset(42)",
-                Mode.INDICATOR_EXPRESSION))
+                ExpressionMode.INDICATOR_EXPRESSION))
     }
 
     @Test
@@ -115,11 +111,11 @@ internal class DataItemModifierExpressionTest {
             periodAggregation = true)
         assertEquals(
             setOf(
-                DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected),
-                DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "v1234567890"), expected)),
+                DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected),
+                DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "v1234567890"), expected)),
             evaluate(
                 "avg(#{u1234567890} + #{v1234567890}).minDate(1980-11-11).maxDate(2000-11-11)",
-                Mode.PREDICTOR_GENERATOR_EXPRESSION))
+                ExpressionMode.PREDICTOR_GENERATOR_EXPRESSION))
     }
 
     @Test
@@ -128,15 +124,15 @@ internal class DataItemModifierExpressionTest {
         val expected2: QueryModifiers = QueryModifiers().copy(periodOffset = 42)
         assertEquals(
             setOf(
-                DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "u1234567890"), expected1),
-                DataItem(DataItemType.DATA_ELEMENT, ID(ID.Type.DataElementUID, "v1234567890"), expected2)),
+                DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "u1234567890"), expected1),
+                DataItem(DataItemType.DATA_ELEMENT, ID(IDType.DataElementUID, "v1234567890"), expected2)),
             evaluate(
                 "(#{u1234567890}.yearToDate() + #{v1234567890}).periodOffset(42)",
-                Mode.INDICATOR_EXPRESSION))
+                ExpressionMode.INDICATOR_EXPRESSION))
     }
 
     companion object {
-        private fun evaluate(expression: String, mode: Expression.Mode): Set<DataItem> {
+        private fun evaluate(expression: String, mode: ExpressionMode): Set<DataItem> {
             val expr = Expression(expression, mode)
             return expr.collectDataItems()
         }
