@@ -1,5 +1,8 @@
-package org.hisp.dhis.lib.expression.ast
+package org.hisp.dhis.lib.expression.spi
 
+import kotlin.js.JsExport
+
+@JsExport
 enum class AggregationType {
     sum,
     avg,

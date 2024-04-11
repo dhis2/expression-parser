@@ -2,7 +2,6 @@ package org.hisp.dhis.lib.expression.js
 
 import js.collections.JsMap
 
-@OptIn(ExperimentalJsExport::class)
 @JsExport
 data class ExpressionDataJs(
     val programRuleVariableValues: JsMap<String, VariableValueJs> = JsMap(),

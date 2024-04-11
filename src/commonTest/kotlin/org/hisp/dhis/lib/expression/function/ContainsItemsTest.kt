@@ -1,7 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.Expression
-import org.hisp.dhis.lib.expression.Expression.Mode
+import org.hisp.dhis.lib.expression.ExpressionMode
 import kotlin.test.*
 
 /**
@@ -35,6 +35,6 @@ internal class ContainsItemsTest {
     }
 
     private fun evaluate(expression: String): Boolean {
-        return Expression(expression, Mode.INDICATOR_EXPRESSION).evaluate() as Boolean
+        return Expression(expression, ExpressionMode.INDICATOR_EXPRESSION).evaluate() as Boolean
     }
 }

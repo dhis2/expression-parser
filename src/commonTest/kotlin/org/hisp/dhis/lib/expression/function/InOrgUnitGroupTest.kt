@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.Expression
+import org.hisp.dhis.lib.expression.ExpressionMode
 import org.hisp.dhis.lib.expression.spi.ExpressionData
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
@@ -50,6 +51,6 @@ internal class InOrgUnitGroupTest {
         val data: ExpressionData = ExpressionData().copy(
             supplementaryValues = supplementaryValues,
             programRuleVariableValues = programRuleVariableValues)
-        return Expression(expression, Expression.Mode.RULE_ENGINE_ACTION).evaluate( { _: String -> null }, data) as Boolean
+        return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).evaluate( { _: String -> null }, data) as Boolean
     }
 }

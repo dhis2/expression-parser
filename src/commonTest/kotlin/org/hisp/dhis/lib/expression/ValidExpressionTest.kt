@@ -2,7 +2,6 @@ package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import org.hisp.dhis.lib.expression.spi.ParseException
-import org.hisp.dhis.lib.expression.Expression.Mode
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -84,6 +83,6 @@ internal class ValidExpressionTest {
     }
 
     private fun evaluate(expression: String): Any? {
-        return Expression(expression, Mode.PROGRAM_INDICATOR_EXPRESSION).evaluate()
+        return Expression(expression, ExpressionMode.PROGRAM_INDICATOR_EXPRESSION).evaluate()
     }
 }
