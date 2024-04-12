@@ -15,7 +15,7 @@ val dokkaHtml = tasks.findByName("dokkaHtml")!!
 val dokkaHtmlJar = tasks.register<Jar>("dokkaHtmlJar") {
     dependsOn(dokkaHtml)
     from(dokkaHtml.outputs)
-    archiveClassifier.set("docs")
+    archiveClassifier.set("javadoc")
 }
 
 publishing {
