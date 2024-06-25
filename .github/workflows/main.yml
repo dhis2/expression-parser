@@ -10,7 +10,7 @@ on:
 jobs:
   unit-test:
     name: Run tests
-    if: github.event.pull_request.merged == true
+    if: ${{ github.event.pull_request.merged == true }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +28,7 @@ jobs:
 
   publish:
     name: Publish
-    if: github.event.pull_request.merged == true && !contains(github.event.pull_request.title, '[skip publish]')
+    if: ${{ github.event.pull_request.merged == true && !contains(github.event.pull_request.title, '[skip publish]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

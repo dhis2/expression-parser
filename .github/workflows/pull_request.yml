@@ -23,7 +23,7 @@ jobs:
 
   publish:
     name: Publish
-    if: !contains(github.event.pull_request.title, '[skip publish]')
+    if: ${{ !contains(github.event.pull_request.title, '[skip publish]') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
