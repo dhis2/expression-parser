@@ -23,6 +23,7 @@ jobs:
 
   publish:
     name: Publish
+    needs: unit-test
     if: ${{ !contains(github.event.pull_request.title, '[skip publish]') }}
     runs-on: ubuntu-latest
     steps:
