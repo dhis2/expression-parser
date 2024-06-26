@@ -1,5 +1,3 @@
-import com.mooltiverse.oss.nyx.gradle.CoreTask
-
 plugins {
     kotlin("multiplatform")
     id("maven-publish-conventions")
@@ -10,22 +8,12 @@ repositories {
     mavenCentral()
 }
 
+version = "1.1.0-SNAPSHOT"
 group = "org.hisp.dhis.lib.expression"
 
-if (project.hasProperty("betaToSnapshot")) {
-    val mainVersion = (version as String).split("-beta")[0]
-    version = "$mainVersion-SNAPSHOT"
-}
-
-tasks.register("checkIsNewVersion") {
-    val state = project.properties[CoreTask.NYX_STATE_PROPERTY] as com.mooltiverse.oss.nyx.state.State
-
-    if (state.newVersion) {
-        println("This build generates a new version ${state.version}")
-    } else {
-        println("This build does not generate a new version ${state.version}")
-        throw StopExecutionException("There is no new version")
-    }
+if (project.hasProperty("removeSnapshotSuffix")) {
+    val mainVersion = (version as String).split("-SNAPSHOT")[0]
+    version = mainVersion
 }
 
 kotlin {
@@ -60,7 +48,7 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    
+
     sourceSets {
         all {
             languageSettings.apply {
