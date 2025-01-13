@@ -48,14 +48,14 @@ object ExpressionGrammar {
     private val YEAR_TO_DATE = mod(DataItemModifier.yearToDate)
     private val SUB_EXPRESSION = fn(NamedFunction.subExpression, expr)
 
-    private val CommonBooleanFunctions = listOf(
+    private val CommonBooleanFunctions = listOf( // Common functions returning boolean
         fn(NamedFunction.contains, expr, expr.plus()),
         fn(NamedFunction.containsItems, expr, expr.plus()),
         fn(NamedFunction.isNotNull, expr),
         fn(NamedFunction.isNull, expr)
     )
 
-    private val CommonNumberFunctions = listOf(
+    private val CommonNumberFunctions = listOf( // Common functions returning Number
         fn(NamedFunction.greatest, expr.plus()),
         fn(NamedFunction.least, expr.plus()),
         fn(NamedFunction.log, expr, expr.maybe()),
@@ -64,7 +64,7 @@ object ExpressionGrammar {
         fn(NamedFunction.normDistDen, expr, expr.maybe(), expr.maybe())
     )
 
-    private val CommonSameFunctions = listOf(
+    private val CommonSameFunctions = listOf( // Common functions returning same type
         fn(NamedFunction.firstNonNull, expr.plus()),
         fn(NamedFunction.ifThenElse, expr, expr, expr),
         fn(NamedFunction.removeZeros, expr)
