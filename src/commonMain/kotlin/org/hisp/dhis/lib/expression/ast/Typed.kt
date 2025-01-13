@@ -14,14 +14,15 @@ fun interface Typed {
     companion object {
         fun toNumberTypeCoercion(value: Any?): Double? {
             if (value == null) return null
-            if (value is VariableValue) return toNumberTypeCoercion(value.valueOrDefault())
-            return if (value is Boolean) if (value == true) 1.0 else 0.0
-            else (value as? Number)?.toDouble() ?: value.toString().toDouble()
+            if (value is VariableValue) return toNumberTypeCoercion(toMixedTypeTypeCoercion(value))
+            if (value is Boolean) return if (value == true) 1.0 else 0.0
+            if (value is LocalDate) return value.toEpochDays().toDouble()
+            return (value as? Number)?.toDouble() ?: value.toString().toDouble()
         }
 
         fun toBooleanTypeCoercion(value: Any?): Boolean? {
             if (value == null) return null
-            if (value is VariableValue) return toBooleanTypeCoercion(value.valueOrDefault())
+            if (value is VariableValue) return toBooleanTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is Boolean) return value
             if (value is Number) {
                 require(isNonFractionValue(value)) { "Could not coerce Double '$value' to Boolean" }
@@ -32,7 +33,7 @@ fun interface Typed {
 
         fun toDateTypeCoercion(value: Any?): LocalDate? {
             if (value == null) return null
-            if (value is VariableValue) return toDateTypeCoercion(value.valueOrDefault())
+            if (value is VariableValue) return toDateTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is LocalDate) return value
             if (value is String) return LocalDate.parse(value)
             if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -41,7 +42,7 @@ fun interface Typed {
 
         fun toStringTypeCoercion(value: Any?): String? {
             if (value == null) return null
-            if (value is VariableValue) return toStringTypeCoercion(value.valueOrDefault());
+            if (value is VariableValue) return toStringTypeCoercion(toMixedTypeTypeCoercion(value));
             if (value is Number) return  if (isNonFractionValue(value)) value.toInt().toString() else value.toString();
             return value.toString()
         }
