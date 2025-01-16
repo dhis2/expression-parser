@@ -22,8 +22,8 @@ internal class Calculator(
         return when (operator.getValue()) {
             BinaryOperator.EQ -> evalBinaryLogicOperator(BinaryOperator::equal, operator, this::evalToMixed)
             BinaryOperator.NEQ -> evalBinaryLogicOperator(BinaryOperator::notEqual, operator, this::evalToMixed)
-            BinaryOperator.AND -> evalBinaryOperator(BinaryOperator::and, operator, this::evalToBoolean)
-            BinaryOperator.OR -> evalBinaryOperator(BinaryOperator::or, operator, this::evalToBoolean)
+            BinaryOperator.AND -> evalBinaryLogicOperatorShortCircuit(BinaryOperator::and, operator, this::evalToBoolean, false)
+            BinaryOperator.OR -> evalBinaryLogicOperatorShortCircuit(BinaryOperator::or, operator, this::evalToBoolean, true)
             BinaryOperator.LT -> evalBinaryLogicOperator(BinaryOperator::lessThan, operator, this::evalToMixed)
             BinaryOperator.LE -> evalBinaryLogicOperator(BinaryOperator::lessThanOrEqual, operator, this::evalToMixed)
             BinaryOperator.GT -> evalBinaryLogicOperator(BinaryOperator::greaterThan, operator, this::evalToMixed)
@@ -335,6 +335,16 @@ internal class Calculator(
             val left = operator.child(0)
             val right = operator.child(1)
             val lVal = eval(left)
+            val rVal = eval(right)
+            return op(lVal, rVal)
+        }
+
+        private fun evalBinaryLogicOperatorShortCircuit(op: (Boolean?, Boolean?) -> Boolean?, operator: Node<*>,
+                                                        eval: (Node<*>) -> Boolean?, shortCircuitOn: Boolean): Boolean? {
+            val left = operator.child(0)
+            val right = operator.child(1)
+            val lVal = eval(left)
+            if (lVal != null && lVal == shortCircuitOn) return shortCircuitOn;
             val rVal = eval(right)
             return op(lVal, rVal)
         }
