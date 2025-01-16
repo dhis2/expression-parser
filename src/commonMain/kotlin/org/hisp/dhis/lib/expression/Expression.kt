@@ -48,8 +48,15 @@ class Expression(
      *
      * @see .evaluate
      */
-    fun evaluate(): Any? {
-        return evaluate({ _: String -> null }, ExpressionData())
+    internal fun evaluate(): Any? {
+        return evaluate(ExpressionData())
+    }
+
+    /**
+     * For testing only.
+     */
+    internal fun evaluate(data: ExpressionData): Any? {
+        return evaluate({ _: String -> null }, data)
     }
 
     fun evaluate(unsupported: (String) -> Any?, data: ExpressionData): Any? {
