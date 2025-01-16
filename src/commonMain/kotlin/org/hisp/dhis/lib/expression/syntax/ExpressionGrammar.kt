@@ -103,7 +103,9 @@ object ExpressionGrammar {
         fn(NamedFunction.d2_weeksBetween, expr, expr),
         fn(NamedFunction.d2_yearsBetween, expr, expr),
         fn(NamedFunction.d2_zing, expr),
-        fn(NamedFunction.d2_zpvc, expr.plus())
+        fn(NamedFunction.d2_zpvc, expr.plus()),
+        fn(NamedFunction.d2_contains, expr, expr.plus()),
+        fn(NamedFunction.d2_containsItems, expr, expr.plus())
     )
     private val RuleEngineD2Functions = listOf(
         fn(NamedFunction.d2_addDays, expr, expr),
@@ -189,7 +191,6 @@ object ExpressionGrammar {
         listOf(HASH_BRACE, A_BRACE, C_BRACE, V_BRACE, STAGE_OFFSET))
 
     val RuleEngineMode = concat(
-        CommonBooleanFunctions,
         CommonConstants,
         CommonD2Functions,
         RuleEngineD2Functions,

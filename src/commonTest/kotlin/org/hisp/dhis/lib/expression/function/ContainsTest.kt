@@ -29,6 +29,14 @@ internal class ContainsTest {
     }
 
     @Test
+    fun testD2Contains() {
+        assertTrue(Expression("d2:contains('MOLD_ALLERGY,LATEX_ALLERGY', 'MOLD_ALLERGY')", ExpressionMode.RULE_ENGINE_CONDITION).evaluate() as Boolean)
+        assertTrue(Expression("d2:contains('abcdef', 'abcdef')", ExpressionMode.RULE_ENGINE_CONDITION).evaluate() as Boolean)
+
+        assertFalse(Expression("d2:contains('ABC','123', 'XYZ')", ExpressionMode.RULE_ENGINE_CONDITION).evaluate() as Boolean)
+    }
+
+    @Test
     fun testContains_OneArg() {
         val ex = assertFailsWith(IllegalArgumentException::class) { evaluate("contains('abcdef')") }
         assertEquals("allOf parameter of contains contain at least one value", ex.message)

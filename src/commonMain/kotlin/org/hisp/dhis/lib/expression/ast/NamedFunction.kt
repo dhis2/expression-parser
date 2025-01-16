@@ -79,7 +79,9 @@ enum class NamedFunction(
     d2_zpvc("d2:zpvc", ValueType.NUMBER, true, ValueType.NUMBER),
     d2_zScoreHFA("d2:zScoreHFA", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING),
     d2_zScoreWFA("d2:zScoreWFA", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING),
-    d2_zScoreWFH("d2:zScoreWFH", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING);
+    d2_zScoreWFH("d2:zScoreWFH", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.STRING),
+    d2_contains("d2:contains", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
+    d2_containsItems("d2:containsItems", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING);
 
     val parameterTypes: List<ValueType>
 
