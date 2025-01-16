@@ -48,21 +48,28 @@ object ExpressionGrammar {
     private val YEAR_TO_DATE = mod(DataItemModifier.yearToDate)
     private val SUB_EXPRESSION = fn(NamedFunction.subExpression, expr)
 
-    private val CommonFunctions = listOf( // (alphabetical)
+    private val CommonBooleanFunctions = listOf( // Common functions returning boolean
         fn(NamedFunction.contains, expr, expr.plus()),
         fn(NamedFunction.containsItems, expr, expr.plus()),
-        fn(NamedFunction.firstNonNull, expr.plus()),
-        fn(NamedFunction.greatest, expr.plus()),
-        fn(NamedFunction.ifThenElse, expr, expr, expr),
         fn(NamedFunction.isNotNull, expr),
-        fn(NamedFunction.isNull, expr),
+        fn(NamedFunction.isNull, expr)
+    )
+
+    private val CommonNumberFunctions = listOf( // Common functions returning Number
+        fn(NamedFunction.greatest, expr.plus()),
         fn(NamedFunction.least, expr.plus()),
         fn(NamedFunction.log, expr, expr.maybe()),
         fn(NamedFunction.log10, expr),
-        fn(NamedFunction.removeZeros, expr),
         fn(NamedFunction.normDistCum, expr, expr.maybe(), expr.maybe()),
-        fn(NamedFunction.normDistDen, expr, expr.maybe(), expr.maybe()),
+        fn(NamedFunction.normDistDen, expr, expr.maybe(), expr.maybe())
     )
+
+    private val CommonSameFunctions = listOf( // Common functions returning same type
+        fn(NamedFunction.firstNonNull, expr.plus()),
+        fn(NamedFunction.ifThenElse, expr, expr, expr),
+        fn(NamedFunction.removeZeros, expr)
+    )
+
     private val ValidationRuleFunctions = listOf(
         fn(NamedFunction.orgUnit_ancestor, UID.plus()),
         fn(NamedFunction.orgUnit_dataSet, UID.plus()),
@@ -146,7 +153,9 @@ object ExpressionGrammar {
     Modes
     */
     val ValidationRuleExpressionMode = concat(
-        CommonFunctions,
+        CommonBooleanFunctions,
+        CommonNumberFunctions,
+        CommonSameFunctions,
         CommonDataItems,
         CommonConstants,
         ValidationRuleFunctions)
@@ -158,17 +167,21 @@ object ExpressionGrammar {
         listOf(MIN_DATE, MAX_DATE))
 
     val IndicatorExpressionMode = concat(
-        CommonFunctions,
+        CommonBooleanFunctions,
+        CommonNumberFunctions,
+        CommonSameFunctions,
         CommonDataItems,
         CommonConstants,
         listOf(N_BRACE, SUB_EXPRESSION, AGGREGATION_TYPE, MIN_DATE, MAX_DATE, PERIOD_OFFSET, YEAR_TO_DATE))
 
     val PredictorSkipTestMode = PredictorExpressionMode
 
-    val SimpleTestMode = concat(CommonFunctions, CommonConstants, listOf(C_BRACE))
+    val SimpleTestMode = concat(CommonBooleanFunctions, CommonNumberFunctions, CommonSameFunctions, CommonConstants, listOf(C_BRACE))
 
     val ProgramIndicatorExpressionMode = concat(
-        CommonFunctions,
+        CommonBooleanFunctions,
+        CommonNumberFunctions,
+        CommonSameFunctions,
         CommonConstants,
         CommonD2Functions,
         CommonAggregationFunctions,
@@ -176,6 +189,7 @@ object ExpressionGrammar {
         listOf(HASH_BRACE, A_BRACE, C_BRACE, V_BRACE, STAGE_OFFSET))
 
     val RuleEngineMode = concat(
+        CommonBooleanFunctions,
         CommonConstants,
         CommonD2Functions,
         RuleEngineD2Functions,
