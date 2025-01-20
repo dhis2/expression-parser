@@ -92,6 +92,8 @@ object ExpressionGrammar {
         fn(NamedFunction.variance, expr)
     )
     private val CommonD2Functions = listOf( // (alphabetical)
+        fn(NamedFunction.d2_contains, expr, expr.plus()),
+        fn(NamedFunction.d2_containsItems, expr, expr.plus()),
         fn(NamedFunction.d2_count, dataItem),
         fn(NamedFunction.d2_countIfValue, dataItem, expr),
         fn(NamedFunction.d2_daysBetween, expr, expr),
@@ -189,7 +191,6 @@ object ExpressionGrammar {
         listOf(HASH_BRACE, A_BRACE, C_BRACE, V_BRACE, STAGE_OFFSET))
 
     val RuleEngineMode = concat(
-        CommonBooleanFunctions,
         CommonConstants,
         CommonD2Functions,
         RuleEngineD2Functions,

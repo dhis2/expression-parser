@@ -48,6 +48,8 @@ enum class NamedFunction(
     d2_ceil("d2:ceil", ValueType.NUMBER, ValueType.NUMBER),
     d2_concatenate("d2:concatenate", ValueType.STRING, true, ValueType.STRING),
     d2_condition("d2:condition", ValueType.SAME, ValueType.BOOLEAN, ValueType.SAME, ValueType.SAME),
+    d2_contains("d2:contains", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
+    d2_containsItems("d2:containsItems", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
     d2_count("d2:count", ValueType.NUMBER, ValueType.MIXED),
     d2_countIfCondition("d2:countIfCondition", ValueType.NUMBER, ValueType.BOOLEAN, ValueType.MIXED),
     d2_countIfValue("d2:countIfValue", ValueType.NUMBER, ValueType.MIXED, ValueType.MIXED),
