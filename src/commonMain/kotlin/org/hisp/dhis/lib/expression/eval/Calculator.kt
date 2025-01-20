@@ -76,6 +76,8 @@ internal class Calculator(
                 evalToNumber(fn.child(1)))
             NamedFunction.d2_ceil -> functions.d2_ceil(evalToNumber(fn.child(0)))
             NamedFunction.d2_concatenate -> functions.d2_concatenate(evalToStrings(fn.children()))
+            NamedFunction.d2_contains -> functions.contains(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
+            NamedFunction.d2_containsItems -> functions.containsItems(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
             NamedFunction.d2_count -> functions.d2_count(evalToVar(fn.child(0)))
             NamedFunction.d2_countIfValue -> functions.d2_countIfValue(
                 evalToVar(fn.child(0)),
@@ -139,8 +141,6 @@ internal class Calculator(
                 evalToDate(fn.child(1)))
             NamedFunction.d2_zing -> functions.d2_zing(evalToNumber(fn.child(0)))
             NamedFunction.d2_zpvc -> functions.d2_zpvc(evalToNumbers(fn.children()))
-            NamedFunction.d2_contains -> functions.contains(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
-            NamedFunction.d2_containsItems -> functions.containsItems(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
             NamedFunction.d2_zScoreHFA -> functions.d2_zScoreHFA(
                 evalToNumber(fn.child(0)),
                 evalToNumber(fn.child(1)),
