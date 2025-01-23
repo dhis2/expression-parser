@@ -17,8 +17,8 @@ if (project.hasProperty("removeSnapshotSuffix")) {
 }
 
 kotlin {
+    jvmToolchain(17)
     jvm {
-        jvmToolchain(17)
         withJava()
         testRuns.named("test") {
             executionTask.configure {
