@@ -27,6 +27,7 @@ hs_err_pid*
 
 .idea/
 .gradle/
+.kotlin/
 target/
 build/
 kotlin-js-store/

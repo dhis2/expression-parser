@@ -57,8 +57,8 @@ kotlin {
         }
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.1")
-                implementation("com.ionspin.kotlin:bignum:0.3.8")
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.ionspin.bignum)
             }
         }
         val commonTest by getting {
@@ -70,7 +70,7 @@ kotlin {
         val jvmTest by getting
         val jsMain by getting {
             dependencies {
-                api("org.jetbrains.kotlin-wrappers:kotlin-js:1.0.0-pre.722")
+                api(libs.kotlinWrappers.js)
             }
         }
         val jsTest by getting
