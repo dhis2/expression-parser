@@ -301,15 +301,11 @@ enum class GS1Elements(val element: String) {
 
         fun getApplicationIdentifier(gs1Group: String): String {
             for (gs1Elements in entries) {
-                var ai = gs1Elements.element
-                if (ai.endsWith("*")) {
-                    ai = ai.substring(0, ai.length - 1)
-                }
-                if (gs1Group.startsWith(ai) && ai.endsWith("*")) {
-                    return gs1Group.substring(0, ai.length + 1)
-                }
-                else if (gs1Group.startsWith(ai)) {
-                    return ai
+                val name = gs1Elements.element
+                if (name.endsWith("*") && gs1Group.startsWith(name.dropLast(1))) {
+                    return gs1Group.take(name.length);
+                } else if (gs1Group.startsWith(name)) {
+                    return name
                 }
             }
             throw IllegalArgumentException("Could not retrieve ai from value")
