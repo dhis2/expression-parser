@@ -302,7 +302,9 @@ enum class GS1Elements(val element: String) {
         fun getApplicationIdentifier(gs1Group: String): String {
             for (gs1Elements in entries) {
                 val name = gs1Elements.element
-                if (name.endsWith("*") && gs1Group.startsWith(name.dropLast(1))) {
+                if (name.endsWith("*")
+                    && gs1Group.length >= name.length
+                    && gs1Group.startsWith(name.dropLast(1))) {
                     return gs1Group.take(name.length);
                 } else if (gs1Group.startsWith(name)) {
                     return name

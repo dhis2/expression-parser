@@ -2,6 +2,7 @@ package org.hisp.dhis.lib.expression.math
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 internal class GS1ElementsTest {
 
@@ -30,8 +31,8 @@ internal class GS1ElementsTest {
     @Test
     fun getApplicationIdentifierUsesActualCharacterForStar() {
         assertEquals("250", GS1Elements.getApplicationIdentifier("250"))
-        assertEquals("314", GS1Elements.getApplicationIdentifier("314"))
         assertEquals("3144", GS1Elements.getApplicationIdentifier("3144"))
         assertEquals("3144", GS1Elements.getApplicationIdentifier("31445"))
+        assertFailsWith(IllegalArgumentException::class) { GS1Elements.getApplicationIdentifier("314") }
     }
 }
