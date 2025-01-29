@@ -8,7 +8,7 @@ repositories {
     mavenCentral()
 }
 
-version = "1.1.5-SNAPSHOT"
+version = "1.1.6-SNAPSHOT"
 group = "org.hisp.dhis.lib.expression"
 
 if (project.hasProperty("removeSnapshotSuffix")) {
@@ -17,8 +17,8 @@ if (project.hasProperty("removeSnapshotSuffix")) {
 }
 
 kotlin {
+    jvmToolchain(17)
     jvm {
-        jvmToolchain(17)
         withJava()
         testRuns.named("test") {
             executionTask.configure {

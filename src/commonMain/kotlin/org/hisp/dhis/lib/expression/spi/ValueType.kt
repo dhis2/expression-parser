@@ -84,7 +84,7 @@ enum class ValueType(internal val default: Any) {
     }
 
     companion object {
-        fun allSame(types: List<ValueType>): Boolean {
+        fun allSame(types: Array<ValueType>): Boolean {
             return types.isEmpty() || types.filter { it != MIXED } .all {it == types[0]}
         }
     }
