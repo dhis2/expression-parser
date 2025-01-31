@@ -1,0 +1,1548 @@
+public final class org/hisp/dhis/lib/expression/Expression {
+	public fun <init> (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ExpressionMode;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ExpressionMode;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun collectDataItemForRegenerate ()Ljava/util/Set;
+	public final fun collectDataItems ()Ljava/util/Set;
+	public final fun collectProgramRuleVariableNames ()Ljava/util/Set;
+	public final fun collectProgramVariables ()Ljava/util/Set;
+	public final fun collectProgramVariablesNames ()Ljava/util/Set;
+	public final fun collectUIDs ()Ljava/util/Set;
+	public final fun describe (Ljava/util/Map;)Ljava/lang/String;
+	public final fun evaluate (Lkotlin/jvm/functions/Function1;Lorg/hisp/dhis/lib/expression/spi/ExpressionData;)Ljava/lang/Object;
+	public final fun generateSQL (Lkotlin/jvm/functions/Function1;Ljava/util/Map;)Ljava/lang/String;
+	public final fun normalise ()Ljava/lang/String;
+	public final fun regenerate (Ljava/util/Map;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public final fun validate (Ljava/util/Map;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ExpressionMode : java/lang/Enum {
+	public static final field INDICATOR_EXPRESSION Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static final field PREDICTOR_GENERATOR_EXPRESSION Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static final field PREDICTOR_SKIP_TEST Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static final field PROGRAM_INDICATOR_EXPRESSION Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static final field RULE_ENGINE_ACTION Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static final field RULE_ENGINE_CONDITION Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static final field VALIDATION_RULE_EXPRESSION Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static final field VALIDATION_RULE_RESULT_TEST Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ExpressionMode;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ExpressionMode;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/BinaryOperator : java/lang/Enum, org/hisp/dhis/lib/expression/ast/Typed {
+	public static final field ADD Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field AND Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/BinaryOperator$Companion;
+	public static final field DIV Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field EQ Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field EXP Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field GE Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field GT Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field LE Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field LT Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field MOD Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field MUL Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field NEQ Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field OR Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static final field SUB Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getOperandsType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public final fun getSymbol ()Ljava/lang/String;
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public final fun isArithmetic ()Z
+	public final fun isComparison ()Z
+	public final fun isEquality ()Z
+	public final fun isLogic ()Z
+	public final fun isNumeric ()Z
+	public final fun isNumericComparison ()Z
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/BinaryOperator$Companion {
+	public final fun add (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+	public final fun and (Ljava/lang/Boolean;Ljava/lang/Boolean;)Ljava/lang/Boolean;
+	public final fun divide (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+	public final fun equal (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun exp (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+	public final fun fromSymbol (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/BinaryOperator;
+	public final fun greaterThan (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun greaterThanOrEqual (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun lessThan (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun lessThanOrEqual (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun modulo (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+	public final fun multiply (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+	public final fun notEqual (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun or (Ljava/lang/Boolean;Ljava/lang/Boolean;)Ljava/lang/Boolean;
+	public final fun subtract (Ljava/lang/Number;Ljava/lang/Number;)Ljava/lang/Number;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/DataItemModifier : java/lang/Enum, org/hisp/dhis/lib/expression/ast/Typed {
+	public static final field aggregationType Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static final field maxDate Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static final field minDate Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static final field periodAggregation Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static final field periodOffset Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static final field stageOffset Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static final field subExpression Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static final field yearToDate Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getParameterTypes ()Ljava/util/List;
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/DataItemModifier;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/NamedFunction : java/lang/Enum, org/hisp/dhis/lib/expression/ast/Typed {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/NamedFunction$Companion;
+	public static final field avg Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field contains Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field containsItems Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field count Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_addDays Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_ceil Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_concatenate Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_condition Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_contains Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_containsItems Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_count Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_countIfCondition Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_countIfValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_countIfZeroPos Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_daysBetween Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_extractDataMatrixValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_floor Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_hasUserRole Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_hasValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_inOrgUnitGroup Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_lastEventDate Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_left Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_length Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_maxValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_minValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_minutesBetween Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_modulus Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_monthsBetween Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_oizp Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_relationshipCount Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_right Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_round Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_split Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_substring Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_validatePattern Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_weeksBetween Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_yearsBetween Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_zScoreHFA Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_zScoreWFA Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_zScoreWFH Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_zing Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_zpvc Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field firstNonNull Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field greatest Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field ifThenElse Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field isNotNull Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field isNull Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field least Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field log Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field log10 Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field max Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field median Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field min Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field normDistCum Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field normDistDen Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field orgUnit_ancestor Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field orgUnit_dataSet Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field orgUnit_group Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field orgUnit_program Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field percentileCont Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field removeZeros Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field stddev Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field stddevPop Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field stddevSamp Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field subExpression Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field sum Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field variance Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getParameterTypes ()Ljava/util/List;
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public final fun isAggregating ()Z
+	public final fun isRequiringAggregationData ()Z
+	public final fun isVarargs ()Z
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/NamedFunction$Companion {
+	public final fun fromName (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/NamedValue : java/lang/Enum {
+	public static final field days Lorg/hisp/dhis/lib/expression/ast/NamedValue;
+	public static final field periodInYear Lorg/hisp/dhis/lib/expression/ast/NamedValue;
+	public static final field yearlyPeriodCount Lorg/hisp/dhis/lib/expression/ast/NamedValue;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/NamedValue;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/NamedValue;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/ast/Node : org/hisp/dhis/lib/expression/ast/NodeAnnotations, org/hisp/dhis/lib/expression/ast/Typed {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/Node$Companion;
+	public abstract fun addChild (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public abstract fun addModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public abstract fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public abstract fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun child (I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public abstract fun childOrNull (I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public abstract fun children ()Lkotlin/sequences/Sequence;
+	public abstract fun eval (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public abstract fun getRawValue ()Ljava/lang/String;
+	public abstract fun getType ()Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public abstract fun getValue ()Ljava/lang/Object;
+	public abstract fun isAnnotated ()Z
+	public abstract fun isEmpty ()Z
+	public abstract fun map (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public abstract fun modifiers ()Ljava/lang/Iterable;
+	public abstract fun size ()I
+	public abstract fun toDataItem ()Lorg/hisp/dhis/lib/expression/spi/DataItem;
+	public abstract fun toIDs ()Lkotlin/sequences/Sequence;
+	public abstract fun toVariable ()Lorg/hisp/dhis/lib/expression/spi/Variable;
+	public abstract fun transform (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun visit (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun visit (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun walk (Lkotlin/jvm/functions/Function1;)V
+	public abstract fun walkChildren (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Node$Companion {
+	public final fun groupOperators (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Node$DefaultImpls {
+	public static fun addChild (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public static fun addModifier (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public static fun aggregate (Lorg/hisp/dhis/lib/expression/ast/Node;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static fun aggregate (Lorg/hisp/dhis/lib/expression/ast/Node;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static fun child (Lorg/hisp/dhis/lib/expression/ast/Node;I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public static fun childOrNull (Lorg/hisp/dhis/lib/expression/ast/Node;I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public static fun children (Lorg/hisp/dhis/lib/expression/ast/Node;)Lkotlin/sequences/Sequence;
+	public static fun eval (Lorg/hisp/dhis/lib/expression/ast/Node;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static fun isAnnotated (Lorg/hisp/dhis/lib/expression/ast/Node;)Z
+	public static fun isEmpty (Lorg/hisp/dhis/lib/expression/ast/Node;)Z
+	public static fun map (Lorg/hisp/dhis/lib/expression/ast/Node;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public static fun modifiers (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Iterable;
+	public static fun size (Lorg/hisp/dhis/lib/expression/ast/Node;)I
+	public static fun toDataItem (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/spi/DataItem;
+	public static fun toIDs (Lorg/hisp/dhis/lib/expression/ast/Node;)Lkotlin/sequences/Sequence;
+	public static fun toVariable (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/spi/Variable;
+	public static fun transform (Lorg/hisp/dhis/lib/expression/ast/Node;Lkotlin/jvm/functions/Function2;)V
+	public static fun visit (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/ast/NodeType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun visit$default (Lorg/hisp/dhis/lib/expression/ast/Node;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static fun walk (Lorg/hisp/dhis/lib/expression/ast/Node;Lkotlin/jvm/functions/Function1;)V
+	public static fun walkChildren (Lorg/hisp/dhis/lib/expression/ast/Node;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/ast/Node$Factory {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/Node$Factory$Companion;
+	public abstract fun create (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/Node;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Node$Factory$Companion {
+	public final fun new (Lkotlin/jvm/functions/Function2;)Lorg/hisp/dhis/lib/expression/ast/Node$Factory;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/ast/NodeAnnotations {
+	public abstract fun getEnd ()Lorg/hisp/dhis/lib/expression/ast/Position;
+	public abstract fun getStart ()Lorg/hisp/dhis/lib/expression/ast/Position;
+	public abstract fun getWhitespace ()Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;
+	public abstract fun setEnd (Lorg/hisp/dhis/lib/expression/ast/Position;)V
+	public abstract fun setStart (Lorg/hisp/dhis/lib/expression/ast/Position;)V
+	public abstract fun setWhitespace (Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun after (Ljava/lang/String;)Ljava/lang/String;
+	public final fun before (Ljava/lang/String;)Ljava/lang/String;
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAfter ()Ljava/lang/String;
+	public final fun getBefore ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace$Companion {
+	public final fun getDEFAULT ()Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;
+	public final fun of (Ljava/lang/String;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/NodeType : java/lang/Enum {
+	public static final field ARGUMENT Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field BINARY_OPERATOR Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field BOOLEAN Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field DATA_ITEM Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field DATE Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field FUNCTION Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field IDENTIFIER Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field INTEGER Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field MODIFIER Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field NAMED_VALUE Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field NULL Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field NUMBER Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field PAR Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field STRING Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field UID Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field UNARY_OPERATOR Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static final field VARIABLE Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isComplex ()Z
+	public final fun isConstant ()Z
+	public final fun isOperator ()Z
+	public final fun isSimple ()Z
+	public final fun isValueLiteral ()Z
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/NodeType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/ast/Nodes;
+	public final fun propagateModifiers (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public final fun supplySubExpressionSQL (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+}
+
+public abstract class org/hisp/dhis/lib/expression/ast/Nodes$AbstractNode : org/hisp/dhis/lib/expression/ast/Node {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/Nodes$AbstractNode$Companion;
+	public fun addChild (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun addModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun child (I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun childOrNull (I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun children ()Lkotlin/sequences/Sequence;
+	public fun eval (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun getEnd ()Lorg/hisp/dhis/lib/expression/ast/Position;
+	public fun getRawValue ()Ljava/lang/String;
+	public fun getStart ()Lorg/hisp/dhis/lib/expression/ast/Position;
+	public fun getType ()Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public fun getValue ()Ljava/lang/Object;
+	public fun getWhitespace ()Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;
+	public fun isAnnotated ()Z
+	public fun isEmpty ()Z
+	public fun map (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun modifiers ()Ljava/lang/Iterable;
+	public fun setEnd (Lorg/hisp/dhis/lib/expression/ast/Position;)V
+	public fun setStart (Lorg/hisp/dhis/lib/expression/ast/Position;)V
+	public fun setWhitespace (Lorg/hisp/dhis/lib/expression/ast/NodeAnnotations$Whitespace;)V
+	public fun size ()I
+	public fun toDataItem ()Lorg/hisp/dhis/lib/expression/spi/DataItem;
+	public fun toIDs ()Lkotlin/sequences/Sequence;
+	public fun toString ()Ljava/lang/String;
+	public fun toString (Ljava/lang/StringBuilder;Ljava/lang/String;)V
+	public fun toVariable ()Lorg/hisp/dhis/lib/expression/spi/Variable;
+	public fun transform (Lkotlin/jvm/functions/Function2;)V
+	public fun visit (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun visit (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lkotlin/jvm/functions/Function1;)V
+	public fun walk (Lkotlin/jvm/functions/Function1;)V
+	public fun walkChildren (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$AbstractNode$Companion {
+	public final fun rethrowAs (Ljava/lang/String;Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Lkotlin/jvm/functions/Function2;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$AggregationTypeNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$ArgumentNode : org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$BinaryOperatorNode : org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$BooleanNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public abstract class org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode : org/hisp/dhis/lib/expression/ast/Nodes$AbstractNode {
+	public fun addChild (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun child (I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun children ()Lkotlin/sequences/Sequence;
+	public fun size ()I
+	public fun toString (Ljava/lang/StringBuilder;Ljava/lang/String;)V
+	public fun transform (Lkotlin/jvm/functions/Function2;)V
+	public fun visit (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$ConstantNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$DataItemNode : org/hisp/dhis/lib/expression/ast/Nodes$ModifiedNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public fun toDataItem ()Lorg/hisp/dhis/lib/expression/spi/DataItem;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$DateNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$FunctionNode : org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$IntegerNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public abstract class org/hisp/dhis/lib/expression/ast/Nodes$ModifiedNode : org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode {
+	public fun addModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public final fun getQueryModifiers ()Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;
+	public fun modifiers ()Ljava/lang/Iterable;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$ModifierNode : org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$NamedValueNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$NumberNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$ParenthesesNode : org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$ProgramVariableNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$ReportingRateTypeNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public abstract class org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode : org/hisp/dhis/lib/expression/ast/Nodes$AbstractNode {
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$TagNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$TextNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$UnaryOperatorNode : org/hisp/dhis/lib/expression/ast/Nodes$ComplexNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$Utf8StringNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/Nodes$Utf8StringNode$Companion;
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$Utf8StringNode$Companion {
+	public final fun decode (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$VariableNode : org/hisp/dhis/lib/expression/ast/Nodes$ModifiedNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public final fun setActualValueType (Lorg/hisp/dhis/lib/expression/spi/ValueType;)V
+	public fun toVariable ()Lorg/hisp/dhis/lib/expression/spi/Variable;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Position {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/Position$Companion;
+	public fun <init> (II)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun copy (II)Lorg/hisp/dhis/lib/expression/ast/Position;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/ast/Position;IIILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/ast/Position;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCharIndex ()I
+	public final fun getSpaceIndex ()I
+	public fun hashCode ()I
+	public final fun offsetBy (I)Lorg/hisp/dhis/lib/expression/ast/Position;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Position$Companion {
+	public final fun addWhitespace (Lorg/hisp/dhis/lib/expression/ast/Node;Ljava/util/List;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/ReportingRateType : java/lang/Enum {
+	public static final field ACTUAL_REPORTS Lorg/hisp/dhis/lib/expression/ast/ReportingRateType;
+	public static final field ACTUAL_REPORTS_ON_TIME Lorg/hisp/dhis/lib/expression/ast/ReportingRateType;
+	public static final field EXPECTED_REPORTS Lorg/hisp/dhis/lib/expression/ast/ReportingRateType;
+	public static final field REPORTING_RATE Lorg/hisp/dhis/lib/expression/ast/ReportingRateType;
+	public static final field REPORTING_RATE_ON_TIME Lorg/hisp/dhis/lib/expression/ast/ReportingRateType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/ReportingRateType;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/ReportingRateType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Tag : java/lang/Enum {
+	public static final field PS_EVENTDATE Lorg/hisp/dhis/lib/expression/ast/Tag;
+	public static final field co Lorg/hisp/dhis/lib/expression/ast/Tag;
+	public static final field coGroup Lorg/hisp/dhis/lib/expression/ast/Tag;
+	public static final field deGroup Lorg/hisp/dhis/lib/expression/ast/Tag;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getIdType ()Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/Tag;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/Tag;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/ast/Typed {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/Typed$Companion;
+	public abstract fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Typed$Companion {
+	public final fun toBooleanTypeCoercion (Ljava/lang/Object;)Ljava/lang/Boolean;
+	public final fun toDateTypeCoercion (Ljava/lang/Object;)Lkotlinx/datetime/LocalDate;
+	public final fun toMixedTypeTypeCoercion (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun toNumberTypeCoercion (Ljava/lang/Object;)Ljava/lang/Double;
+	public final fun toStringTypeCoercion (Ljava/lang/Object;)Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/UnaryOperator : java/lang/Enum, org/hisp/dhis/lib/expression/ast/Typed {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/UnaryOperator$Companion;
+	public static final field DISTINCT Lorg/hisp/dhis/lib/expression/ast/UnaryOperator;
+	public static final field MINUS Lorg/hisp/dhis/lib/expression/ast/UnaryOperator;
+	public static final field NOT Lorg/hisp/dhis/lib/expression/ast/UnaryOperator;
+	public static final field PLUS Lorg/hisp/dhis/lib/expression/ast/UnaryOperator;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getSymbol ()Ljava/lang/String;
+	public fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/UnaryOperator;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/UnaryOperator;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/UnaryOperator$Companion {
+	public final fun fromSymbol (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/UnaryOperator;
+	public final fun negate (Ljava/lang/Number;)Ljava/lang/Number;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/VariableType : java/lang/Enum {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/VariableType$Companion;
+	public static final field PROGRAM Lorg/hisp/dhis/lib/expression/ast/VariableType;
+	public static final field PROGRAM_RULE Lorg/hisp/dhis/lib/expression/ast/VariableType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/VariableType;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/ast/VariableType;
+}
+
+public final class org/hisp/dhis/lib/expression/ast/VariableType$Companion {
+	public final fun fromSymbol (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/VariableType;
+}
+
+public final class org/hisp/dhis/lib/expression/eval/Api {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/eval/Api;
+	public final fun collectDataItems (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/util/Set;
+	public final fun collectDataItems (Lorg/hisp/dhis/lib/expression/ast/Node;[Lorg/hisp/dhis/lib/expression/spi/DataItemType;)Ljava/util/Set;
+	public final fun collectUIDs (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/util/Set;
+	public final fun collectVariableNames (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/ast/VariableType;)Ljava/util/Set;
+	public final fun collectVariables (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/ast/VariableType;)Ljava/util/Set;
+	public final fun describe (Lorg/hisp/dhis/lib/expression/ast/Node;Ljava/util/Map;)Ljava/lang/String;
+	public final fun evaluate (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/ExpressionData;)Ljava/lang/Object;
+	public final fun normalise (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/String;
+	public final fun regenerate (Lorg/hisp/dhis/lib/expression/ast/Node;Ljava/util/Map;)Ljava/lang/String;
+	public final fun validate (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/spi/ExpressionData;Ljava/util/List;Ljava/util/Set;)V
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/eval/NodeInterpreter {
+	public abstract fun evalArgument (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalBinaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalBoolean (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalDataItem (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalDate (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalFunction (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalIdentifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalInteger (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalNamedValue (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalNode (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalNull (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalNumber (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalParentheses (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalString (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalUid (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalUnaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public abstract fun evalVariable (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/lib/expression/eval/NodeInterpreter$DefaultImpls {
+	public static fun evalArgument (Lorg/hisp/dhis/lib/expression/eval/NodeInterpreter;Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public static fun evalNode (Lorg/hisp/dhis/lib/expression/eval/NodeInterpreter;Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public static fun evalParentheses (Lorg/hisp/dhis/lib/expression/eval/NodeInterpreter;Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/eval/NodeValidator {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/eval/NodeValidator$Companion;
+	public abstract fun validate (Lorg/hisp/dhis/lib/expression/ast/Node;Lorg/hisp/dhis/lib/expression/spi/Issues;Lorg/hisp/dhis/lib/expression/spi/ExpressionData;)V
+}
+
+public final class org/hisp/dhis/lib/expression/eval/NodeValidator$Companion {
+	public final fun getRuleEngineMode ()Ljava/util/List;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/eval/NodeVisitor {
+	public abstract fun visitArgument (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitBinaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitBoolean (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitDataItem (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitDate (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitFunction (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitIdentifier (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitInteger (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitNamedValue (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitNode (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitNull (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitNumber (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitParentheses (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitString (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitUid (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitUnaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public abstract fun visitVariable (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+}
+
+public final class org/hisp/dhis/lib/expression/eval/NodeVisitor$DefaultImpls {
+	public static fun visitArgument (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitBinaryOperator (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitBoolean (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitDataItem (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitDate (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitFunction (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitIdentifier (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitInteger (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitModifier (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitNamedValue (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitNode (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitNull (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitNumber (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitParentheses (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitString (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitUid (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitUnaryOperator (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public static fun visitVariable (Lorg/hisp/dhis/lib/expression/eval/NodeVisitor;Lorg/hisp/dhis/lib/expression/ast/Node;)V
+}
+
+public final class org/hisp/dhis/lib/expression/eval/Validator {
+	public fun <init> ()V
+}
+
+public final class org/hisp/dhis/lib/expression/math/GS1Elements : java/lang/Enum {
+	public static final field ACTIVE_POTENCY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field ADDITIONAL_ID Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AGREEMENT_INTERNAL Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AMOUNT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AMOUNT_ISO Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AQUATIC_SPECIES Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_F2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_F2_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_I2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_I2_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_M2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_M2_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_Y2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AREA_Y2_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field AUTH_LEAV Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field BEST_BEFORE_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field BILL_TO_LOC Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CATCH_AREA Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CERT_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CMT_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_1 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_3 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_4 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_5 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_6 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_7 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_8 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COMPANY_INTERNAL_9 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CONTENT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COUNT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COUNTRY_DISASSEMBLY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COUNTRY_FULL_PROCESS Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COUNTRY_INITIAL_PROCESS Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COUNTRY_PROCESS Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field COUPON_USA Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CPID Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CPID_SERIAL Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CPV Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field CUSTOMER_PART_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field Companion Lorg/hisp/dhis/lib/expression/math/GS1Elements$Companion;
+	public static final field DANGEROUS_GOODS Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field DIMENSIONS Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field DUE_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field EXP_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field EXP_TIME Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field FIRST_FREEZE_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field FISHING_GEAR_TYPE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field FUNC_STAT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GCN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GDTI Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GIAI Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GIAI_ASSEMBLY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GINC Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GLN_EXTENSION_COMPONENT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GMN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GRAI Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GROSS_WEIGHT_GF Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GROSS_WHEIGHT_LB Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_C1_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_E0_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_E1_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_E2_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_E3_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_E4_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_GROUP_SEPARATOR Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_I1_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_J1_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_Q1_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_Q3_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_d1_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_d2_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_e0_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_e1_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GS1_e2_IDENTIFIER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GSRN_PROVIDER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GSRN_RECIPIENT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field GTIN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HARVEST_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_F Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_F_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_I Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_I_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_M Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_M_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_Y Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field HEIGHT_Y_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field IBAN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field ITIP Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field ITIP_CONTENT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field KG_PER_M2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_F Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_F_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_I Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_I_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_M Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_M_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_Y Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LENGTH_Y_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LOC_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field LOT_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field MEAT_CUT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field MTO_VARIANT_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NAFT_DEL_DT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NBEF_DEL_DT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_VOLUME_G Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_VOLUME_L Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_VOLUME_M3 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_VOLUME_OZ Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_VOLUME_Q Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_WEIGHT_KG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_WEIGHT_LB Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NET_WEIGHT_T Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NHRN_AIM Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NHRN_CIP Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NHRN_CN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NHRN_DRN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NHRN_PZN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field NSN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field OPTSEN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field ORDER_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field ORIGIN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field ORIGIN_SUBDIVISION Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PACK_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PARTY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PAY_TO Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PCN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field POINTS Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field POSITIVE_OFFER_COUPON_USA Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PRCNT_OFF Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PRICE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PRICE_ISO Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PRICE_PER_UNIT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PRICE_UOM Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PROCESSOR_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PRODUCT_URL Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PROD_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PROD_METHID Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PROD_SERV_LOC Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PROD_TIME Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PROTOCOL Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field PURCHASED_FROM Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field REFURB_LOT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field REF_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field REF_TO_SOURCE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field REL_DATE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field REV_STAT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field ROUTE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_ADD1 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_ADD2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_COMP Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_COUNTRY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_LOCALITY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_NAME Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_PHONE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_POST Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_REG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field RTN_TO_SUB Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SECONDARY_SERIAL Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SELL_BY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SERIAL_NUMBER Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_FOR_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_ADD1 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_ADD2 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_COMP Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_COUNTRY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_GLOB_LOC Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_LOCALITY Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_NAME Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_PHONE Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_POST Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_POST_ISO Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_REG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SHIP_TO_SUB Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SIG_REQUIRED Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SRIN Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SRV_DESCRIPTION Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field SSCC Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field TPX Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field UIC_EXT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VARIANT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VAR_COUNT Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VERSION Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_F3 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_F3_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_G_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_I3 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_I3_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_L_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_M3_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_Q_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_Y3 Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field VOLUME_Y3_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_F Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_F_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_I Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_I_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_M Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_M_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_Y Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static final field WIDTH_Y_LOG Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public final fun format (Ljava/lang/String;)Ljava/lang/String;
+	public final fun getElement ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+}
+
+public final class org/hisp/dhis/lib/expression/math/GS1Elements$Companion {
+	public final fun fromKey (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/math/GS1Elements;
+	public final fun getApplicationIdentifier (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/math/GS1Formatter {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/math/GS1Formatter;
+	public final fun format (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/math/GS1Elements;)Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/math/NormalDistribution {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/math/NormalDistribution;
+	public final fun cumulativeProbability (DDD)D
+}
+
+public final class org/hisp/dhis/lib/expression/math/VectorAggregation {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/math/VectorAggregation;
+	public final fun avg ([D)D
+	public final fun count ([D)D
+	public final fun max ([D)D
+	public final fun mean ([D)D
+	public final fun median ([D)Ljava/lang/Double;
+	public final fun min ([D)D
+	public final fun percentileCont ([DLjava/lang/Number;)Ljava/lang/Double;
+	public final fun stddevPop ([D)D
+	public final fun stddevSamp ([D)D
+	public final fun sum ([D)D
+	public final fun variance ([DZ)D
+	public static synthetic fun variance$default (Lorg/hisp/dhis/lib/expression/math/VectorAggregation;[DZILjava/lang/Object;)D
+}
+
+public final class org/hisp/dhis/lib/expression/math/ZScore {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/math/ZScore;
+	public final fun value (Lorg/hisp/dhis/lib/expression/math/ZScore$Mode;Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+}
+
+public final class org/hisp/dhis/lib/expression/math/ZScore$Mode : java/lang/Enum {
+	public static final field HFA Lorg/hisp/dhis/lib/expression/math/ZScore$Mode;
+	public static final field WFA Lorg/hisp/dhis/lib/expression/math/ZScore$Mode;
+	public static final field WFH Lorg/hisp/dhis/lib/expression/math/ZScore$Mode;
+	public final fun getBoy ()Ljava/util/Map;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getGirl ()Ljava/util/Map;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/math/ZScore$Mode;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/math/ZScore$Mode;
+}
+
+public final class org/hisp/dhis/lib/expression/math/ZScoreTable {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/math/ZScoreTable;
+	public final fun getZ_SCORE_HFA_TABLE_BOY ()Ljava/util/Map;
+	public final fun getZ_SCORE_HFA_TABLE_GIRL ()Ljava/util/Map;
+	public final fun getZ_SCORE_WFA_TABLE_BOY ()Ljava/util/Map;
+	public final fun getZ_SCORE_WFA_TABLE_GIRL ()Ljava/util/Map;
+	public final fun getZ_SCORE_WFH_TABLE_BOY ()Ljava/util/Map;
+	public final fun getZ_SCORE_WFH_TABLE_GIRL ()Ljava/util/Map;
+}
+
+public final class org/hisp/dhis/lib/expression/math/ZScoreTable$Entry {
+	public fun <init> (Ljava/util/Map;FFLjava/util/List;)V
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()F
+	public final fun component3 ()F
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/util/Map;FFLjava/util/List;)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Entry;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Entry;Ljava/util/Map;FFLjava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Entry;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMax ()F
+	public final fun getMin ()F
+	public final fun getSdMap ()Ljava/util/Map;
+	public final fun getSortedKeys ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/math/ZScoreTable$Key {
+	public fun <init> (IF)V
+	public final fun component1 ()I
+	public final fun component2 ()F
+	public final fun copy (IF)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Key;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Key;IFILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Key;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGender ()I
+	public final fun getParameter ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/AggregationType : java/lang/Enum {
+	public static final field avg Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field avg_sum_org_unit Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field count Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field custom Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field first Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field first_avg_org_unit Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field last Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field last_analytics_period Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field last_analytics_period_avg_org_unit Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field last_avg_org_unit Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field max Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field min Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field none Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field stddev Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field sum Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static final field variance Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/DataItem {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/DataItemType;Lorg/hisp/dhis/lib/expression/spi/ID;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;)V
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/DataItemType;Lorg/hisp/dhis/lib/expression/spi/ID;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;)V
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/DataItemType;[Lorg/hisp/dhis/lib/expression/spi/ID;)V
+	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public final fun component2 ()Lorg/hisp/dhis/lib/expression/spi/ID;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;
+	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/DataItemType;Lorg/hisp/dhis/lib/expression/spi/ID;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;)Lorg/hisp/dhis/lib/expression/spi/DataItem;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/DataItem;Lorg/hisp/dhis/lib/expression/spi/DataItemType;Lorg/hisp/dhis/lib/expression/spi/ID;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/DataItem;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKey ()Ljava/lang/String;
+	public final fun getModifiers ()Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;
+	public final fun getType ()Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public final fun getUid0 ()Lorg/hisp/dhis/lib/expression/spi/ID;
+	public final fun getUid1 ()Ljava/util/List;
+	public final fun getUid2 ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/DataItemType : java/lang/Enum {
+	public static final field ATTRIBUTE Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field CONSTANT Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field Companion Lorg/hisp/dhis/lib/expression/spi/DataItemType$Companion;
+	public static final field DATA_ELEMENT Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field INDICATOR Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field ORG_UNIT_GROUP Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field PROGRAM_DATA_ELEMENT Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field PROGRAM_INDICATOR Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field PROGRAM_VARIABLE Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static final field REPORTING_RATE Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getType (II)Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/DataItemType$Companion {
+	public final fun fromSymbol (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/DataItemType;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/ExpressionData {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Ljava/util/Map;
+	public final fun component3 ()Ljava/util/Map;
+	public final fun component4 ()Ljava/util/Map;
+	public final fun component5 ()Ljava/util/Map;
+	public final fun copy (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)Lorg/hisp/dhis/lib/expression/spi/ExpressionData;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/ExpressionData;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/ExpressionData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDataItemValues ()Ljava/util/Map;
+	public final fun getNamedValues ()Ljava/util/Map;
+	public final fun getProgramRuleVariableValues ()Ljava/util/Map;
+	public final fun getProgramVariableValues ()Ljava/util/Map;
+	public final fun getSupplementaryValues ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/spi/ExpressionFunctions {
+	public abstract fun avg ([D)D
+	public abstract fun contains (Ljava/lang/String;Ljava/util/List;)Z
+	public abstract fun containsItems (Ljava/lang/String;Ljava/util/List;)Z
+	public abstract fun count ([D)D
+	public abstract fun d2_addDays (Lkotlinx/datetime/LocalDate;Ljava/lang/Number;)Lkotlinx/datetime/LocalDate;
+	public abstract fun d2_ceil (Ljava/lang/Number;)D
+	public abstract fun d2_concatenate (Ljava/util/Collection;)Ljava/lang/String;
+	public abstract fun d2_count (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
+	public abstract fun d2_countIfValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/lang/String;)I
+	public abstract fun d2_countIfZeroPos (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
+	public abstract fun d2_daysBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public abstract fun d2_extractDataMatrixValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public abstract fun d2_floor (Ljava/lang/Number;)D
+	public abstract fun d2_hasUserRole (Ljava/lang/String;Ljava/util/List;)Z
+	public abstract fun d2_hasValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Z
+	public abstract fun d2_inOrgUnitGroup (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/util/Map;)Z
+	public abstract fun d2_lastEventDate (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Lkotlinx/datetime/LocalDate;
+	public abstract fun d2_left (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public abstract fun d2_length (Ljava/lang/String;)I
+	public abstract fun d2_maxValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
+	public abstract fun d2_minValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
+	public abstract fun d2_minutesBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public abstract fun d2_modulus (Ljava/lang/Number;Ljava/lang/Number;)D
+	public abstract fun d2_monthsBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public abstract fun d2_oizp (Ljava/lang/Number;)D
+	public abstract fun d2_right (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public abstract fun d2_round (Ljava/lang/Number;Ljava/lang/Integer;)D
+	public abstract fun d2_split (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public abstract fun d2_substring (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Ljava/lang/String;
+	public abstract fun d2_validatePattern (Ljava/lang/String;Ljava/lang/String;)Z
+	public abstract fun d2_weeksBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public abstract fun d2_yearsBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public abstract fun d2_zScoreHFA (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public abstract fun d2_zScoreWFA (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public abstract fun d2_zScoreWFH (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public abstract fun d2_zing (Ljava/lang/Number;)Ljava/lang/Number;
+	public abstract fun d2_zpvc (Ljava/util/List;)I
+	public abstract fun firstNonNull (Ljava/util/List;)Ljava/lang/Object;
+	public abstract fun greatest (Ljava/util/List;)Ljava/lang/Number;
+	public abstract fun ifThenElse (Ljava/lang/Boolean;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public abstract fun isNotNull (Ljava/lang/Object;)Z
+	public abstract fun isNull (Ljava/lang/Object;)Z
+	public abstract fun least (Ljava/util/List;)Ljava/lang/Number;
+	public abstract fun log (Ljava/lang/Number;)D
+	public abstract fun log10 (Ljava/lang/Number;)D
+	public abstract fun max ([D)D
+	public abstract fun median ([D)Ljava/lang/Double;
+	public abstract fun min ([D)D
+	public abstract fun normDistCum (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
+	public abstract fun normDistDen (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
+	public abstract fun percentileCont ([DLjava/lang/Double;)Ljava/lang/Double;
+	public abstract fun removeZeros (Ljava/lang/Number;)Ljava/lang/Number;
+	public abstract fun stddev ([D)D
+	public abstract fun stddevPop ([D)D
+	public abstract fun stddevSamp ([D)D
+	public abstract fun sum ([D)D
+	public abstract fun unsupported (Ljava/lang/String;)Ljava/lang/Object;
+	public abstract fun variance ([D)Ljava/lang/Double;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/ExpressionFunctions$DefaultImpls {
+	public static fun avg (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun contains (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/util/List;)Z
+	public static fun containsItems (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/util/List;)Z
+	public static fun count (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun d2_addDays (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Ljava/lang/Number;)Lkotlinx/datetime/LocalDate;
+	public static fun d2_ceil (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)D
+	public static fun d2_concatenate (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/util/Collection;)Ljava/lang/String;
+	public static fun d2_count (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
+	public static fun d2_countIfValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/lang/String;)I
+	public static fun d2_countIfZeroPos (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
+	public static fun d2_daysBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public static fun d2_extractDataMatrixValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static fun d2_floor (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)D
+	public static fun d2_hasUserRole (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/util/List;)Z
+	public static fun d2_hasValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Z
+	public static fun d2_inOrgUnitGroup (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/util/Map;)Z
+	public static fun d2_lastEventDate (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Lkotlinx/datetime/LocalDate;
+	public static fun d2_left (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public static fun d2_length (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;)I
+	public static fun d2_maxValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
+	public static fun d2_minValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
+	public static fun d2_minutesBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public static fun d2_modulus (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;)D
+	public static fun d2_monthsBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public static fun d2_oizp (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)D
+	public static fun d2_right (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public static fun d2_round (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Integer;)D
+	public static fun d2_split (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public static fun d2_substring (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Ljava/lang/String;
+	public static fun d2_validatePattern (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/String;)Z
+	public static fun d2_weeksBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public static fun d2_yearsBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public static fun d2_zScoreHFA (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public static fun d2_zScoreWFA (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public static fun d2_zScoreWFH (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public static fun d2_zing (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)Ljava/lang/Number;
+	public static fun d2_zpvc (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/util/List;)I
+	public static fun firstNonNull (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/util/List;)Ljava/lang/Object;
+	public static fun greatest (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/util/List;)Ljava/lang/Number;
+	public static fun ifThenElse (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Boolean;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static fun isNotNull (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Object;)Z
+	public static fun isNull (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Object;)Z
+	public static fun least (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/util/List;)Ljava/lang/Number;
+	public static fun log (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)D
+	public static fun log10 (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)D
+	public static fun max (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun median (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)Ljava/lang/Double;
+	public static fun min (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun normDistCum (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
+	public static fun normDistDen (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
+	public static fun percentileCont (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[DLjava/lang/Double;)Ljava/lang/Double;
+	public static fun removeZeros (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)Ljava/lang/Number;
+	public static fun stddev (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun stddevPop (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun stddevSamp (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun sum (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)D
+	public static fun variance (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)Ljava/lang/Double;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/ID {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/IDType;Ljava/lang/String;)V
+	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/IDType;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/ID;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/ID;Lorg/hisp/dhis/lib/expression/spi/IDType;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/ID;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getType ()Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/IDType : java/lang/Enum {
+	public static final field AttributeOptionComboUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field AttributeUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field CategoryOptionComboUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field CategoryOptionGroupUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field CategoryOptionUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field ConstantUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field DataElementUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field DataSetUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field DateElementGroupUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field IndicatorUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field OrganisationUnitGroupUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field ProgramIndicatorUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field ProgramStageUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field ProgramUID Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field ProgramVariableName Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static final field ReportingRateType Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isUID ()Z
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/IDType;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/IDType;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/IllegalExpressionException : java/lang/IllegalArgumentException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public final fun getErrors ()Ljava/util/List;
+	public final fun getWarnings ()Ljava/util/List;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/Issue {
+	public fun <init> (Lkotlin/jvm/functions/Function0;Ljava/lang/String;)V
+	public final fun component1 ()Lkotlin/jvm/functions/Function0;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lkotlin/jvm/functions/Function0;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/Issue;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/Issue;Lkotlin/jvm/functions/Function0;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/Issue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getPosition ()Lkotlin/jvm/functions/Function0;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/Issues {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/spi/Issues$Companion;
+	public fun <init> ()V
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public final fun addError (Lorg/hisp/dhis/lib/expression/ast/Node;Ljava/lang/String;)V
+	public final fun addIssue (ZLorg/hisp/dhis/lib/expression/ast/Node;Ljava/lang/String;)V
+	public final fun addWarning (Lorg/hisp/dhis/lib/expression/ast/Node;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;)Lorg/hisp/dhis/lib/expression/spi/Issues;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/Issues;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/Issues;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrors ()Ljava/util/List;
+	public final fun getWarnings ()Ljava/util/List;
+	public fun hashCode ()I
+	public final fun throwIfErrorsOrWarnings ()V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/Issues$Companion {
+}
+
+public final class org/hisp/dhis/lib/expression/spi/ParseException : java/lang/IllegalArgumentException {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/spi/ProgramVariable : java/lang/Enum {
+	public static final field analytics_period_end Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field analytics_period_start Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field completed_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field creation_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field current_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field due_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field enrollment_count Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field enrollment_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field enrollment_id Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field enrollment_status Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field environment Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field event_count Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field event_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field event_id Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field event_status Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field execution_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field incident_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field org_unit Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field org_unit_count Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field orgunit_code Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field program_name Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field program_stage_id Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field program_stage_name Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field scheduled_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field scheduled_event_count Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field sync_date Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field tei_count Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field value_count Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static final field zero_pos_value_count Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/QueryModifiers {
+	public fun <init> ()V
+	public fun <init> (ZLorg/hisp/dhis/lib/expression/spi/AggregationType;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;Ljava/lang/Integer;Ljava/lang/Integer;ZLjava/lang/String;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public final fun component3 ()Lkotlinx/datetime/LocalDate;
+	public final fun component4 ()Lkotlinx/datetime/LocalDate;
+	public final fun component5 ()Ljava/lang/Integer;
+	public final fun component6 ()Ljava/lang/Integer;
+	public final fun component7 ()Z
+	public final fun component8 ()Ljava/lang/String;
+	public final fun copy (ZLorg/hisp/dhis/lib/expression/spi/AggregationType;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;Ljava/lang/Integer;Ljava/lang/Integer;ZLjava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;ZLorg/hisp/dhis/lib/expression/spi/AggregationType;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;Ljava/lang/Integer;Ljava/lang/Integer;ZLjava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAggregationType ()Lorg/hisp/dhis/lib/expression/spi/AggregationType;
+	public final fun getMaxDate ()Lkotlinx/datetime/LocalDate;
+	public final fun getMinDate ()Lkotlinx/datetime/LocalDate;
+	public final fun getPeriodAggregation ()Z
+	public final fun getPeriodOffset ()Ljava/lang/Integer;
+	public final fun getStageOffset ()Ljava/lang/Integer;
+	public final fun getSubExpression ()Ljava/lang/String;
+	public final fun getYearToDate ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/ValueType : java/lang/Enum {
+	public static final field BOOLEAN Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static final field Companion Lorg/hisp/dhis/lib/expression/spi/ValueType$Companion;
+	public static final field DATE Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static final field MIXED Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static final field NUMBER Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static final field SAME Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static final field STRING Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun isAssignableTo (Lorg/hisp/dhis/lib/expression/spi/ValueType;)Z
+	public final fun isMaybeAssignableTo (Lorg/hisp/dhis/lib/expression/spi/ValueType;)Z
+	public final fun isMixed ()Z
+	public final fun isSame ()Z
+	public final fun isValidValue (Ljava/lang/Object;)Z
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/ValueType;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/ValueType$Companion {
+	public final fun allSame ([Lorg/hisp/dhis/lib/expression/spi/ValueType;)Z
+}
+
+public final class org/hisp/dhis/lib/expression/spi/Variable {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;)V
+	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public final fun component2 ()Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;
+	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;)Lorg/hisp/dhis/lib/expression/spi/Variable;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/Variable;Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/Variable;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getModifiers ()Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;
+	public final fun getName ()Lorg/hisp/dhis/lib/expression/spi/ProgramVariable;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/spi/VariableValue {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/ValueType;)V
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/ValueType;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V
+	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/ValueType;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/VariableValue;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/VariableValue;Lorg/hisp/dhis/lib/expression/spi/ValueType;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/VariableValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCandidates ()Ljava/util/List;
+	public final fun getEventDate ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
+	public final fun getValueType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun valueOrDefault ()Ljava/lang/Object;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Chars {
+	public static final field EOF C
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/syntax/Chars;
+	public final fun isAlphaNumeric (C)Z
+	public final fun isAlphaNumeric (I)Z
+	public final fun isArithmeticOperator (C)Z
+	public final fun isBinaryOperator (C)Z
+	public final fun isComparisonOperator (C)Z
+	public final fun isDigit (C)Z
+	public final fun isHexDigit (C)Z
+	public final fun isIdentifier (C)Z
+	public final fun isLetter (C)Z
+	public final fun isLogicOperator (C)Z
+	public final fun isName (C)Z
+	public final fun isOctalDigit (C)Z
+	public final fun isSignOperator (C)Z
+	public final fun isUnaryOperator (C)Z
+	public final fun isVarName (C)Z
+	public final fun isVarName (I)Z
+	public final fun isWS (C)Z
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Expr {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/syntax/Expr$Companion;
+	public fun <init> (Ljava/lang/String;Z)V
+	public final fun error (ILjava/lang/String;)V
+	public final fun error (Ljava/lang/String;)V
+	public final fun expect (C)V
+	public final fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public final fun gobble ()V
+	public final fun gobble (I)V
+	public final fun gobbleIf (Lkotlin/jvm/functions/Function1;)V
+	public final fun marker ()Lorg/hisp/dhis/lib/expression/ast/Position;
+	public final fun marker (I)Lorg/hisp/dhis/lib/expression/ast/Position;
+	public final fun peek ()C
+	public final fun peek (ILkotlin/jvm/functions/Function1;)Z
+	public final fun peek (Ljava/lang/String;)Z
+	public final fun position ()I
+	public final fun raw (I)Ljava/lang/String;
+	public final fun rawMatch (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public final fun rawMatch (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
+	public final fun rawMatch (Ljava/lang/String;[Lkotlin/jvm/functions/Function1;)Ljava/lang/String;
+	public final fun skipWS ()V
+	public final fun skipWhile (Lkotlin/jvm/functions/Function1;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Expr$Companion {
+	public final fun dataItem (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public final fun dataItemA (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public final fun dataItemHash (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public final fun expr (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public final fun parse (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;Z)Ljava/util/List;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/ExpressionGrammar {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/syntax/ExpressionGrammar;
+	public final fun getIndicatorExpressionMode ()Ljava/util/List;
+	public final fun getPredictorExpressionMode ()Ljava/util/List;
+	public final fun getPredictorSkipTestMode ()Ljava/util/List;
+	public final fun getProgramIndicatorExpressionMode ()Ljava/util/List;
+	public final fun getRuleEngineMode ()Ljava/util/List;
+	public final fun getSimpleTestMode ()Ljava/util/List;
+	public final fun getValidationRuleExpressionMode ()Ljava/util/List;
+	public final fun item (Lorg/hisp/dhis/lib/expression/spi/DataItemType;[Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public final fun variable (Lorg/hisp/dhis/lib/expression/spi/DataItemType;[Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/syntax/Fragment {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/syntax/Fragment$Companion;
+	public abstract fun isMaybe ()Z
+	public abstract fun isVarargs ()Z
+	public abstract fun maybe ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun named (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public abstract fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public abstract fun plus ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public abstract fun quoted ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public abstract fun star ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Fragment$Companion {
+	public final fun constant (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Fragment$DefaultImpls {
+	public static fun isMaybe (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Z
+	public static fun isVarargs (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Z
+	public static fun maybe (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun name (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Ljava/lang/String;
+	public static fun named (Lorg/hisp/dhis/lib/expression/syntax/Fragment;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun plus (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun quoted (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun star (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
+public abstract class org/hisp/dhis/lib/expression/syntax/Fragment$Delegate : org/hisp/dhis/lib/expression/syntax/Fragment {
+	protected fun <init> (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)V
+	public final fun getTo ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun isMaybe ()Z
+	public fun isVarargs ()Z
+	public fun maybe ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun name ()Ljava/lang/String;
+	public fun named (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public fun plus ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun quoted ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun star ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/syntax/FragmentContext {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/syntax/FragmentContext$Companion;
+	public abstract fun fragment (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/FragmentContext$Companion {
+	public final fun lookup (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Literals {
+	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/syntax/Literals;
+	public final fun isUid (Ljava/lang/String;)Z
+	public final fun isVarName (Ljava/lang/String;)Z
+	public final fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/ast/NodeType;)Ljava/lang/String;
+	public final fun parseBinaryOp (Lorg/hisp/dhis/lib/expression/syntax/Expr;)Ljava/lang/String;
+	public final fun parseIdentifier (Lorg/hisp/dhis/lib/expression/syntax/Expr;)Ljava/lang/String;
+	public final fun parseName (Lorg/hisp/dhis/lib/expression/syntax/Expr;)Ljava/lang/String;
+	public final fun parseNumeric (Lorg/hisp/dhis/lib/expression/syntax/Expr;)Ljava/lang/String;
+	public final fun parseString (Lorg/hisp/dhis/lib/expression/syntax/Expr;)Ljava/lang/String;
+	public final fun parseUid (Lorg/hisp/dhis/lib/expression/syntax/Expr;)Ljava/lang/String;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/syntax/ParseContext : org/hisp/dhis/lib/expression/syntax/FragmentContext {
+	public abstract fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
+	public abstract fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public abstract fun beginNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;)V
+	public abstract fun beginNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
+	public abstract fun endNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;)V
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/ParseContext$DefaultImpls {
+	public static fun addNode (Lorg/hisp/dhis/lib/expression/syntax/ParseContext;Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public static fun addNode (Lorg/hisp/dhis/lib/expression/syntax/ParseContext;Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
+	public static fun addNode (Lorg/hisp/dhis/lib/expression/syntax/ParseContext;Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun addNode$default (Lorg/hisp/dhis/lib/expression/syntax/ParseContext;Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;ILjava/lang/Object;)V
+	public static fun beginNode (Lorg/hisp/dhis/lib/expression/syntax/ParseContext;Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Parser : org/hisp/dhis/lib/expression/syntax/ParseContext {
+	public static final field Companion Lorg/hisp/dhis/lib/expression/syntax/Parser$Companion;
+	public synthetic fun <init> (Ljava/util/List;Ljava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
+	public fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public fun beginNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;)V
+	public fun beginNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
+	public fun endNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;)V
+	public fun fragment (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public final fun withFactory (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)Lorg/hisp/dhis/lib/expression/syntax/Parser;
+	public final fun withFragments ([Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Parser;
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Parser$Companion {
+	public final fun parse (Ljava/lang/String;Ljava/util/List;Z)Lorg/hisp/dhis/lib/expression/ast/Node;
+}
+
+public abstract interface class org/hisp/dhis/lib/expression/syntax/Terminal : org/hisp/dhis/lib/expression/syntax/Fragment {
+	public abstract fun by (Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)Lorg/hisp/dhis/lib/expression/syntax/Terminal;
+	public abstract fun factory ()Lorg/hisp/dhis/lib/expression/ast/Node$Factory;
+	public abstract fun literalOf ()Lorg/hisp/dhis/lib/expression/ast/NodeType;
+	public abstract fun name ()Ljava/lang/String;
+	public abstract fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+}
+
+public final class org/hisp/dhis/lib/expression/syntax/Terminal$DefaultImpls {
+	public static fun by (Lorg/hisp/dhis/lib/expression/syntax/Terminal;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)Lorg/hisp/dhis/lib/expression/syntax/Terminal;
+	public static fun factory (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/ast/Node$Factory;
+	public static fun isMaybe (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Z
+	public static fun isVarargs (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Z
+	public static fun maybe (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun name (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Ljava/lang/String;
+	public static fun named (Lorg/hisp/dhis/lib/expression/syntax/Terminal;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun parse (Lorg/hisp/dhis/lib/expression/syntax/Terminal;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public static fun plus (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun quoted (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun star (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+}
+
