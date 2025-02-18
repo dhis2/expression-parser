@@ -15,9 +15,16 @@ import kotlin.test.assertEquals
  */
 internal class HasValueTest : AbstractVariableBasedTest() {
     @Test
-    fun return_false_for_non_existing_variable() {
+    fun return_false_for_non_existing_variable_with_UID() {
+        // 'nonexisting' is treated as valid UID
         assertHasValue("d2:hasValue(#{nonexisting})", mapOf(), false)
     }
+
+    @Test
+    fun return_false_for_non_existing_variable_with_name() {
+        assertHasValue("d2:hasValue(#{variable-name})", mapOf(), false)
+    }
+
 
     @Test
     fun return_false_for_existing_variable_without_value() {
