@@ -96,7 +96,6 @@ internal class Calculator(
             NamedFunction.d2_hasValue -> try {
                 functions.d2_hasValue(evalToVar(fn.child(0)))
             } catch (e: IllegalExpressionException) {
-                println("Error evaluating d2_hasValue: ${e.message}")
                 false
             }
             NamedFunction.d2_inOrgUnitGroup -> functions.d2_inOrgUnitGroup(
