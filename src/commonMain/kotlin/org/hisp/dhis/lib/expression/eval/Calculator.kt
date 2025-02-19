@@ -93,7 +93,11 @@ internal class Calculator(
             NamedFunction.d2_hasUserRole -> functions.d2_hasUserRole(
                 evalToString(fn.child(0)),
                 data.supplementaryValues["USER"])
-            NamedFunction.d2_hasValue -> functions.d2_hasValue(evalToVar(fn.child(0)))
+            NamedFunction.d2_hasValue -> try {
+                functions.d2_hasValue(evalToVar(fn.child(0)))
+            } catch (e: IllegalExpressionException) {
+                false
+            }
             NamedFunction.d2_inOrgUnitGroup -> functions.d2_inOrgUnitGroup(
                 evalToString(fn.child(0)),
                 data.programRuleVariableValues["org_unit"],
