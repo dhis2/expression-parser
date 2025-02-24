@@ -92,6 +92,7 @@ object ExpressionGrammar {
         fn(NamedFunction.variance, expr)
     )
     private val CommonD2Functions = listOf( // (alphabetical)
+        fn(NamedFunction.d2_condition, STRING, expr, expr),
         fn(NamedFunction.d2_contains, expr, expr.plus()),
         fn(NamedFunction.d2_containsItems, expr, expr.plus()),
         fn(NamedFunction.d2_count, dataItem),
@@ -130,7 +131,6 @@ object ExpressionGrammar {
         fn(NamedFunction.d2_zScoreWFH, expr, expr, expr)
     )
     private val ProgramIndicatorD2Functions = listOf(
-        fn(NamedFunction.d2_condition, STRING, expr, expr),
         fn(NamedFunction.d2_countIfCondition, expr, STRING),
         fn(NamedFunction.d2_minutesBetween, expr, expr),
         fn(NamedFunction.d2_relationshipCount, UID.quoted().maybe())
