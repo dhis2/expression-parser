@@ -1,5 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
+import org.hisp.dhis.lib.expression.Expression
+import org.hisp.dhis.lib.expression.ExpressionMode
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 
@@ -25,7 +27,6 @@ internal class HasValueTest : AbstractVariableBasedTest() {
         assertHasValue("d2:hasValue(#{variable-name})", mapOf(), false)
     }
 
-
     @Test
     fun return_false_for_existing_variable_without_value() {
         assertHasValue(
@@ -40,7 +41,58 @@ internal class HasValueTest : AbstractVariableBasedTest() {
             mapOf("with_value_var" to VariableValue(ValueType.STRING).copy(value = "value")), true)
     }
 
+    @Test
+    fun hasValue_single_quotes() {
+        assertHasValue("d2:hasValue('variable-name')", mapOf(), false)
+        assertHasValue("d2:hasValue('variable-name')",
+            mapOf("variable-name" to VariableValue(ValueType.STRING)), false)
+        assertHasValue("d2:hasValue('variable-name')",
+            mapOf("variable-name" to VariableValue(ValueType.BOOLEAN).copy(value = "false")), true)
+        assertHasValue("d2:hasValue('variable-name')",
+            mapOf("variable-name" to VariableValue(ValueType.BOOLEAN).copy(value = "true")), true)
+    }
+
+    @Test
+    fun hasValue_double_quotes() {
+        assertHasValue("d2:hasValue(\"variable-name\")", mapOf(), false)
+        assertHasValue("d2:hasValue(\"variable-name\")",
+            mapOf("variable-name" to VariableValue(ValueType.STRING)), false)
+        assertHasValue("d2:hasValue(\"variable-name\")",
+            mapOf("variable-name" to VariableValue(ValueType.BOOLEAN).copy(value = "false")), true)
+        assertHasValue("d2:hasValue(\"variable-name\")",
+            mapOf("variable-name" to VariableValue(ValueType.BOOLEAN).copy(value = "true")), true)
+    }
+
+    @Test
+    fun collectVariableNames() {
+        assertProgramRuleVariableNames(setOf("var"), "d2:hasValue('var')")
+        assertProgramVariableNames(setOf(), "d2:hasValue('var')")
+
+        assertProgramRuleVariableNames(setOf("var"), "d2:hasValue(\"var\")")
+        assertProgramVariableNames(setOf(), "d2:hasValue(\"var\")")
+
+        assertProgramRuleVariableNames(setOf("var"), "d2:hasValue(A{var})")
+        assertProgramVariableNames(setOf(), "d2:hasValue(A{var})")
+
+        assertProgramRuleVariableNames(setOf("var"), "d2:hasValue(#{var})")
+        assertProgramVariableNames(setOf(), "d2:hasValue(#{var})")
+
+        assertProgramRuleVariableNames(setOf(), "d2:hasValue(V{var})")
+        assertProgramVariableNames(setOf("var"), "d2:hasValue(V{var})")
+    }
+
     private fun assertHasValue(expression: String, values: Map<String, VariableValue>, expected: Boolean) {
         assertEquals(expected, evaluate(expression, values))
     }
+
+    private fun assertProgramRuleVariableNames(expected: Set<String>, expression: String) {
+        val expr = Expression(expression, ExpressionMode.RULE_ENGINE_ACTION)
+        assertEquals(expected, expr.collectProgramRuleVariableNames());
+    }
+
+    private fun assertProgramVariableNames(expected: Set<String>, expression: String) {
+        val expr = Expression(expression, ExpressionMode.PROGRAM_INDICATOR_EXPRESSION)
+        assertEquals(expected, expr.collectProgramVariablesNames());
+    }
+
 }
