@@ -53,7 +53,7 @@ fun interface Typed {
                 when (value.valueType) {
                     ValueType.NUMBER -> toNumberTypeCoercion(value.valueOrDefault())
                     ValueType.BOOLEAN -> toBooleanTypeCoercion(value.valueOrDefault())
-                    ValueType.DATE -> toDateTypeCoercion(value.valueOrDefault())
+                    ValueType.DATE -> toDateTypeCoercion(value.value)
                     else -> toStringTypeCoercion(value.valueOrDefault())
                 }
             }
