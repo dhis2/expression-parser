@@ -27,7 +27,7 @@ data class VariableValue(
         require(valueType != ValueType.SAME && valueType != ValueType.MIXED)
     }
 
-    fun valueOrDefault() : Any {
+    fun valueOrDefault() : Any? {
         return value?: valueType.default
     }
 }

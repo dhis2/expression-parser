@@ -13,7 +13,7 @@ import kotlin.js.JsExport
  * @author Jan Bernitt
  */
 @JsExport
-enum class ValueType(internal val default: Any) {
+enum class ValueType(internal val default: Any?) {
     /**
      * Type can be at least two of the following: numbers, booleans, dates, strings, list/array of these. This is also
      * used in case a type is unknown or cannot be determined statically.
@@ -21,7 +21,7 @@ enum class ValueType(internal val default: Any) {
     MIXED(""),
     NUMBER(0.0),
     BOOLEAN(false),
-    DATE("2020-01-01"),
+    DATE(null),
     STRING(""),
 
     /**
