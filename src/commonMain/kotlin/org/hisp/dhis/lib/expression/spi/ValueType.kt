@@ -21,8 +21,8 @@ enum class ValueType(internal val default: Any?) {
     MIXED(""),
     NUMBER(0.0),
     BOOLEAN(false),
-    DATE("2020-01-01"),
-    STRING(null),
+    DATE(null),
+    STRING(""),
 
     /**
      * Means the type can be mixed but all SAME argument should be of the same actual type. If the return type is also
