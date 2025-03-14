@@ -33,7 +33,7 @@ fun interface Typed {
 
         fun toDateTypeCoercion(value: Any?): LocalDate? {
             if (value == null) return null
-            if (value is VariableValue) return if (value.value == null) null else toDateTypeCoercion(toMixedTypeTypeCoercion(value))
+            if (value is VariableValue) return toDateTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is LocalDate) return value
             if (value is String) return LocalDate.parse(value)
             if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
@@ -53,7 +53,7 @@ fun interface Typed {
                 when (value.valueType) {
                     ValueType.NUMBER -> toNumberTypeCoercion(value.valueOrDefault())
                     ValueType.BOOLEAN -> toBooleanTypeCoercion(value.valueOrDefault())
-                    ValueType.DATE -> toDateTypeCoercion(value.value)
+                    ValueType.DATE -> toDateTypeCoercion(value.valueOrDefault())
                     else -> toStringTypeCoercion(value.valueOrDefault())
                 }
             }
