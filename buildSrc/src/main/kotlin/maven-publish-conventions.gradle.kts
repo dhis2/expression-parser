@@ -5,8 +5,8 @@ plugins {
     id("org.jetbrains.dokka")
 }
 
-val centralPortalUsername: String? = System.getenv("CENTRAL_PORTAL_USERNAME")
-val centralPortalPassword: String? = System.getenv("CENTRAL_PORTAL_PASSWORD")
+val centralPortalUsername: String? = System.getenv("SONATYPE_PORTAL_USERNAME")
+val centralPortalPassword: String? = System.getenv("SONATYPE_PORTAL_PASSWORD")
 val signingPrivateKey: String? = System.getenv("SIGNING_PRIVATE_KEY")
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")
 
