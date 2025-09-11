@@ -221,6 +221,11 @@ fun interface ExpressionFunctions {
         return roles.contains(role)
     }
 
+    fun d2_inUserGroup(userGroup: String?, userGroups: List<String?>?): Boolean {
+        if (userGroups == null) throw IllegalExpressionException("Supplementary data for user needs to be provided")
+        return userGroups.contains(userGroup)
+    }
+
     fun d2_hasValue(value: VariableValue?): Boolean {
         return value?.value != null
     }

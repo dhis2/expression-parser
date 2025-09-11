@@ -92,7 +92,10 @@ internal class Calculator(
             NamedFunction.d2_floor -> functions.d2_floor(evalToNumber(fn.child(0)))
             NamedFunction.d2_hasUserRole -> functions.d2_hasUserRole(
                 evalToString(fn.child(0)),
-                data.supplementaryValues["USER"])
+                data.supplementaryValues["USER_ROLES"])
+            NamedFunction.d2_inUserGroup -> functions.d2_inUserGroup(
+                evalToString(fn.child(0)),
+                data.supplementaryValues["USER_GROUPS"])
             NamedFunction.d2_hasValue -> try {
                 functions.d2_hasValue(evalToVar(fn.child(0)))
             } catch (e: IllegalExpressionException) {
