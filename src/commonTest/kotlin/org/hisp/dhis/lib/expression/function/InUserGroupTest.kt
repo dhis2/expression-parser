@@ -7,28 +7,27 @@ import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import kotlin.test.*
 
 /**
- * Test of the `d2:hasUserRole` function.
+ * Test of the `d2:inUserGroup` function.
  *
- * @author Jan Bernitt
+ * @author Zubair Asghar
  */
-internal class HasUserRoleTest {
+internal class InUserGroupTest {
 
     @Test
-    fun testHasUserRole_Null() {
-        assertFalse(evaluate("d2:hasUserRole(null)", mapOf("USER_ROLES" to listOf("admin"))))
+    fun testInUserGroup_Null() {
+        assertFalse(evaluate("d2:inUserGroup(null)", mapOf("USER_GROUPS" to listOf("uidusgroup0"))))
     }
 
     @Test
-    fun testHasUserRole_NoData() {
-        val ex = assertFailsWith(IllegalExpressionException::class) { evaluate("d2:hasUserRole(\"admin\")", mapOf()) }
+    fun testInUserGroup_NoData() {
+        val ex = assertFailsWith(IllegalExpressionException::class) { evaluate("d2:inUserGroup(\"uidougroup1\")", mapOf()) }
         assertEquals("Supplementary data for user needs to be provided", ex.message)
     }
 
     @Test
-    fun testHasUserRole() {
-        assertTrue(evaluate("d2:hasUserRole(\"admin\")", mapOf("USER_ROLES" to listOf("admin"))))
-        assertFalse(evaluate("d2:hasUserRole(\"admin\")", mapOf("USER_ROLES" to listOf("guest"))))
-        assertTrue(evaluate("d2:hasUserRole(\"admin\")", mapOf("USER_ROLES" to listOf("foo","admin"))))
+    fun testInUserGroup() {
+        assertTrue(evaluate("d2:inUserGroup(\"uidusgroup0\")", mapOf("USER_GROUPS" to listOf("uidusgroup0"))))
+        assertFalse(evaluate("d2:inUserGroup(\"uidusgroup0\")", mapOf("USER_GROUPS" to listOf("uidusgroup1"))))
     }
 
     private fun evaluate(expression: String, supplementaryValues: Map<String, List<String>>): Boolean {

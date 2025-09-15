@@ -58,6 +58,7 @@ enum class NamedFunction(
     d2_extractDataMatrixValue("d2:extractDataMatrixValue", ValueType.STRING, ValueType.STRING, ValueType.STRING),
     d2_floor("d2:floor", ValueType.NUMBER, ValueType.NUMBER),
     d2_hasUserRole("d2:hasUserRole", ValueType.BOOLEAN, ValueType.STRING),
+    d2_inUserGroup("d2:inUserGroup", ValueType.BOOLEAN, ValueType.STRING),
     d2_hasValue("d2:hasValue", ValueType.BOOLEAN, ValueType.MIXED),
     d2_inOrgUnitGroup("d2:inOrgUnitGroup", ValueType.BOOLEAN, ValueType.STRING),
     d2_lastEventDate("d2:lastEventDate", ValueType.DATE, ValueType.STRING),

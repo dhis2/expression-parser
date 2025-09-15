@@ -116,6 +116,7 @@ object ExpressionGrammar {
         fn(NamedFunction.d2_extractDataMatrixValue, expr, expr),
         fn(NamedFunction.d2_floor, expr),
         fn(NamedFunction.d2_hasUserRole, expr),
+        fn(NamedFunction.d2_inUserGroup, expr),
         fn(NamedFunction.d2_inOrgUnitGroup, expr),
         fn(NamedFunction.d2_lastEventDate, expr),
         fn(NamedFunction.d2_left, expr, expr),

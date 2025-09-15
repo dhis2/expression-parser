@@ -116,6 +116,7 @@ public final class org/hisp/dhis/lib/expression/ast/NamedFunction : java/lang/En
 	public static final field d2_hasUserRole Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_hasValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_inOrgUnitGroup Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_inUserGroup Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_lastEventDate Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_left Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_length Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
@@ -1383,6 +1384,7 @@ public abstract interface class org/hisp/dhis/lib/expression/spi/ExpressionFunct
 	public abstract fun d2_hasUserRole (Ljava/lang/String;Ljava/util/List;)Z
 	public abstract fun d2_hasValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Z
 	public abstract fun d2_inOrgUnitGroup (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/util/Map;)Z
+	public abstract fun d2_inUserGroup (Ljava/lang/String;Ljava/util/List;)Z
 	public abstract fun d2_lastEventDate (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Lkotlinx/datetime/LocalDate;
 	public abstract fun d2_left (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
 	public abstract fun d2_length (Ljava/lang/String;)I
@@ -1444,6 +1446,7 @@ public final class org/hisp/dhis/lib/expression/spi/ExpressionFunctions$DefaultI
 	public static fun d2_hasUserRole (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/util/List;)Z
 	public static fun d2_hasValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Z
 	public static fun d2_inOrgUnitGroup (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/util/Map;)Z
+	public static fun d2_inUserGroup (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/util/List;)Z
 	public static fun d2_lastEventDate (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Lkotlinx/datetime/LocalDate;
 	public static fun d2_left (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
 	public static fun d2_length (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;)I
