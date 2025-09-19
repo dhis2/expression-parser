@@ -121,7 +121,11 @@ class ExpressionJs(expression: String, mode: ExpressionMode) {
             return org.hisp.dhis.lib.expression.spi.ExpressionData(
                 programRuleVariableValues = toMap(data.programRuleVariableValues, {it}, ::toVariableValueJava),
                 programVariableValues = toMap(data.programVariableValues, {it}, {it}),
-                supplementaryValues = toMap(data.supplementaryValues, {it}, {v -> v.toList()}),
+                supplementaryValues = toMap(
+                    data.supplementaryValues,
+                    { key -> toSupplementaryKey(key) },
+                    { v -> v.toList() }
+                ),
                 dataItemValues = toMap(data.dataItemValues, ::toDataItemJava) { it },
                 namedValues = toMap(data.namedValues, {it}, {it}))
         }
@@ -133,6 +137,21 @@ class ExpressionJs(expression: String, mode: ExpressionMode) {
                 candidates = value.candidates.toList(),
                 eventDate = value.eventDate)
         }
+    }
+}
+
+private fun toSupplementaryKey(key: String): org.hisp.dhis.lib.expression.spi.SupplementaryKey {
+    return when (key) {
+        "USER_ROLES" -> org.hisp.dhis.lib.expression.spi.SupplementaryKey.Fixed(
+            org.hisp.dhis.lib.expression.spi.FixedKey.USER_ROLES
+        )
+        "USER_GROUPS" -> org.hisp.dhis.lib.expression.spi.SupplementaryKey.Fixed(
+            org.hisp.dhis.lib.expression.spi.FixedKey.USER_GROUPS
+        )
+        else -> org.hisp.dhis.lib.expression.spi.SupplementaryKey.Dynamic(
+            org.hisp.dhis.lib.expression.spi.DynamicKey.ORG_UNIT_GROUP_SET,
+            key
+        )
     }
 }
 
