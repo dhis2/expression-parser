@@ -92,10 +92,10 @@ internal class Calculator(
             NamedFunction.d2_floor -> functions.d2_floor(evalToNumber(fn.child(0)))
             NamedFunction.d2_hasUserRole -> functions.d2_hasUserRole(
                 evalToString(fn.child(0)),
-                data.supplementaryValues["USER_ROLES"])
+                data.supplementaryValues[SupplementaryKey.Fixed(FixedKey.USER_ROLES)])
             NamedFunction.d2_inUserGroup -> functions.d2_inUserGroup(
                 evalToString(fn.child(0)),
-                data.supplementaryValues["USER_GROUPS"])
+                data.supplementaryValues[SupplementaryKey.Fixed(FixedKey.USER_GROUPS)])
             NamedFunction.d2_hasValue -> try {
                 functions.d2_hasValue(evalToVar(fn.child(0)))
             } catch (e: IllegalExpressionException) {
@@ -104,7 +104,7 @@ internal class Calculator(
             NamedFunction.d2_inOrgUnitGroup -> functions.d2_inOrgUnitGroup(
                 evalToString(fn.child(0)),
                 data.programRuleVariableValues["org_unit"],
-                data.supplementaryValues)
+                extractOrgUnitGroupSetData(data.supplementaryValues))
             NamedFunction.d2_lastEventDate -> functions.d2_lastEventDate(
                 evalToVar(fn.child(0)))
             NamedFunction.d2_left -> functions.d2_left(
@@ -178,6 +178,19 @@ internal class Calculator(
                     evalAggFunction(Nodes.FunctionNode(NodeType.FUNCTION, "stddev").addChild(fn.child(0))))
             else -> functions.unsupported(fnInfo.getName())
         }
+    }
+
+    private fun extractOrgUnitGroupSetData(
+        data: Map<SupplementaryKey, List<String>>
+    ): Map<String, List<String>> {
+        return data
+            .filterKeys { key ->
+                key is SupplementaryKey.Dynamic &&
+                        key.type == DynamicKey.ORG_UNIT_GROUP_SET
+            }
+            .mapKeys { (key, _) ->
+                (key as SupplementaryKey.Dynamic).uid
+            }
     }
 
     private fun evalAggFunction(fn: Node<NamedFunction>): Double? {

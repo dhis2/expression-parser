@@ -9,7 +9,7 @@ package org.hisp.dhis.lib.expression.spi
 data class ExpressionData(
     val programRuleVariableValues: Map<String, VariableValue>,
     val programVariableValues: Map<String, Any>,
-    val supplementaryValues: Map<String, List<String>>,
+    val supplementaryValues: Map<SupplementaryKey, List<String>>,
     val dataItemValues: Map<DataItem, Any>,
     val namedValues: Map<String, Any>
 ) {
