@@ -1347,13 +1347,6 @@ public final class org/hisp/dhis/lib/expression/spi/DataItemType$Companion {
 	public final fun fromSymbol (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/DataItemType;
 }
 
-public final class org/hisp/dhis/lib/expression/spi/DynamicKey : java/lang/Enum {
-	public static final field ORG_UNIT_GROUP_SET Lorg/hisp/dhis/lib/expression/spi/DynamicKey;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/DynamicKey;
-	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/DynamicKey;
-}
-
 public final class org/hisp/dhis/lib/expression/spi/ExpressionData {
 	public fun <init> ()V
 	public fun <init> (Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V
@@ -1497,14 +1490,6 @@ public final class org/hisp/dhis/lib/expression/spi/ExpressionFunctions$DefaultI
 	public static fun variance (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;[D)Ljava/lang/Double;
 }
 
-public final class org/hisp/dhis/lib/expression/spi/FixedKey : java/lang/Enum {
-	public static final field USER_GROUPS Lorg/hisp/dhis/lib/expression/spi/FixedKey;
-	public static final field USER_ROLES Lorg/hisp/dhis/lib/expression/spi/FixedKey;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/FixedKey;
-	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/FixedKey;
-}
-
 public final class org/hisp/dhis/lib/expression/spi/ID {
 	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/IDType;Ljava/lang/String;)V
 	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/IDType;
@@ -1644,33 +1629,6 @@ public final class org/hisp/dhis/lib/expression/spi/QueryModifiers {
 	public final fun getStageOffset ()Ljava/lang/Integer;
 	public final fun getSubExpression ()Ljava/lang/String;
 	public final fun getYearToDate ()Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public abstract class org/hisp/dhis/lib/expression/spi/SupplementaryKey {
-}
-
-public final class org/hisp/dhis/lib/expression/spi/SupplementaryKey$Dynamic : org/hisp/dhis/lib/expression/spi/SupplementaryKey {
-	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/DynamicKey;Ljava/lang/String;)V
-	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/DynamicKey;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/DynamicKey;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/SupplementaryKey$Dynamic;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/SupplementaryKey$Dynamic;Lorg/hisp/dhis/lib/expression/spi/DynamicKey;Ljava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/SupplementaryKey$Dynamic;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getType ()Lorg/hisp/dhis/lib/expression/spi/DynamicKey;
-	public final fun getUid ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class org/hisp/dhis/lib/expression/spi/SupplementaryKey$Fixed : org/hisp/dhis/lib/expression/spi/SupplementaryKey {
-	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/FixedKey;)V
-	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/FixedKey;
-	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/FixedKey;)Lorg/hisp/dhis/lib/expression/spi/SupplementaryKey$Fixed;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/spi/SupplementaryKey$Fixed;Lorg/hisp/dhis/lib/expression/spi/FixedKey;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/spi/SupplementaryKey$Fixed;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getType ()Lorg/hisp/dhis/lib/expression/spi/FixedKey;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
