@@ -1,8 +1,11 @@
 package org.hisp.dhis.lib.expression
 
 import org.hisp.dhis.lib.expression.spi.ExpressionData
+import org.hisp.dhis.lib.expression.spi.ParseException
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 /**
  * Tests that the Android Custom Intent mode
@@ -43,9 +46,24 @@ internal class AndroidCustomIntentExpressionTest {
         )
     }
 
+    @Test
+    fun testValidateExpression() {
+        validate("VAR{orgunit_code}", valid = true)
+        validate("VAR{invalid_var}", valid = false)
+    }
+
     companion object {
         private fun evaluate(expression: String, data: ExpressionData = ExpressionData()): Any? {
             return Expression(expression, ExpressionMode.ANDROID_CUSTOM_INTENT_EXPRESSION).evaluate(data)
+        }
+
+        private fun validate(expression: String, valid: Boolean) {
+            try {
+                Expression(expression, ExpressionMode.ANDROID_CUSTOM_INTENT_EXPRESSION).validate(mapOf())
+                assertTrue(valid)
+            } catch (e: ParseException) {
+                assertFalse(valid)
+            }
         }
     }
 }
