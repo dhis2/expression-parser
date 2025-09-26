@@ -17,6 +17,7 @@ public final class org/hisp/dhis/lib/expression/Expression {
 }
 
 public final class org/hisp/dhis/lib/expression/ExpressionMode : java/lang/Enum {
+	public static final field ANDROID_CUSTOM_INTENT_EXPRESSION Lorg/hisp/dhis/lib/expression/ExpressionMode;
 	public static final field INDICATOR_EXPRESSION Lorg/hisp/dhis/lib/expression/ExpressionMode;
 	public static final field PREDICTOR_GENERATOR_EXPRESSION Lorg/hisp/dhis/lib/expression/ExpressionMode;
 	public static final field PREDICTOR_SKIP_TEST Lorg/hisp/dhis/lib/expression/ExpressionMode;
@@ -358,6 +359,10 @@ public final class org/hisp/dhis/lib/expression/ast/Nodes$AbstractNode$Companion
 }
 
 public final class org/hisp/dhis/lib/expression/ast/Nodes$AggregationTypeNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
+	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
+}
+
+public final class org/hisp/dhis/lib/expression/ast/Nodes$AndroidCustomIntentNode : org/hisp/dhis/lib/expression/ast/Nodes$SimpleNode {
 	public fun <init> (Lorg/hisp/dhis/lib/expression/ast/NodeType;Ljava/lang/String;)V
 }
 
@@ -1304,6 +1309,17 @@ public final class org/hisp/dhis/lib/expression/spi/AggregationType : java/lang/
 	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/AggregationType;
 }
 
+public final class org/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable : java/lang/Enum {
+	public static final field orgunit_code Lorg/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable;
+	public static final field orgunit_id Lorg/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable;
+	public static final field orgunit_path Lorg/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable;
+	public static final field user_id Lorg/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable;
+	public static final field user_username Lorg/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable;
+	public static fun values ()[Lorg/hisp/dhis/lib/expression/spi/AndroidCustomIntentVariable;
+}
+
 public final class org/hisp/dhis/lib/expression/spi/DataItem {
 	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/DataItemType;Lorg/hisp/dhis/lib/expression/spi/ID;Ljava/util/List;Ljava/util/List;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;)V
 	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/DataItemType;Lorg/hisp/dhis/lib/expression/spi/ID;Lorg/hisp/dhis/lib/expression/spi/QueryModifiers;)V
@@ -1327,6 +1343,7 @@ public final class org/hisp/dhis/lib/expression/spi/DataItem {
 }
 
 public final class org/hisp/dhis/lib/expression/spi/DataItemType : java/lang/Enum {
+	public static final field ANDROID_CUSTOM_INTENT Lorg/hisp/dhis/lib/expression/spi/DataItemType;
 	public static final field ATTRIBUTE Lorg/hisp/dhis/lib/expression/spi/DataItemType;
 	public static final field CONSTANT Lorg/hisp/dhis/lib/expression/spi/DataItemType;
 	public static final field Companion Lorg/hisp/dhis/lib/expression/spi/DataItemType$Companion;
@@ -1504,6 +1521,7 @@ public final class org/hisp/dhis/lib/expression/spi/ID {
 }
 
 public final class org/hisp/dhis/lib/expression/spi/IDType : java/lang/Enum {
+	public static final field AndroidCustomIntent Lorg/hisp/dhis/lib/expression/spi/IDType;
 	public static final field AttributeOptionComboUID Lorg/hisp/dhis/lib/expression/spi/IDType;
 	public static final field AttributeUID Lorg/hisp/dhis/lib/expression/spi/IDType;
 	public static final field CategoryOptionComboUID Lorg/hisp/dhis/lib/expression/spi/IDType;
@@ -1744,6 +1762,7 @@ public final class org/hisp/dhis/lib/expression/syntax/Expr$Companion {
 
 public final class org/hisp/dhis/lib/expression/syntax/ExpressionGrammar {
 	public static final field INSTANCE Lorg/hisp/dhis/lib/expression/syntax/ExpressionGrammar;
+	public final fun getAndroidCustomIntentMode ()Ljava/util/List;
 	public final fun getIndicatorExpressionMode ()Ljava/util/List;
 	public final fun getPredictorExpressionMode ()Ljava/util/List;
 	public final fun getPredictorSkipTestMode ()Ljava/util/List;

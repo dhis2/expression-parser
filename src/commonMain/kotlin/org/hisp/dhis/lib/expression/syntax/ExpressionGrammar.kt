@@ -5,6 +5,7 @@ import org.hisp.dhis.lib.expression.ast.NamedFunction
 import org.hisp.dhis.lib.expression.ast.Node
 import org.hisp.dhis.lib.expression.ast.NodeType
 import org.hisp.dhis.lib.expression.ast.Nodes.AggregationTypeNode
+import org.hisp.dhis.lib.expression.ast.Nodes.AndroidCustomIntentNode
 import org.hisp.dhis.lib.expression.ast.Nodes.ProgramVariableNode
 import org.hisp.dhis.lib.expression.ast.Nodes.ReportingRateTypeNode
 import org.hisp.dhis.lib.expression.spi.DataItemType
@@ -150,6 +151,7 @@ object ExpressionGrammar {
     private val OUG_BRACE = item(DataItemType.ORG_UNIT_GROUP, UID)
     private val N_BRACE = item(DataItemType.INDICATOR, UID)
     private val V_BRACE = variable(DataItemType.PROGRAM_VARIABLE, IDENTIFIER.by(Node.Factory.new(::ProgramVariableNode)))
+    private val ACI_BRACE = variable(DataItemType.ANDROID_CUSTOM_INTENT, IDENTIFIER.by(Node.Factory.new(::AndroidCustomIntentNode)))
     private val CommonDataItems = listOf(HASH_BRACE, A_BRACE, C_BRACE, D_BRACE, I_BRACE, R_BRACE, OUG_BRACE)
 
     /*
@@ -196,6 +198,15 @@ object ExpressionGrammar {
         CommonD2Functions,
         RuleEngineD2Functions,
         listOf(HASH_BRACE, A_BRACE, C_BRACE, V_BRACE))
+
+    val AndroidCustomIntentMode = concat(
+        CommonBooleanFunctions,
+        CommonConstants,
+        CommonNumberFunctions,
+        CommonSameFunctions,
+        CommonD2Functions,
+        RuleEngineD2Functions,
+        listOf(ACI_BRACE))
 
     /*
     Block expressions
