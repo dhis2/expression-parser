@@ -41,7 +41,11 @@ enum class ExpressionMode(
         ValueType.DATE),
 
     // android custom intent request parameters
-    ANDROID_CUSTOM_INTENT_EXPRESSION(ExpressionGrammar.AndroidCustomIntentMode, ValueType.NUMBER);
+    ANDROID_CUSTOM_INTENT_EXPRESSION(
+        ExpressionGrammar.AndroidCustomIntentMode,
+        ValueType.BOOLEAN,
+        ValueType.STRING,
+        ValueType.NUMBER);
 
     internal val resultTypes: Set<ValueType> = setOf(*resultTypes)
 
