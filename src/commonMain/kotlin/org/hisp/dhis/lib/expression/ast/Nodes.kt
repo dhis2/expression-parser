@@ -427,6 +427,10 @@ object Nodes {
             SimpleNode<ProgramVariable>(type, rawValue, ProgramVariable::valueOf, rethrowAs(
                 ProgramVariable::class.simpleName, ProgramVariable.entries, ProgramVariable::name))
 
+    class AndroidCustomIntentNode(type: NodeType, rawValue: String) :
+        SimpleNode<AndroidCustomIntentVariable>(type, rawValue, AndroidCustomIntentVariable::valueOf, rethrowAs(
+            AndroidCustomIntentVariable::class.simpleName, AndroidCustomIntentVariable.entries, AndroidCustomIntentVariable::name))
+
     class NamedValueNode(type: NodeType, rawValue: String) :
             SimpleNode<NamedValue>(type, rawValue, NamedValue::valueOf, rethrowAs(
                 NamedValue::class.simpleName, NamedValue.entries, NamedValue::name))

@@ -36,7 +36,8 @@ enum class DataItemType(internal val symbol: String, private val parameterTypes:
     INDICATOR("N", IDType.IndicatorUID),
     ORG_UNIT_GROUP("OUG", IDType.OrganisationUnitGroupUID),
     REPORTING_RATE("R", IDType.DataSetUID, IDType.ReportingRateType),
-    PROGRAM_VARIABLE("V", IDType.ProgramVariableName);
+    PROGRAM_VARIABLE("V", IDType.ProgramVariableName),
+    ANDROID_CUSTOM_INTENT("VAR", IDType.AndroidCustomIntent);
 
     constructor(symbol: String, vararg parameterTypes: IDType) : this(
         symbol, listOf<List<IDType>>(listOf<IDType>(*parameterTypes)))

@@ -4,6 +4,7 @@ import kotlin.js.JsExport
 
 @JsExport
 enum class IDType {
+    AndroidCustomIntent,
     AttributeUID,
     AttributeOptionComboUID,
     CategoryOptionUID,
@@ -24,6 +25,6 @@ enum class IDType {
     ReportingRateType;
 
     fun isUID(): Boolean {
-        return this != ProgramVariableName && this != ReportingRateType;
+        return this != ProgramVariableName && this != ReportingRateType && this != AndroidCustomIntent
     }
 }
