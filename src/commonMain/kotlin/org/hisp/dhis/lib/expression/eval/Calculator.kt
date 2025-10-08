@@ -76,6 +76,10 @@ internal class Calculator(
                 evalToNumber(fn.child(1)))
             NamedFunction.d2_ceil -> functions.d2_ceil(evalToNumber(fn.child(0)))
             NamedFunction.d2_concatenate -> functions.d2_concatenate(evalToStrings(fn.children()))
+            NamedFunction.d2_condition -> functions.ifThenElse(
+                evalToBoolean(fn.child(0)),
+                evalToMixed(fn.child(1)),
+                evalToMixed(fn.child(2)))
             NamedFunction.d2_contains -> functions.contains(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
             NamedFunction.d2_containsItems -> functions.containsItems(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
             NamedFunction.d2_count -> functions.d2_count(evalToVar(fn.child(0)))
