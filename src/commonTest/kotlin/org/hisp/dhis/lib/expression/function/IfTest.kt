@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.function
 
 import org.hisp.dhis.lib.expression.Expression
+import org.hisp.dhis.lib.expression.ExpressionMode
 import org.hisp.dhis.lib.expression.spi.IllegalExpressionException
 import kotlin.test.Test
 import kotlin.test.assertEquals
