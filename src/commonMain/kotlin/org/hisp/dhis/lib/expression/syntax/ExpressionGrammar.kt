@@ -21,10 +21,10 @@ import org.hisp.dhis.lib.expression.syntax.Fragment.Companion.constant
  */
 object ExpressionGrammar {
 
-    private val STRING_PARSED = Fragment {expr, ctx -> run {
-        val nestedExpr = Literals.parseString(expr); // consumes the literal in parent expr
-        Expr.parse(nestedExpr, ctx, false);
-    }}
+    private val STRING_PARSED = Fragment {expr, ctx ->
+        val nestedExpr = Literals.parseString(expr) // consumes the literal in parent expr
+        Expr.parse(nestedExpr, ctx, false)
+    }
 
     /*
     Terminals (simple building blocks)
