@@ -9,7 +9,7 @@ repositories {
     mavenCentral()
 }
 
-version = "1.2.2-SNAPSHOT"
+version = "1.3.0-SNAPSHOT"
 group = "org.hisp.dhis.lib.expression"
 
 if (project.hasProperty("removeSnapshotSuffix")) {
@@ -54,6 +54,7 @@ kotlin {
         all {
             languageSettings.apply {
                 optIn("kotlin.js.ExperimentalJsExport")
+                optIn("kotlin.time.ExperimentalTime")
             }
         }
         val commonMain by getting {

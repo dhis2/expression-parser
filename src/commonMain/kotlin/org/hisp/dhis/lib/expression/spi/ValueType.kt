@@ -1,8 +1,8 @@
 package org.hisp.dhis.lib.expression.spi
 
-import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlin.js.JsExport
+import kotlin.time.Instant
 
 /**
  * A rough classification of what values building blocks expect and return.
