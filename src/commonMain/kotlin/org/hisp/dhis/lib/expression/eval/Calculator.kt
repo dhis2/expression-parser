@@ -60,7 +60,7 @@ internal class Calculator(
             NamedFunction.containsItems -> functions.containsItems(evalToString(fn.child(0)), evalToStrings(fn.children()).drop(1))
             NamedFunction.firstNonNull -> functions.firstNonNull(evalToMixed(fn.children()))
             NamedFunction.greatest -> functions.greatest(evalToNumbers(fn.children()))
-            NamedFunction.ifThenElse -> functions.ifThenElse(
+            NamedFunction.ifThenElse, NamedFunction.d2_condition -> functions.ifThenElse(
                 evalToBoolean(fn.child(0)),
                 evalToMixed(fn.child(1)),
                 evalToMixed(fn.child(2)))

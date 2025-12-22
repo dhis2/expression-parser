@@ -54,6 +54,7 @@ kotlin {
         all {
             languageSettings.apply {
                 optIn("kotlin.js.ExperimentalJsExport")
+                optIn("kotlin.time.ExperimentalTime")
             }
         }
         val commonMain by getting {

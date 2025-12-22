@@ -191,30 +191,31 @@ public final class org/hisp/dhis/lib/expression/ast/NamedValue : java/lang/Enum 
 
 public abstract interface class org/hisp/dhis/lib/expression/ast/Node : org/hisp/dhis/lib/expression/ast/NodeAnnotations, org/hisp/dhis/lib/expression/ast/Typed {
 	public static final field Companion Lorg/hisp/dhis/lib/expression/ast/Node$Companion;
-	public abstract fun addChild (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
-	public abstract fun addModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
-	public abstract fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public abstract fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public abstract fun child (I)Lorg/hisp/dhis/lib/expression/ast/Node;
-	public abstract fun childOrNull (I)Lorg/hisp/dhis/lib/expression/ast/Node;
-	public abstract fun children ()Lkotlin/sequences/Sequence;
-	public abstract fun eval (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun addChild (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun addModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun aggregate (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public fun child (I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun childOrNull (I)Lorg/hisp/dhis/lib/expression/ast/Node;
+	public fun children ()Lkotlin/sequences/Sequence;
+	public fun eval (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public abstract fun getRawValue ()Ljava/lang/String;
 	public abstract fun getType ()Lorg/hisp/dhis/lib/expression/ast/NodeType;
 	public abstract fun getValue ()Ljava/lang/Object;
-	public abstract fun isAnnotated ()Z
-	public abstract fun isEmpty ()Z
-	public abstract fun map (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public abstract fun modifiers ()Ljava/lang/Iterable;
-	public abstract fun size ()I
-	public abstract fun toDataItem ()Lorg/hisp/dhis/lib/expression/spi/DataItem;
-	public abstract fun toIDs ()Lkotlin/sequences/Sequence;
-	public abstract fun toVariable ()Lorg/hisp/dhis/lib/expression/spi/Variable;
-	public abstract fun transform (Lkotlin/jvm/functions/Function2;)V
+	public fun isAnnotated ()Z
+	public fun isEmpty ()Z
+	public fun map (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun modifiers ()Ljava/lang/Iterable;
+	public fun size ()I
+	public fun toDataItem ()Lorg/hisp/dhis/lib/expression/spi/DataItem;
+	public fun toIDs ()Lkotlin/sequences/Sequence;
+	public fun toVariable ()Lorg/hisp/dhis/lib/expression/spi/Variable;
+	public fun transform (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun visit (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun visit (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun walk (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun walkChildren (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public fun visit (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun visit$default (Lorg/hisp/dhis/lib/expression/ast/Node;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun walk (Lkotlin/jvm/functions/Function1;)V
+	public fun walkChildren (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class org/hisp/dhis/lib/expression/ast/Node$Companion {
@@ -583,7 +584,7 @@ public final class org/hisp/dhis/lib/expression/eval/Api {
 }
 
 public abstract interface class org/hisp/dhis/lib/expression/eval/NodeInterpreter {
-	public abstract fun evalArgument (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public fun evalArgument (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalBinaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalBoolean (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalDataItem (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
@@ -593,10 +594,10 @@ public abstract interface class org/hisp/dhis/lib/expression/eval/NodeInterprete
 	public abstract fun evalInteger (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalNamedValue (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
-	public abstract fun evalNode (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public fun evalNode (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalNull (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalNumber (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
-	public abstract fun evalParentheses (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
+	public fun evalParentheses (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalString (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalUid (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
 	public abstract fun evalUnaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)Ljava/lang/Object;
@@ -619,24 +620,24 @@ public final class org/hisp/dhis/lib/expression/eval/NodeValidator$Companion {
 }
 
 public abstract interface class org/hisp/dhis/lib/expression/eval/NodeVisitor {
-	public abstract fun visitArgument (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitBinaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitBoolean (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitDataItem (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitDate (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitFunction (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitIdentifier (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitInteger (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitNamedValue (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitNode (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitNull (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitNumber (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitParentheses (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitString (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitUid (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitUnaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)V
-	public abstract fun visitVariable (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitArgument (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitBinaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitBoolean (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitDataItem (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitDate (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitFunction (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitIdentifier (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitInteger (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitModifier (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitNamedValue (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitNode (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitNull (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitNumber (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitParentheses (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitString (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitUid (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitUnaryOperator (Lorg/hisp/dhis/lib/expression/ast/Node;)V
+	public fun visitVariable (Lorg/hisp/dhis/lib/expression/ast/Node;)V
 }
 
 public final class org/hisp/dhis/lib/expression/eval/NodeVisitor$DefaultImpls {
@@ -1385,65 +1386,65 @@ public final class org/hisp/dhis/lib/expression/spi/ExpressionData {
 }
 
 public abstract interface class org/hisp/dhis/lib/expression/spi/ExpressionFunctions {
-	public abstract fun avg ([D)D
-	public abstract fun contains (Ljava/lang/String;Ljava/util/List;)Z
-	public abstract fun containsItems (Ljava/lang/String;Ljava/util/List;)Z
-	public abstract fun count ([D)D
-	public abstract fun d2_addDays (Lkotlinx/datetime/LocalDate;Ljava/lang/Number;)Lkotlinx/datetime/LocalDate;
-	public abstract fun d2_ceil (Ljava/lang/Number;)D
-	public abstract fun d2_concatenate (Ljava/util/Collection;)Ljava/lang/String;
-	public abstract fun d2_count (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
-	public abstract fun d2_countIfValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/lang/String;)I
-	public abstract fun d2_countIfZeroPos (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
-	public abstract fun d2_daysBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
-	public abstract fun d2_extractDataMatrixValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public abstract fun d2_floor (Ljava/lang/Number;)D
-	public abstract fun d2_hasUserRole (Ljava/lang/String;Ljava/util/List;)Z
-	public abstract fun d2_hasValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Z
-	public abstract fun d2_inOrgUnitGroup (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/util/Map;)Z
-	public abstract fun d2_inUserGroup (Ljava/lang/String;Ljava/util/List;)Z
-	public abstract fun d2_lastEventDate (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Lkotlinx/datetime/LocalDate;
-	public abstract fun d2_left (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
-	public abstract fun d2_length (Ljava/lang/String;)I
-	public abstract fun d2_maxValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
-	public abstract fun d2_minValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
-	public abstract fun d2_minutesBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
-	public abstract fun d2_modulus (Ljava/lang/Number;Ljava/lang/Number;)D
-	public abstract fun d2_monthsBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
-	public abstract fun d2_oizp (Ljava/lang/Number;)D
-	public abstract fun d2_right (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
-	public abstract fun d2_round (Ljava/lang/Number;Ljava/lang/Integer;)D
-	public abstract fun d2_split (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
-	public abstract fun d2_substring (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Ljava/lang/String;
-	public abstract fun d2_validatePattern (Ljava/lang/String;Ljava/lang/String;)Z
-	public abstract fun d2_weeksBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
-	public abstract fun d2_yearsBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
-	public abstract fun d2_zScoreHFA (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
-	public abstract fun d2_zScoreWFA (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
-	public abstract fun d2_zScoreWFH (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
-	public abstract fun d2_zing (Ljava/lang/Number;)Ljava/lang/Number;
-	public abstract fun d2_zpvc (Ljava/util/List;)I
-	public abstract fun firstNonNull (Ljava/util/List;)Ljava/lang/Object;
-	public abstract fun greatest (Ljava/util/List;)Ljava/lang/Number;
-	public abstract fun ifThenElse (Ljava/lang/Boolean;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public abstract fun isNotNull (Ljava/lang/Object;)Z
-	public abstract fun isNull (Ljava/lang/Object;)Z
-	public abstract fun least (Ljava/util/List;)Ljava/lang/Number;
-	public abstract fun log (Ljava/lang/Number;)D
-	public abstract fun log10 (Ljava/lang/Number;)D
-	public abstract fun max ([D)D
-	public abstract fun median ([D)Ljava/lang/Double;
-	public abstract fun min ([D)D
-	public abstract fun normDistCum (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
-	public abstract fun normDistDen (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
-	public abstract fun percentileCont ([DLjava/lang/Double;)Ljava/lang/Double;
-	public abstract fun removeZeros (Ljava/lang/Number;)Ljava/lang/Number;
-	public abstract fun stddev ([D)D
-	public abstract fun stddevPop ([D)D
-	public abstract fun stddevSamp ([D)D
-	public abstract fun sum ([D)D
+	public fun avg ([D)D
+	public fun contains (Ljava/lang/String;Ljava/util/List;)Z
+	public fun containsItems (Ljava/lang/String;Ljava/util/List;)Z
+	public fun count ([D)D
+	public fun d2_addDays (Lkotlinx/datetime/LocalDate;Ljava/lang/Number;)Lkotlinx/datetime/LocalDate;
+	public fun d2_ceil (Ljava/lang/Number;)D
+	public fun d2_concatenate (Ljava/util/Collection;)Ljava/lang/String;
+	public fun d2_count (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
+	public fun d2_countIfValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/lang/String;)I
+	public fun d2_countIfZeroPos (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
+	public fun d2_daysBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public fun d2_extractDataMatrixValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun d2_floor (Ljava/lang/Number;)D
+	public fun d2_hasUserRole (Ljava/lang/String;Ljava/util/List;)Z
+	public fun d2_hasValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Z
+	public fun d2_inOrgUnitGroup (Ljava/lang/String;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/util/Map;)Z
+	public fun d2_inUserGroup (Ljava/lang/String;Ljava/util/List;)Z
+	public fun d2_lastEventDate (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)Lkotlinx/datetime/LocalDate;
+	public fun d2_left (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public fun d2_length (Ljava/lang/String;)I
+	public fun d2_maxValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
+	public fun d2_minValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
+	public fun d2_minutesBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public fun d2_modulus (Ljava/lang/Number;Ljava/lang/Number;)D
+	public fun d2_monthsBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public fun d2_oizp (Ljava/lang/Number;)D
+	public fun d2_right (Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public fun d2_round (Ljava/lang/Number;Ljava/lang/Integer;)D
+	public fun d2_split (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;)Ljava/lang/String;
+	public fun d2_substring (Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;)Ljava/lang/String;
+	public fun d2_validatePattern (Ljava/lang/String;Ljava/lang/String;)Z
+	public fun d2_weeksBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public fun d2_yearsBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public fun d2_zScoreHFA (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public fun d2_zScoreWFA (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public fun d2_zScoreWFH (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/String;)D
+	public fun d2_zing (Ljava/lang/Number;)Ljava/lang/Number;
+	public fun d2_zpvc (Ljava/util/List;)I
+	public fun firstNonNull (Ljava/util/List;)Ljava/lang/Object;
+	public fun greatest (Ljava/util/List;)Ljava/lang/Number;
+	public fun ifThenElse (Ljava/lang/Boolean;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun isNotNull (Ljava/lang/Object;)Z
+	public fun isNull (Ljava/lang/Object;)Z
+	public fun least (Ljava/util/List;)Ljava/lang/Number;
+	public fun log (Ljava/lang/Number;)D
+	public fun log10 (Ljava/lang/Number;)D
+	public fun max ([D)D
+	public fun median ([D)Ljava/lang/Double;
+	public fun min ([D)D
+	public fun normDistCum (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
+	public fun normDistDen (Ljava/lang/Number;Ljava/lang/Number;Ljava/lang/Number;)D
+	public fun percentileCont ([DLjava/lang/Double;)Ljava/lang/Double;
+	public fun removeZeros (Ljava/lang/Number;)Ljava/lang/Number;
+	public fun stddev ([D)D
+	public fun stddevPop ([D)D
+	public fun stddevSamp ([D)D
+	public fun sum ([D)D
 	public abstract fun unsupported (Ljava/lang/String;)Ljava/lang/Object;
-	public abstract fun variance ([D)Ljava/lang/Double;
+	public fun variance ([D)Ljava/lang/Double;
 }
 
 public final class org/hisp/dhis/lib/expression/spi/ExpressionFunctions$DefaultImpls {
@@ -1776,15 +1777,15 @@ public final class org/hisp/dhis/lib/expression/syntax/ExpressionGrammar {
 
 public abstract interface class org/hisp/dhis/lib/expression/syntax/Fragment {
 	public static final field Companion Lorg/hisp/dhis/lib/expression/syntax/Fragment$Companion;
-	public abstract fun isMaybe ()Z
-	public abstract fun isVarargs ()Z
-	public abstract fun maybe ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun named (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun isMaybe ()Z
+	public fun isVarargs ()Z
+	public fun maybe ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun name ()Ljava/lang/String;
+	public fun named (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public abstract fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
-	public abstract fun plus ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
-	public abstract fun quoted ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
-	public abstract fun star ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun plus ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun quoted ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun star ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 }
 
 public final class org/hisp/dhis/lib/expression/syntax/Fragment$Companion {
@@ -1839,10 +1840,11 @@ public final class org/hisp/dhis/lib/expression/syntax/Literals {
 }
 
 public abstract interface class org/hisp/dhis/lib/expression/syntax/ParseContext : org/hisp/dhis/lib/expression/syntax/FragmentContext {
-	public abstract fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
-	public abstract fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
-	public abstract fun beginNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;)V
+	public fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
+	public fun addNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun addNode$default (Lorg/hisp/dhis/lib/expression/syntax/ParseContext;Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;ILjava/lang/Object;)V
+	public fun beginNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;)V
 	public abstract fun beginNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;Ljava/lang/String;Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)V
 	public abstract fun endNode (Lorg/hisp/dhis/lib/expression/ast/NodeType;Lorg/hisp/dhis/lib/expression/ast/Position;)V
 }
@@ -1874,11 +1876,11 @@ public final class org/hisp/dhis/lib/expression/syntax/Parser$Companion {
 }
 
 public abstract interface class org/hisp/dhis/lib/expression/syntax/Terminal : org/hisp/dhis/lib/expression/syntax/Fragment {
-	public abstract fun by (Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)Lorg/hisp/dhis/lib/expression/syntax/Terminal;
-	public abstract fun factory ()Lorg/hisp/dhis/lib/expression/ast/Node$Factory;
+	public fun by (Lorg/hisp/dhis/lib/expression/ast/Node$Factory;)Lorg/hisp/dhis/lib/expression/syntax/Terminal;
+	public fun factory ()Lorg/hisp/dhis/lib/expression/ast/Node$Factory;
 	public abstract fun literalOf ()Lorg/hisp/dhis/lib/expression/ast/NodeType;
-	public abstract fun name ()Ljava/lang/String;
-	public abstract fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
+	public fun name ()Ljava/lang/String;
+	public fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
 }
 
 public final class org/hisp/dhis/lib/expression/syntax/Terminal$DefaultImpls {

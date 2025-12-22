@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.hisp.dhis.lib.expression/expression-parser/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.hisp.dhis.lib.expression/expression-parser)
+[![Maven Central](https://img.shields.io/maven-central/v/org.hisp.dhis.lib.expression/expression-parser?label=maven%20central)](https://central.sonatype.com/artifact/org.hisp.dhis.lib.expression/expression-parser)
 [![NPM Version](https://img.shields.io/npm/v/@dhis2/expression-parser)](https://www.npmjs.com/package/@dhis2/expression-parser)
 [![KDoc link](https://img.shields.io/badge/API_reference-KDoc-blue)](https://dhis2.github.io/expression-parser/api/)
 
