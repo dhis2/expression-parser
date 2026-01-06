@@ -106,6 +106,7 @@ object ExpressionGrammar {
         fn(NamedFunction.d2_daysBetween, expr, expr),
         fn(NamedFunction.d2_hasValue, dataItem),
         fn(NamedFunction.d2_maxValue, dataItem),
+        fn(NamedFunction.d2_minutesBetween, expr, expr),
         fn(NamedFunction.d2_minValue, dataItem),
         fn(NamedFunction.d2_monthsBetween, expr, expr),
         fn(NamedFunction.d2_oizp, expr),
@@ -139,7 +140,6 @@ object ExpressionGrammar {
     )
     private val ProgramIndicatorD2Functions = listOf(
         fn(NamedFunction.d2_countIfCondition, expr, STRING),
-        fn(NamedFunction.d2_minutesBetween, expr, expr),
         fn(NamedFunction.d2_relationshipCount, UID.quoted().maybe())
     )
     private val CommonConstants = listOf(
