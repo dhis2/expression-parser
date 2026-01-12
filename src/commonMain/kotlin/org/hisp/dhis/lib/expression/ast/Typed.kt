@@ -3,6 +3,8 @@ package org.hisp.dhis.lib.expression.ast
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.atTime
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import kotlin.time.Instant
@@ -38,6 +40,21 @@ fun interface Typed {
             if (value is String) return LocalDate.parse(value)
             if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
             throw IllegalArgumentException("Count not coerce to date: '$value'")
+        }
+
+        fun toInstantTypeCoercion(value: Any?): Instant? {
+            if (value == null) return null
+            if (value is VariableValue) return toInstantTypeCoercion(toMixedTypeTypeCoercion(value))
+            if (value is LocalDate) return value.atTime(0, 0).toInstant(TimeZone.UTC)
+            if (value is String) {
+                return try {
+                    Instant.parse(value)
+                } catch (e: IllegalArgumentException) {
+                    toInstantTypeCoercion(LocalDate.parse(value))
+                }
+            }
+            if (value is Instant) return value
+            throw IllegalArgumentException("Count not coerce to instant: '$value'")
         }
 
         fun toStringTypeCoercion(value: Any?): String? {

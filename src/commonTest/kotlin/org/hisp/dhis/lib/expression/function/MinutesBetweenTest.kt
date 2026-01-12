@@ -29,6 +29,12 @@ internal class MinutesBetweenTest {
     }
 
     @Test
+    fun testMinutesBetween_ISO8601() {
+        assertEquals(8, evaluate("d2:minutesBetween(\"2020-01-01T18:01:00Z\", \"2020-01-01T18:09:00Z\")"))
+        assertEquals(60, evaluate("d2:minutesBetween(\"2020-01-01\", \"2020-01-01T01:00:00Z\")"))
+    }
+
+    @Test
     fun testMinutesBetween_Null() {
         val ex = assertFailsWith(IllegalArgumentException::class) { evaluate("d2:minutesBetween(null, \"2021-01-01\")") }
         assertEquals("start parameter of d2:minutesBetween must not be null", ex.message)

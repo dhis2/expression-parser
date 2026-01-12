@@ -4,6 +4,7 @@ import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.*
 import org.hisp.dhis.lib.expression.ast.UnaryOperator.Companion.negate
 import org.hisp.dhis.lib.expression.spi.*
+import kotlin.time.Instant
 
 /**
  * A [NodeInterpreter] that calculates the expression result value using a [ExpressionFunctions] to
@@ -113,8 +114,8 @@ internal class Calculator(
             NamedFunction.d2_length -> functions.d2_length(evalToString(fn.child(0)))
             NamedFunction.d2_maxValue -> functions.d2_maxValue(evalToVar(fn.child(0)))
             NamedFunction.d2_minutesBetween -> functions.d2_minutesBetween(
-                evalToDate(fn.child(0)),
-                evalToDate(fn.child(1)))
+                evalToInstant(fn.child(0)),
+                evalToInstant(fn.child(1)))
             NamedFunction.d2_minValue -> functions.d2_minValue(evalToVar(fn.child(0)))
             NamedFunction.d2_modulus -> functions.d2_modulus(
                 evalToNumber(fn.child(0)),
@@ -311,6 +312,10 @@ internal class Calculator(
 
     fun evalToDate(node: Node<*>): LocalDate? {
         return eval(node, "Date", Typed::toDateTypeCoercion)
+    }
+
+    fun evalToInstant(node: Node<*>): Instant? {
+        return eval(node, "Instant", Typed::toInstantTypeCoercion)
     }
 
     private fun evalToInteger(node: Node<*>): Int? {
