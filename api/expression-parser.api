@@ -533,6 +533,7 @@ public abstract interface class org/hisp/dhis/lib/expression/ast/Typed {
 public final class org/hisp/dhis/lib/expression/ast/Typed$Companion {
 	public final fun toBooleanTypeCoercion (Ljava/lang/Object;)Ljava/lang/Boolean;
 	public final fun toDateTypeCoercion (Ljava/lang/Object;)Lkotlinx/datetime/LocalDate;
+	public final fun toInstantTypeCoercion (Ljava/lang/Object;)Lkotlin/time/Instant;
 	public final fun toMixedTypeTypeCoercion (Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun toNumberTypeCoercion (Ljava/lang/Object;)Ljava/lang/Double;
 	public final fun toStringTypeCoercion (Ljava/lang/Object;)Ljava/lang/String;
@@ -1408,7 +1409,7 @@ public abstract interface class org/hisp/dhis/lib/expression/spi/ExpressionFunct
 	public fun d2_length (Ljava/lang/String;)I
 	public fun d2_maxValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
 	public fun d2_minValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
-	public fun d2_minutesBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public fun d2_minutesBetween (Lkotlin/time/Instant;Lkotlin/time/Instant;)I
 	public fun d2_modulus (Ljava/lang/Number;Ljava/lang/Number;)D
 	public fun d2_monthsBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
 	public fun d2_oizp (Ljava/lang/Number;)D
@@ -1470,7 +1471,7 @@ public final class org/hisp/dhis/lib/expression/spi/ExpressionFunctions$DefaultI
 	public static fun d2_length (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;)I
 	public static fun d2_maxValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
 	public static fun d2_minValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)D
-	public static fun d2_minutesBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public static fun d2_minutesBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlin/time/Instant;Lkotlin/time/Instant;)I
 	public static fun d2_modulus (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;)D
 	public static fun d2_monthsBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
 	public static fun d2_oizp (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)D
