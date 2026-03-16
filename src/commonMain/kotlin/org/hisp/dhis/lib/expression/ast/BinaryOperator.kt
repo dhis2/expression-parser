@@ -201,16 +201,19 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
             if (left == null || right == null) {
                 return left == null && right == null
             }
-            if (left is Boolean || right is Boolean) {
-                return Typed.toBooleanTypeCoercion(left) == Typed.toBooleanTypeCoercion(right)
+            if (left is Number || right is Number) {
+                val leftNum = tryToNumber(left) ?: return false
+                val rightNum = tryToNumber(right) ?: return false
+                return leftNum == rightNum
             }
-            return if (left is Number || right is Number) {
-                Typed.toNumberTypeCoercion(left) == Typed.toNumberTypeCoercion(
-                    right
-                )
+            return if (left is Boolean || right is Boolean) {
+                Typed.toBooleanTypeCoercion(left) == Typed.toBooleanTypeCoercion(right)
             } else left == right
         }
 
+        private fun tryToNumber(value: Any?): Double? {
+            return try { Typed.toNumberTypeCoercion(value) } catch (_: Exception) { null }
+        }
 
         fun notEqual(left: Any?, right: Any?): Boolean {
             return !equal(left, right)
