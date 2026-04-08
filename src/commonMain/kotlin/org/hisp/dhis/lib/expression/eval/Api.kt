@@ -1,5 +1,6 @@
 package org.hisp.dhis.lib.expression.eval
 
+import org.hisp.dhis.lib.expression.ast.NamedFunction
 import org.hisp.dhis.lib.expression.ast.Node
 import org.hisp.dhis.lib.expression.ast.NodeType
 import org.hisp.dhis.lib.expression.ast.Nodes.VariableNode
@@ -109,5 +110,18 @@ Support functions to collect identifiers to supply values to main functions
                 ids.filter { id: ID -> id.type.isUID() }.forEach(set::add)
             }
         ) { node: Node<*> -> node.getType() === NodeType.DATA_ITEM }
+    }
+
+    internal fun collectFunctionStringArguments(root: Node<*>, function: NamedFunction, argIndex: Int = 0): Set<String> {
+        return root.aggregate(
+            LinkedHashSet(),
+            { node: Node<*> ->
+                val argNode = node.childOrNull(argIndex)
+                if (node.getValue() === function && argNode != null && argNode.getType() === NodeType.ARGUMENT && argNode.size() > 0)
+                    argNode.child(0).getRawValue()
+                else null
+            },
+            { set: MutableSet<String>, e: String? -> set.add(e!!) }
+        ) { node: Node<*> -> node.getType() === NodeType.FUNCTION }
     }
 }
