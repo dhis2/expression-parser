@@ -3,6 +3,8 @@ plugins {
     id("maven-publish-conventions")
     id("npm-publish-conventions")
     alias(libs.plugins.api.compatibility)
+    alias(libs.plugins.kover)
+    alias(libs.plugins.sonarqube)
 }
 
 repositories {
@@ -79,4 +81,30 @@ kotlin {
         val nativeMain by getting
         val nativeTest by getting
     }
+}
+
+sonarqube {
+    properties {
+        val branch = System.getenv("GIT_BRANCH")
+        val targetBranch = System.getenv("GIT_BRANCH_DEST")
+        val pullRequestId = System.getenv("PULL_REQUEST")
+
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.organization", "dhis2")
+        property("sonar.projectKey", "dhis2_expression-parser")
+        property("sonar.projectName", "expression-parser")
+        property("sonar.coverage.jacoco.xmlReportPaths", "${layout.buildDirectory.get()}/reports/kover/report.xml")
+
+        if (pullRequestId.isNullOrEmpty()) {
+            property("sonar.branch.name", branch)
+        } else {
+            property("sonar.pullrequest.base", targetBranch)
+            property("sonar.pullrequest.branch", branch)
+            property("sonar.pullrequest.key", pullRequestId)
+        }
+    }
+}
+
+tasks.named("sonar").configure {
+    dependsOn(":koverXmlReport")
 }
