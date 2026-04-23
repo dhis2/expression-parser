@@ -366,7 +366,7 @@ object Nodes {
              * a hyphen inside a character class is treated as a literal and cannot form an
              * unintended range. Both Java and JS unicode-mode regex accept \-.
              */
-            fun decodeToRegex(rawValue: String): String {
+            internal fun decodeToRegex(rawValue: String): String {
                 if (rawValue.indexOf('\\') < 0) return rawValue
                 val str = StringBuilder()
                 val chars = rawValue.toCharArray()
