@@ -2,6 +2,7 @@ package org.hisp.dhis.lib.expression.eval
 
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.*
+import org.hisp.dhis.lib.expression.ast.Nodes.Utf8StringNode
 import org.hisp.dhis.lib.expression.ast.UnaryOperator.Companion.negate
 import org.hisp.dhis.lib.expression.spi.*
 
@@ -303,7 +304,7 @@ internal class Calculator(
 
     private fun evalToRawString(node: Node<*>): String? {
         return when (node.getType()) {
-            NodeType.STRING -> node.getRawValue()
+            NodeType.STRING -> Utf8StringNode.decodeToRegex(node.getRawValue())
             NodeType.ARGUMENT -> evalToRawString(node.child(0))
             NodeType.PAR -> evalToRawString(node.child(0))
             else -> evalToString(node)

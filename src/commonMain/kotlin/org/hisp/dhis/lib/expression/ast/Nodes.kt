@@ -356,6 +356,45 @@ object Nodes {
                 }
                 return str.toString()
             }
+
+            /**
+             * Processes a raw expression-string value for use as a regex pattern on all platforms.
+             *
+             * Strips backslashes from expression-level escapes (e.g. \' -> ', \ -> ' ')
+             * but preserves standard regex escapes (\d, \w, \s, \uXXXX, etc.) so the
+             * regex engine receives them intact. In particular, \- is kept as \- so that
+             * a hyphen inside a character class is treated as a literal and cannot form an
+             * unintended range. Both Java and JS unicode-mode regex accept \-.
+             */
+            fun decodeToRegex(rawValue: String): String {
+                if (rawValue.indexOf('\\') < 0) return rawValue
+                val str = StringBuilder()
+                val chars = rawValue.toCharArray()
+                var i = 0
+                while (i < chars.size) {
+                    val c = chars[i++]
+                    if (c != '\\' || i >= chars.size) {
+                        str.append(c)
+                        continue
+                    }
+                    val next = chars[i++]
+                    when (next) {
+                        't', 'n', 'r', 'f', 'b',
+                        '\\', '^', '$', '.', '*', '+', '?', '(', ')', '[', ']', '{', '}', '|',
+                        '-', 'd', 'D', 'w', 'W', 's', 'S', 'B', 'p', 'P' -> str.append('\\').append(next)
+                        'u' -> {
+                            str.append('\\').append('u')
+                            repeat(4) { if (i < chars.size) str.append(chars[i++]) }
+                        }
+                        'x' -> {
+                            str.append('\\').append('x')
+                            repeat(2) { if (i < chars.size) str.append(chars[i++]) }
+                        }
+                        else -> str.append(next)
+                    }
+                }
+                return str.toString()
+            }
         }
     }
 
