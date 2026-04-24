@@ -29,12 +29,14 @@ internal class ValidatePatternTest {
     fun testValidatePattern_Match() {
         assertTrue(evaluate("d2:validatePattern(\"124\", \"[0-9]+\")"))
         assertTrue(evaluate("d2:validatePattern(\"12x4\", \"[0-9x]+\")"))
+        assertTrue(evaluate("d2:validatePattern(\"John\",(\"[a-zA-Z0-9À-ȕ\\'\\-\\‘\\`\\’\\ ]+\"))"))
     }
 
     @Test
     fun testValidatePattern_NoMatch() {
         assertFalse(evaluate("d2:validatePattern(\"12x4\", \"[0-9]+\")"))
         assertFalse(evaluate("d2:validatePattern(\"ab0\", \"[0-9x]+\")"))
+        assertFalse(evaluate("d2:validatePattern(\"Иван\",(\"[a-zA-Z0-9À-ȕ\\'\\-\\‘\\`\\’\\ ]+\"))"))
     }
 
     private fun evaluate(expression: String): Boolean {
