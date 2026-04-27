@@ -304,7 +304,7 @@ internal class Calculator(
 
     private fun evalToRawString(node: Node<*>): String? {
         return when (node.getType()) {
-            NodeType.STRING -> Utf8StringNode.decodeToRegex(node.getRawValue())
+            NodeType.STRING -> node.getRawValue()
             NodeType.ARGUMENT -> evalToRawString(node.child(0))
             NodeType.PAR -> evalToRawString(node.child(0))
             else -> evalToString(node)

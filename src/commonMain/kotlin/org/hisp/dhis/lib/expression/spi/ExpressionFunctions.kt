@@ -315,7 +315,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_validatePattern(input: String?, regex: String?): Boolean {
-        return input != null && regex != null && input.matches(regex.toRegex())
+        return input != null && regex != null && matchesPattern(input, regex)
     }
 
     fun d2_weeksBetween(start: LocalDate?, end: LocalDate?): Int {
