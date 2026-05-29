@@ -112,6 +112,8 @@ internal class Calculator(
                 evalToString(fn.child(0)),
                 evalToInteger(fn.child(1)))
             NamedFunction.d2_length -> functions.d2_length(evalToString(fn.child(0)))
+            NamedFunction.d2_log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
+            else functions.log(evalToNumber(fn.child(0))) / functions.log(evalToNumber(fn.child(1)))
             NamedFunction.d2_maxValue -> functions.d2_maxValue(evalToVar(fn.child(0)))
             NamedFunction.d2_minutesBetween -> functions.d2_minutesBetween(
                 evalToDate(fn.child(0)),
@@ -124,6 +126,9 @@ internal class Calculator(
                 evalToDate(fn.child(0)),
                 evalToDate(fn.child(1)))
             NamedFunction.d2_oizp -> functions.d2_oizp(evalToNumber(fn.child(0)))
+            NamedFunction.d2_pow -> functions.d2_pow(
+                evalToNumber(fn.child(0)),
+                evalToNumber(fn.child(1)))
             NamedFunction.d2_right -> functions.d2_right(
                 evalToString(fn.child(0)),
                 evalToInteger(fn.child(1)))

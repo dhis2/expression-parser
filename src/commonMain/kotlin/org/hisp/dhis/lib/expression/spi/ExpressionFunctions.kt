@@ -10,6 +10,7 @@ import org.hisp.dhis.lib.expression.math.ZScore
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.ln
+import kotlin.math.pow
 
 /**
  * Implementation API for all expression languages functions.
@@ -280,6 +281,10 @@ fun interface ExpressionFunctions {
 
     fun d2_oizp(value: Number?): Double {
         return if (value != null && value.toDouble() >= 0.0) 1.0 else 0.0
+    }
+
+    fun d2_pow(base: Number?, exponent: Number?): Double {
+        return (base ?: 1.0).toDouble().pow((exponent ?: 0).toDouble())
     }
 
     fun d2_right(input: String?, length: Int?): String? {
