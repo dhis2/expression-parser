@@ -68,7 +68,7 @@ internal class Calculator(
             NamedFunction.isNotNull -> functions.isNotNull(evalToMixed(fn.child(0)))
             NamedFunction.isNull -> functions.isNull(evalToMixed(fn.child(0)))
             NamedFunction.least -> functions.least(evalToNumbers(fn.children()))
-            NamedFunction.log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
+            NamedFunction.log, NamedFunction.d2_log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
             else functions.log(evalToNumber(fn.child(0))) / functions.log(evalToNumber(fn.child(1)))
             NamedFunction.log10 -> functions.log10(evalToNumber(fn.child(0)))
             NamedFunction.removeZeros -> functions.removeZeros(evalToNumber(fn.child(0)))
@@ -112,8 +112,6 @@ internal class Calculator(
                 evalToString(fn.child(0)),
                 evalToInteger(fn.child(1)))
             NamedFunction.d2_length -> functions.d2_length(evalToString(fn.child(0)))
-            NamedFunction.d2_log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
-            else functions.log(evalToNumber(fn.child(0))) / functions.log(evalToNumber(fn.child(1)))
             NamedFunction.d2_maxValue -> functions.d2_maxValue(evalToVar(fn.child(0)))
             NamedFunction.d2_minutesBetween -> functions.d2_minutesBetween(
                 evalToDate(fn.child(0)),
