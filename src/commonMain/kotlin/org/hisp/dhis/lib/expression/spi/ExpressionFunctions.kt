@@ -209,6 +209,10 @@ fun interface ExpressionFunctions {
         return start.daysUntil(end)
     }
 
+    fun d2_exponent(base: Number?, exponent: Number?): Double {
+        return (base ?: 1.0).toDouble().pow((exponent ?: 0).toDouble())
+    }
+
     fun d2_extractDataMatrixValue(gs1Key: String?, value: String?): String? {
         return fromKey(gs1Key!!).format(value)
     }
@@ -281,10 +285,6 @@ fun interface ExpressionFunctions {
 
     fun d2_oizp(value: Number?): Double {
         return if (value != null && value.toDouble() >= 0.0) 1.0 else 0.0
-    }
-
-    fun d2_pow(base: Number?, exponent: Number?): Double {
-        return (base ?: 1.0).toDouble().pow((exponent ?: 0).toDouble())
     }
 
     fun d2_right(input: String?, length: Int?): String? {

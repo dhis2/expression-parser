@@ -124,7 +124,7 @@ internal class Calculator(
                 evalToDate(fn.child(0)),
                 evalToDate(fn.child(1)))
             NamedFunction.d2_oizp -> functions.d2_oizp(evalToNumber(fn.child(0)))
-            NamedFunction.d2_pow -> functions.d2_pow(
+            NamedFunction.d2_exponent -> functions.d2_exponent(
                 evalToNumber(fn.child(0)),
                 evalToNumber(fn.child(1)))
             NamedFunction.d2_right -> functions.d2_right(
