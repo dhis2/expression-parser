@@ -6,9 +6,9 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 /**
- * Tests the `pow` function
+ * Tests the `d2:exponent` function
  *
- * @author Jan Bernitt / Tony Valle
+ * @author Tony Valle
  */
 internal class ExponentTest {
 
@@ -17,6 +17,7 @@ internal class ExponentTest {
         assertEquals(1.0, evaluate("d2:exponent(49, 0)"))
         assertEquals(7.0, evaluate("d2:exponent(49, 0.5)"))
         assertEquals(49.0, evaluate("d2:exponent(49, 1)"))
+        assertEquals(64.0, evaluate("d2:exponent(32, 1.2)"))
     }
 
     @Test
