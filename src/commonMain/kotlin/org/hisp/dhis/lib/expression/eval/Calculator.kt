@@ -68,7 +68,7 @@ internal class Calculator(
             NamedFunction.isNotNull -> functions.isNotNull(evalToMixed(fn.child(0)))
             NamedFunction.isNull -> functions.isNull(evalToMixed(fn.child(0)))
             NamedFunction.least -> functions.least(evalToNumbers(fn.children()))
-            NamedFunction.log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
+            NamedFunction.log, NamedFunction.d2_log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
             else functions.log(evalToNumber(fn.child(0))) / functions.log(evalToNumber(fn.child(1)))
             NamedFunction.log10 -> functions.log10(evalToNumber(fn.child(0)))
             NamedFunction.removeZeros -> functions.removeZeros(evalToNumber(fn.child(0)))
@@ -124,6 +124,9 @@ internal class Calculator(
                 evalToDate(fn.child(0)),
                 evalToDate(fn.child(1)))
             NamedFunction.d2_oizp -> functions.d2_oizp(evalToNumber(fn.child(0)))
+            NamedFunction.d2_exponent -> functions.d2_exponent(
+                evalToNumber(fn.child(0)),
+                evalToNumber(fn.child(1)))
             NamedFunction.d2_right -> functions.d2_right(
                 evalToString(fn.child(0)),
                 evalToInteger(fn.child(1)))

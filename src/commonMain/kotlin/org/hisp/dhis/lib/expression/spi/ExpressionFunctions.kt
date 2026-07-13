@@ -10,6 +10,7 @@ import org.hisp.dhis.lib.expression.math.ZScore
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.ln
+import kotlin.math.pow
 
 /**
  * Implementation API for all expression languages functions.
@@ -206,6 +207,10 @@ fun interface ExpressionFunctions {
         require(start != null) { "start parameter of d2:daysBetween must not be null" }
         require(end != null) { "end parameter of d2:daysBetween must not be null" }
         return start.daysUntil(end)
+    }
+
+    fun d2_exponent(base: Number?, exponent: Number?): Double {
+        return (base ?: 1.0).toDouble().pow((exponent ?: 0).toDouble())
     }
 
     fun d2_extractDataMatrixValue(gs1Key: String?, value: String?): String? {

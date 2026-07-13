@@ -113,6 +113,7 @@ public final class org/hisp/dhis/lib/expression/ast/NamedFunction : java/lang/En
 	public static final field d2_countIfValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_countIfZeroPos Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_daysBetween Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_exponent Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_extractDataMatrixValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_floor Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_hasUserRole Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
@@ -122,6 +123,7 @@ public final class org/hisp/dhis/lib/expression/ast/NamedFunction : java/lang/En
 	public static final field d2_lastEventDate Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_left Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_length Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
+	public static final field d2_log Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_maxValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_minValue Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
 	public static final field d2_minutesBetween Lorg/hisp/dhis/lib/expression/ast/NamedFunction;
@@ -1398,6 +1400,7 @@ public abstract interface class org/hisp/dhis/lib/expression/spi/ExpressionFunct
 	public fun d2_countIfValue (Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/lang/String;)I
 	public fun d2_countIfZeroPos (Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
 	public fun d2_daysBetween (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public fun d2_exponent (Ljava/lang/Number;Ljava/lang/Number;)D
 	public fun d2_extractDataMatrixValue (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public fun d2_floor (Ljava/lang/Number;)D
 	public fun d2_hasUserRole (Ljava/lang/String;Ljava/util/List;)Z
@@ -1460,6 +1463,7 @@ public final class org/hisp/dhis/lib/expression/spi/ExpressionFunctions$DefaultI
 	public static fun d2_countIfValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;Ljava/lang/String;)I
 	public static fun d2_countIfZeroPos (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lorg/hisp/dhis/lib/expression/spi/VariableValue;)I
 	public static fun d2_daysBetween (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)I
+	public static fun d2_exponent (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;Ljava/lang/Number;)D
 	public static fun d2_extractDataMatrixValue (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
 	public static fun d2_floor (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/Number;)D
 	public static fun d2_hasUserRole (Lorg/hisp/dhis/lib/expression/spi/ExpressionFunctions;Ljava/lang/String;Ljava/util/List;)Z
