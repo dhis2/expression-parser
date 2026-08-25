@@ -36,6 +36,10 @@ class ExpressionJs(expression: String, mode: ExpressionMode) {
         return expr.collectUIDs().toTypedArray()
     }
 
+    fun collectInOrgUnitGroups(): Array<String> {
+        return expr.collectInOrgUnitGroups().toTypedArray()
+    }
+
     fun describe(displayNames: JsMap<String, String>): String {
         return expr.describe(toMap(displayNames, { it }, { it }))
     }

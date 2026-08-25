@@ -1,8 +1,10 @@
 package org.hisp.dhis.lib.expression
 
+import org.hisp.dhis.lib.expression.ast.NamedFunction
 import org.hisp.dhis.lib.expression.ast.Node
 import org.hisp.dhis.lib.expression.ast.VariableType
 import org.hisp.dhis.lib.expression.eval.Api.collectDataItems
+import org.hisp.dhis.lib.expression.eval.Api.collectFunctionStringArguments
 import org.hisp.dhis.lib.expression.eval.Api.collectUIDs
 import org.hisp.dhis.lib.expression.eval.Api.collectVariableNames
 import org.hisp.dhis.lib.expression.eval.Api.collectVariables
@@ -41,6 +43,10 @@ class Expression(
 
     fun collectProgramVariablesNames(): Set<String> {
         return collectVariableNames(root, VariableType.PROGRAM)
+    }
+
+    fun collectInOrgUnitGroups(): Set<String> {
+        return collectFunctionStringArguments(root, NamedFunction.d2_inOrgUnitGroup)
     }
 
     /**

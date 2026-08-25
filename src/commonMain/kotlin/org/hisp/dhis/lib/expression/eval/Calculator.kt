@@ -2,6 +2,7 @@ package org.hisp.dhis.lib.expression.eval
 
 import kotlinx.datetime.LocalDate
 import org.hisp.dhis.lib.expression.ast.*
+import org.hisp.dhis.lib.expression.ast.Nodes.Utf8StringNode
 import org.hisp.dhis.lib.expression.ast.UnaryOperator.Companion.negate
 import org.hisp.dhis.lib.expression.spi.*
 import kotlin.time.Instant
@@ -68,7 +69,7 @@ internal class Calculator(
             NamedFunction.isNotNull -> functions.isNotNull(evalToMixed(fn.child(0)))
             NamedFunction.isNull -> functions.isNull(evalToMixed(fn.child(0)))
             NamedFunction.least -> functions.least(evalToNumbers(fn.children()))
-            NamedFunction.log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
+            NamedFunction.log, NamedFunction.d2_log -> if (fn.size() == 1) functions.log(evalToNumber(fn.child(0)))
             else functions.log(evalToNumber(fn.child(0))) / functions.log(evalToNumber(fn.child(1)))
             NamedFunction.log10 -> functions.log10(evalToNumber(fn.child(0)))
             NamedFunction.removeZeros -> functions.removeZeros(evalToNumber(fn.child(0)))
@@ -124,6 +125,9 @@ internal class Calculator(
                 evalToDate(fn.child(0)),
                 evalToDate(fn.child(1)))
             NamedFunction.d2_oizp -> functions.d2_oizp(evalToNumber(fn.child(0)))
+            NamedFunction.d2_exponent -> functions.d2_exponent(
+                evalToNumber(fn.child(0)),
+                evalToNumber(fn.child(1)))
             NamedFunction.d2_right -> functions.d2_right(
                 evalToString(fn.child(0)),
                 evalToInteger(fn.child(1)))
@@ -140,7 +144,7 @@ internal class Calculator(
                 evalToInteger(fn.child(2)))
             NamedFunction.d2_validatePattern -> functions.d2_validatePattern(
                 evalToString(fn.child(0)),
-                evalToString(fn.child(1)))
+                evalToRawString(fn.child(1)))
             NamedFunction.d2_weeksBetween -> functions.d2_weeksBetween(
                 evalToDate(fn.child(0)),
                 evalToDate(fn.child(1)))
@@ -300,6 +304,15 @@ internal class Calculator(
 
     fun evalToString(node: Node<*>): String? {
         return eval(node, "String", Typed::toStringTypeCoercion)
+    }
+
+    private fun evalToRawString(node: Node<*>): String? {
+        return when (node.getType()) {
+            NodeType.STRING -> node.getRawValue()
+            NodeType.ARGUMENT -> evalToRawString(node.child(0))
+            NodeType.PAR -> evalToRawString(node.child(0))
+            else -> evalToString(node)
+        }
     }
 
     fun evalToBoolean(node: Node<*>): Boolean? {

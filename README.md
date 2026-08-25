@@ -1,5 +1,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.hisp.dhis.lib.expression/expression-parser?label=maven%20central)](https://central.sonatype.com/artifact/org.hisp.dhis.lib.expression/expression-parser)
 [![NPM Version](https://img.shields.io/npm/v/@dhis2/expression-parser)](https://www.npmjs.com/package/@dhis2/expression-parser)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=dhis2_expression-parser&metric=coverage&branch=main)](https://sonarcloud.io/summary/overall?id=dhis2_expression-parser&branch=main)
 [![KDoc link](https://img.shields.io/badge/API_reference-KDoc-blue)](https://dhis2.github.io/expression-parser/api/)
 
 # Expression Parser

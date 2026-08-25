@@ -81,6 +81,14 @@ internal class HasValueTest : AbstractVariableBasedTest() {
         assertProgramVariableNames(setOf("var"), "d2:hasValue(V{var})")
     }
 
+    @Test
+    fun collectOrgUnitGroup() {
+        assertOrgUnitGroups(setOf("groupA"), "d2:inOrgUnitGroup(\"groupA\")")
+        assertOrgUnitGroups(setOf("CXw2yu5fodb"), "d2:inOrgUnitGroup(\"CXw2yu5fodb\")")
+        assertOrgUnitGroups(setOf("CXw2yu5fodb","gzcv65VyaGq"), "d2:inOrgUnitGroup(\"CXw2yu5fodb\") && d2:inOrgUnitGroup(\"gzcv65VyaGq\")")
+        assertOrgUnitGroups(setOf(), "d2:hasValue(A{var})")
+    }
+
     private fun assertHasValue(expression: String, values: Map<String, VariableValue>, expected: Boolean) {
         assertEquals(expected, evaluate(expression, values))
     }
@@ -93,6 +101,11 @@ internal class HasValueTest : AbstractVariableBasedTest() {
     private fun assertProgramVariableNames(expected: Set<String>, expression: String) {
         val expr = Expression(expression, ExpressionMode.PROGRAM_INDICATOR_EXPRESSION)
         assertEquals(expected, expr.collectProgramVariablesNames());
+    }
+
+    private fun assertOrgUnitGroups(expected: Set<String>, expression: String) {
+        val expr = Expression(expression, ExpressionMode.RULE_ENGINE_CONDITION)
+        assertEquals(expected, expr.collectInOrgUnitGroups());
     }
 
 }

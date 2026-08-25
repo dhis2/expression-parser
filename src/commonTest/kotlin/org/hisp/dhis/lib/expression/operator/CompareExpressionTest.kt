@@ -87,17 +87,33 @@ internal class CompareExpressionTest {
         assertEquals(true, evaluate("'hi' == \"hi\""))
         assertEquals(true, evaluate("'true' == true"))
         assertEquals(true, evaluate("true == 'true'"))
+
+        // Any value that cannot be coerced to a number is not equal to any number
+        assertEquals(false, evaluate("2 == ''"))
+        assertEquals(false, evaluate("2 == 'any string that is not a number'"))
+
+        // Booleans are coerced to numbers (true→1, false→0) when compared with a number
+        assertEquals(true, evaluate("1 == true"))
+        assertEquals(true, evaluate("0 == false"))
+        assertEquals(false, evaluate("0 == true"))
+        assertEquals(false, evaluate("1 == false"))
+        assertEquals(true, evaluate("1.0 == true"))
+        assertEquals(true, evaluate("0.0 == false"))
+        assertEquals(false, evaluate("2.5 == true"))
+        assertEquals(false, evaluate("2.5 == false"))
+        assertEquals(false, evaluate("2 == true"))
+        assertEquals(false, evaluate("2 == false"))
+
+        // Any string other than 'true' is coerced to false
+        assertEquals(true, evaluate("false == ''"))
+        assertEquals(true, evaluate("false == 'any string that is not a boolean'"))
+        assertEquals(false, evaluate("true == ''"))
+        assertEquals(false, evaluate("true == 'any string that is not a boolean'"))
     }
 
     @Test
     fun testDivideByZero() {
         assertEquals(false, evaluate("2 == 2 / 0"))
-    }
-
-    @Test
-    fun testIncompatibleTypes() {
-        val ex = assertFailsWith(IllegalArgumentException::class) { evaluate("2.1 == false") }
-        assertEquals("Could not coerce Double '2.1' to Boolean", ex.message)
     }
 
     companion object {

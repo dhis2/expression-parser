@@ -11,6 +11,7 @@ import org.hisp.dhis.lib.expression.math.ZScore
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.ln
+import kotlin.math.pow
 
 /**
  * Implementation API for all expression languages functions.
@@ -209,6 +210,10 @@ fun interface ExpressionFunctions {
         return start.daysUntil(end)
     }
 
+    fun d2_exponent(base: Number?, exponent: Number?): Double {
+        return (base ?: 1.0).toDouble().pow((exponent ?: 0).toDouble())
+    }
+
     fun d2_extractDataMatrixValue(gs1Key: String?, value: String?): String? {
         return fromKey(gs1Key!!).format(value)
     }
@@ -316,7 +321,7 @@ fun interface ExpressionFunctions {
     }
 
     fun d2_validatePattern(input: String?, regex: String?): Boolean {
-        return input != null && regex != null && input.matches(regex.toRegex())
+        return input != null && regex != null && matchesPattern(input, regex)
     }
 
     fun d2_weeksBetween(start: LocalDate?, end: LocalDate?): Int {
