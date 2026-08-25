@@ -15,30 +15,31 @@ internal class MinutesBetweenTest {
 
     @Test
     fun testMinutesBetween() {
-        val minPerDay = 60 * 24
-        assertEquals(6 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-01\", \"2020-01-07\")"))
-        assertEquals(31 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-01\", \"2020-02-01\")"))
-        assertEquals(29 * minPerDay, evaluate("d2:minutesBetween(\"2020-02-01\", \"2020-03-01\")"))
-        assertEquals(366 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-01\", \"2021-01-01\")"))
+        val minPerDay = 60 * 24.0
+        assertEquals(6 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-01\", \"2020-01-07\")") as Double, 0.01)
+        assertEquals(31 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-01\", \"2020-02-01\")") as Double, 0.01)
+        assertEquals(29 * minPerDay, evaluate("d2:minutesBetween(\"2020-02-01\", \"2020-03-01\")") as Double, 0.01)
+        assertEquals(366 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-01\", \"2021-01-01\")") as Double, 0.01)
     }
 
     @Test
     fun testMinutesBetween_Negative() {
-        val minPerDay = 60 * 24
-        assertEquals(-6 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-07\", \"2020-01-01\")"))
+        val minPerDay = 60 * 24.0
+        assertEquals(-6 * minPerDay, evaluate("d2:minutesBetween(\"2020-01-07\", \"2020-01-01\")") as Double, 0.01)
     }
 
     @Test
     fun testMinutesBetween_ISO8601() {
-        assertEquals(8, evaluate("d2:minutesBetween(\"2020-01-01T18:01:00Z\", \"2020-01-01T18:09:00Z\")"))
-        assertEquals(60, evaluate("d2:minutesBetween(\"2020-01-01\", \"2020-01-01T01:00:00Z\")"))
+        assertEquals(8.0, evaluate("d2:minutesBetween(\"2020-01-01T18:01:00Z\", \"2020-01-01T18:09:00Z\")") as Double, 0.01)
+        assertEquals(0.25, evaluate("d2:minutesBetween(\"2020-01-01T12:00:00Z\", \"2020-01-01T12:00:15Z\")") as Double, 0.01)
+        assertEquals(60.0, evaluate("d2:minutesBetween(\"2020-01-01\", \"2020-01-01T01:00:00Z\")") as Double, 0.01)
     }
 
     @Test
     fun testMinutesBetween_dateTime() {
-        assertEquals(25, evaluate("d2:minutesBetween(\"2020-01-01 14:15\", \"2020-01-01 14:40\")"))
-        assertEquals(3, evaluate("d2:minutesBetween(\"2020-01-01 09:00\", \"2020-01-01 09:03\")"))
-        assertEquals(60 * 24, evaluate("d2:minutesBetween(\"2020-01-01 12:00\", \"2020-01-02 12:00\")"))
+        assertEquals(25.0, evaluate("d2:minutesBetween(\"2020-01-01 14:15\", \"2020-01-01 14:40\")") as Double, 0.01)
+        assertEquals(3.0, evaluate("d2:minutesBetween(\"2020-01-01 09:00\", \"2020-01-01 09:03\")") as Double, 0.01)
+        assertEquals(60 * 24.0, evaluate("d2:minutesBetween(\"2020-01-01 12:00\", \"2020-01-02 12:00\")") as Double, 0.01)
     }
 
     @Test
