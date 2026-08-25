@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.spi
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import kotlin.time.Instant
 import kotlinx.datetime.*
 import org.hisp.dhis.lib.expression.ast.BinaryOperator.Companion.modulo
 import org.hisp.dhis.lib.expression.math.GS1Elements.Companion.fromKey
@@ -262,10 +263,10 @@ fun interface ExpressionFunctions {
         else value.candidates.maxOfOrNull(String::toDouble) ?: Double.NaN
     }
 
-    fun d2_minutesBetween(start: LocalDate?, end: LocalDate?): Int {
+    fun d2_minutesBetween(start: Instant?, end: Instant?): Double {
         require(start != null) { "start parameter of d2:minutesBetween must not be null" }
         require(end != null) { "end parameter of d2:minutesBetween must not be null" }
-        return d2_daysBetween(start, end).times(24 * 60)
+        return (end - start).inWholeSeconds.toDouble() / 60
     }
 
     fun d2_minValue(value: VariableValue?): Double {
