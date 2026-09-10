@@ -21,6 +21,7 @@ fun interface Typed {
             if (value is VariableValue) return toNumberTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is Boolean) return if (value == true) 1.0 else 0.0
             if (value is LocalDate) return value.toEpochDays().toDouble()
+            if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date.toEpochDays().toDouble()
             return (value as? Number)?.toDouble() ?: value.toString().toDouble()
         }
 
