@@ -1,8 +1,12 @@
 package org.hisp.dhis.lib.expression.ast
 
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.atTime
+import kotlinx.datetime.format.char
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import kotlin.time.Instant
@@ -17,6 +21,7 @@ fun interface Typed {
             if (value is VariableValue) return toNumberTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is Boolean) return if (value == true) 1.0 else 0.0
             if (value is LocalDate) return value.toEpochDays().toDouble()
+            if (value is Instant) return value.toEpochMilliseconds().toDouble()
             return (value as? Number)?.toDouble() ?: value.toString().toDouble()
         }
 
@@ -38,6 +43,23 @@ fun interface Typed {
             if (value is String) return LocalDate.parse(value)
             if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
             throw IllegalArgumentException("Count not coerce to date: '$value'")
+        }
+
+        fun toInstantTypeCoercion(value: Any?): Instant? {
+            if (value == null) return null
+            if (value is VariableValue) return toInstantTypeCoercion(toMixedTypeTypeCoercion(value))
+            if (value is LocalDate) return value.atTime(0, 0).toInstant(TimeZone.UTC)
+            if (value is String) {
+                return listOf(
+                    { Instant.parse(value) },
+                    { LocalDateTime.parse(value, dateTimeFormat).toInstant(TimeZone.UTC) },
+                    { toInstantTypeCoercion(LocalDate.parse(value)) }
+                ).firstNotNullOfOrNull {
+                    parser -> runCatching { parser() }.getOrNull()
+                } ?: throw IllegalArgumentException("Count not coerce to instant: '$value'")
+            }
+            if (value is Instant) return value
+            throw IllegalArgumentException("Count not coerce to instant: '$value'")
         }
 
         fun toStringTypeCoercion(value: Any?): String? {
@@ -62,6 +84,18 @@ fun interface Typed {
 
         private fun isNonFractionValue(value: Number): Boolean {
             return value.toDouble() % 1.0 == 0.0
+        }
+
+        private val dateTimeFormat = LocalDateTime.Format {
+            year()
+            char('-')
+            monthNumber()
+            char('-')
+            day()
+            char(' ')
+            hour()
+            char(':')
+            minute()
         }
     }
 }
