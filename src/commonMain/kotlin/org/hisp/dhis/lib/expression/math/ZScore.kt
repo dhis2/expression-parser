@@ -1,7 +1,6 @@
 package org.hisp.dhis.lib.expression.math
 
-import kotlin.math.abs
-import kotlin.math.pow
+import kotlin.math.round
 
 /**
  * @author Zubair Asghar (original in rule engine)
@@ -64,7 +63,7 @@ object ZScore {
             result = table.sdMap[higherLimitY]!! + decimalAddition
         }
         result *= multiplicationFactor
-        return result.toDouble().simpleFormat().toDouble()
+        return round(result.toDouble() * 100) / 100
     }
 
     private fun getMultiplicationFactor(table: ZScoreTable.Entry, weight: Float): Int {
@@ -84,24 +83,5 @@ object ZScore {
         WFH(ZScoreTable.Z_SCORE_WFH_TABLE_BOY, ZScoreTable.Z_SCORE_WFH_TABLE_GIRL);
 
 
-    }
-
-    private fun Number.simpleFormat(numberDigitsAfterSeparator: Int = 2, decimalSeparator: Char = '.'): String {
-        val prefix = this.toInt()
-        if(numberDigitsAfterSeparator == 0)return "$prefix"
-
-        val sign = if(this.toDouble() >= 0.0) "" else "-"
-
-        val afterSeparatorPart = abs(this.toDouble() - prefix)
-        val suffixInt = (10.0.pow(numberDigitsAfterSeparator) * afterSeparatorPart).toInt()
-        val suffix = if(afterSeparatorPart >= 1.0) "$suffixInt" else addNullsBefore(suffixInt, numberDigitsAfterSeparator)
-        return "$sign${abs(prefix)}$decimalSeparator$suffix"
-    }
-
-    private fun addNullsBefore(suffixInt: Int, numberDigitsAfterSeparator: Int): String {
-        var s = "$suffixInt"
-        val len = s.length
-        repeat(numberDigitsAfterSeparator - len) { _ -> s = "0$s" }
-        return s
     }
 }
