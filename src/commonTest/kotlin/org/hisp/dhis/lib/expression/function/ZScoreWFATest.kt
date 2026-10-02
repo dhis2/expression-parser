@@ -55,8 +55,21 @@ internal class ZScoreWFATest {
     }
 
     @Test
+    fun testZScoreWFA_FiveToTenYears() {
+        // WHO growth reference 2007
+        assertEquals(0.0, evaluate("d2:zScoreWFA(61, 18.5, \"m\")"))
+        assertEquals(0.02, evaluate("d2:zScoreWFA(61, 18.3, \"f\")"))
+        assertEquals(0.25, evaluate("d2:zScoreWFA(90, 25.0, \"m\")"))
+        assertEquals(-1.1, evaluate("d2:zScoreWFA(90, 20.0, \"f\")"))
+        assertEquals(0.01, evaluate("d2:zScoreWFA(120, 31.2, \"m\")"))
+        assertEquals(1.23, evaluate("d2:zScoreWFA(120, 40.0, \"f\")"))
+        assertEquals(-4.22, evaluate("d2:zScoreWFA(100, 15.0, \"m\")"))
+        assertEquals(3.41, evaluate("d2:zScoreWFA(100, 50.0, \"f\")"))
+    }
+
+    @Test
     fun testZScoreWFA_UnknownAge() {
-        for (age in listOf("-1", "6.5", "61")) {
+        for (age in listOf("-1", "6.5", "121")) {
             val ex = assertFailsWith(IllegalArgumentException::class) { evaluate("d2:zScoreWFA($age, 8, \"m\")") }
             assertEquals("No key exist for provided parameters", ex.message)
         }

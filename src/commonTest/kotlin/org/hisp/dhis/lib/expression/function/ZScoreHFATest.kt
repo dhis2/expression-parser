@@ -56,6 +56,27 @@ internal class ZScoreHFATest {
         assertEquals(4.27, evaluate("d2:zScoreHFA(12, 85.0, \"f\")"))
     }
 
+    @Test
+    fun testZScoreHFA_FiveToNineteenYears() {
+        // WHO growth reference 2007
+        assertEquals(0.01, evaluate("d2:zScoreHFA(61, 110.3, \"m\")"))
+        assertEquals(0.0, evaluate("d2:zScoreHFA(61, 109.6, \"f\")"))
+        assertEquals(-1.03, evaluate("d2:zScoreHFA(150, 145.0, \"m\")"))
+        assertEquals(-2.03, evaluate("d2:zScoreHFA(150, 140.0, \"f\")"))
+        assertEquals(-0.01, evaluate("d2:zScoreHFA(228, 176.5, \"m\")"))
+        assertEquals(-2.01, evaluate("d2:zScoreHFA(228, 150.0, \"f\")"))
+        assertEquals(-3.71, evaluate("d2:zScoreHFA(180, 140.0, \"m\")"))
+        assertEquals(3.39, evaluate("d2:zScoreHFA(180, 185.0, \"f\")"))
+    }
+
+    @Test
+    fun testZScoreHFA_UnknownAge() {
+        for (age in listOf("-1", "6.5", "229")) {
+            val ex = assertFailsWith(IllegalArgumentException::class) { evaluate("d2:zScoreHFA($age, 120, \"m\")") }
+            assertEquals("No key exist for provided parameters", ex.message)
+        }
+    }
+
     private fun evaluate(expression: String): Any? {
         return Expression(expression, ExpressionMode.RULE_ENGINE_ACTION).evaluate()
     }
