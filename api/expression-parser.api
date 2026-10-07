@@ -1262,23 +1262,6 @@ public final class org/hisp/dhis/lib/expression/math/ZScoreTable {
 	public final fun getZ_SCORE_WFH_TABLE_GIRL ()Ljava/util/Map;
 }
 
-public final class org/hisp/dhis/lib/expression/math/ZScoreTable$Entry {
-	public fun <init> (Ljava/util/Map;FFLjava/util/List;)V
-	public final fun component1 ()Ljava/util/Map;
-	public final fun component2 ()F
-	public final fun component3 ()F
-	public final fun component4 ()Ljava/util/List;
-	public final fun copy (Ljava/util/Map;FFLjava/util/List;)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Entry;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Entry;Ljava/util/Map;FFLjava/util/List;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Entry;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getMax ()F
-	public final fun getMin ()F
-	public final fun getSdMap ()Ljava/util/Map;
-	public final fun getSortedKeys ()Ljava/util/List;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class org/hisp/dhis/lib/expression/math/ZScoreTable$Key {
 	public fun <init> (IF)V
 	public final fun component1 ()I
@@ -1288,6 +1271,21 @@ public final class org/hisp/dhis/lib/expression/math/ZScoreTable$Key {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getGender ()I
 	public final fun getParameter ()F
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class org/hisp/dhis/lib/expression/math/ZScoreTable$Lms {
+	public fun <init> (DDD)V
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun component3 ()D
+	public final fun copy (DDD)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Lms;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Lms;DDDILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/math/ZScoreTable$Lms;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getL ()D
+	public final fun getM ()D
+	public final fun getS ()D
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

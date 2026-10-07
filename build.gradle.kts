@@ -11,7 +11,7 @@ repositories {
     mavenCentral()
 }
 
-version = "1.4.4-SNAPSHOT"
+version = "1.5.0-SNAPSHOT"
 group = "org.hisp.dhis.lib.expression"
 
 if (project.hasProperty("removeSnapshotSuffix")) {
