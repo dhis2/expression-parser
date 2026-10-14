@@ -40,7 +40,15 @@ fun interface Typed {
             if (value == null) return null
             if (value is VariableValue) return toDateTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is LocalDate) return value
-            if (value is String) return LocalDate.parse(value)
+            if (value is String) {
+                return listOf(
+                    { LocalDate.parse(value) },
+                    { toDateTypeCoercion(Instant.parse(value)) },
+                    { LocalDateTime.parse(value, dateTimeFormat).date }
+                ).firstNotNullOfOrNull {
+                    parser -> runCatching { parser() }.getOrNull()
+                } ?: throw IllegalArgumentException("Count not coerce to date: '$value'")
+            }
             if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
             throw IllegalArgumentException("Count not coerce to date: '$value'")
         }

@@ -86,6 +86,8 @@ internal class VariableExpressionTest {
         assertEquals(4.0, expr.evaluate(data) as Double)
         val expr2 = Expression("d2:minutesBetween(#{start}, \"2020-01-01 12:49\")", RULE_ENGINE_CONDITION)
         assertEquals(34.0, expr2.evaluate(data) as Double)
+        val expr3 = Expression("d2:daysBetween(#{start}, \"2020-01-14\")", RULE_ENGINE_CONDITION)
+        assertEquals(13, expr3.evaluate(data))
     }
 
     private fun assertHasStructure(expected: TNode, expression: String) {
