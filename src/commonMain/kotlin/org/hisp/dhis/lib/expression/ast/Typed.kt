@@ -47,7 +47,9 @@ fun interface Typed {
 
         fun toInstantTypeCoercion(value: Any?): Instant? {
             if (value == null) return null
-            if (value is VariableValue) return toInstantTypeCoercion(toMixedTypeTypeCoercion(value))
+            if (value is VariableValue)
+                return if (value.valueType == ValueType.DATE) toInstantTypeCoercion(value.valueOrDefault())
+                else toInstantTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is LocalDate) return value.atTime(0, 0).toInstant(TimeZone.UTC)
             if (value is String) {
                 return listOf(
