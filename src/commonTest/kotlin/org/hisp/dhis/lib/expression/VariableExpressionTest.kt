@@ -71,6 +71,25 @@ internal class VariableExpressionTest {
         assertEquals(1.0, expr2.evaluate(data) as Double)
     }
 
+    @Test
+    fun testProgramRuleVariable_InstantType() {
+        val data = ExpressionData().copy(
+            programRuleVariableValues = mapOf(
+                Pair(
+                    "start",
+                    VariableValue(ValueType.DATE, "2020-01-01T12:15:00Z", listOf(), null)),
+                Pair(
+                    "end",
+                    VariableValue(ValueType.DATE, "2020-01-01T12:19:00Z", listOf(), null)),
+            ))
+        val expr = Expression("d2:minutesBetween(#{start}, #{end})", RULE_ENGINE_CONDITION)
+        assertEquals(4.0, expr.evaluate(data) as Double)
+        val expr2 = Expression("d2:minutesBetween(#{start}, \"2020-01-01 12:49\")", RULE_ENGINE_CONDITION)
+        assertEquals(34.0, expr2.evaluate(data) as Double)
+        val expr3 = Expression("d2:daysBetween(#{start}, \"2020-01-14\")", RULE_ENGINE_CONDITION)
+        assertEquals(13, expr3.evaluate(data))
+    }
+
     private fun assertHasStructure(expected: TNode, expression: String) {
         val root = Parser.parse(expression, ExpressionGrammar.ProgramIndicatorExpressionMode, true)
         assertEquals(TNode(NodeType.PAR, mutableListOf(expected)), TNode.of(root))
