@@ -6,6 +6,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.atTime
+import kotlinx.datetime.format.alternativeParsing
 import kotlinx.datetime.format.char
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
@@ -102,7 +103,11 @@ fun interface Typed {
             monthNumber()
             char('-')
             day()
-            char(' ')
+            alternativeParsing({
+                char(' ')
+            }) {
+                char('T')
+            }
             hour()
             char(':')
             minute()
