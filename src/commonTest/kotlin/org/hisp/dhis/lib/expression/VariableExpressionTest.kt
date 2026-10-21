@@ -84,11 +84,13 @@ internal class VariableExpressionTest {
             ))
 
         fun evaluate(expression: String): Double {
-            return Expression(expression, RULE_ENGINE_CONDITION).evaluate(data) as Double
+            return (Expression(expression, RULE_ENGINE_CONDITION).evaluate(data) as Number).toDouble()
         }
         assertEquals(4.0, evaluate("d2:minutesBetween(#{start}, #{end})"))
         assertEquals(34.0, evaluate("d2:minutesBetween(#{start}, \"2020-01-01 12:49\")"))
         assertEquals(13.0, evaluate("d2:daysBetween(#{start}, \"2020-01-14\")"))
+        assertEquals(0.0, evaluate("d2:minutesBetween(\"2020-01-01T12:00:00.000011\", \"2020-01-01T12:00:01.000010\")"))
+        assertEquals(0.1 / 6, evaluate("d2:minutesBetween(\"2020-01-01T12:00:00.000011\", \"2020-01-01T12:00:01.000011\")"))
         assertEquals(0.0, evaluate("d2:minutesBetween(#{start}, \"2020-01-01T12:15:00.000000001Z\")"))
         assertEquals(0.0, evaluate("d2:minutesBetween(#{start}, \"2020-01-01T12:15:00.000001Z\")"))
         assertEquals(0.0, evaluate("d2:minutesBetween(#{start}, \"2020-01-01T12:15:00.000001\")"))
