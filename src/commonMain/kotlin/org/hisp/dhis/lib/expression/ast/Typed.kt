@@ -1,12 +1,15 @@
 package org.hisp.dhis.lib.expression.ast
 
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.atTime
+import kotlinx.datetime.format.DateTimeComponents
+import kotlinx.datetime.format.alternativeParsing
 import kotlinx.datetime.format.char
+import kotlinx.datetime.format.optional
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.spi.VariableValue
 import kotlin.time.Instant
@@ -40,15 +43,7 @@ fun interface Typed {
             if (value == null) return null
             if (value is VariableValue) return toDateTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is LocalDate) return value
-            if (value is String) {
-                return listOf(
-                    { LocalDate.parse(value) },
-                    { toDateTypeCoercion(Instant.parse(value)) },
-                    { LocalDateTime.parse(value, dateTimeFormat).date }
-                ).firstNotNullOfOrNull {
-                    parser -> runCatching { parser() }.getOrNull()
-                } ?: throw IllegalArgumentException("Count not coerce to date: '$value'")
-            }
+            if (value is String) return dateTimeFormat.parse(value).toLocalDate()
             if (value is Instant) return value.toLocalDateTime(TimeZone.currentSystemDefault()).date
             throw IllegalArgumentException("Count not coerce to date: '$value'")
         }
@@ -59,15 +54,15 @@ fun interface Typed {
                 return if (value.valueType == ValueType.DATE) toInstantTypeCoercion(value.valueOrDefault())
                 else toInstantTypeCoercion(toMixedTypeTypeCoercion(value))
             if (value is LocalDate) return value.atTime(0, 0).toInstant(TimeZone.UTC)
-            if (value is String) {
-                return listOf(
-                    { Instant.parse(value) },
-                    { LocalDateTime.parse(value, dateTimeFormat).toInstant(TimeZone.UTC) },
-                    { toInstantTypeCoercion(LocalDate.parse(value)) }
-                ).firstNotNullOfOrNull {
-                    parser -> runCatching { parser() }.getOrNull()
-                } ?: throw IllegalArgumentException("Count not coerce to instant: '$value'")
-            }
+            if (value is String) return dateTimeFormat.parse(value).apply {
+                    hour = hour ?: 0
+                    minute = minute ?: 0
+                    second = second ?: 0
+                    nanosecond = nanosecond ?: 0
+                    if (offsetHours == null) {
+                        setDateTimeOffset(toLocalDateTime(), UtcOffset.ZERO)
+                    }
+                }.toInstantUsingOffset()
             if (value is Instant) return value
             throw IllegalArgumentException("Count not coerce to instant: '$value'")
         }
@@ -96,16 +91,25 @@ fun interface Typed {
             return value.toDouble() % 1.0 == 0.0
         }
 
-        private val dateTimeFormat = LocalDateTime.Format {
-            year()
-            char('-')
-            monthNumber()
-            char('-')
-            day()
-            char(' ')
-            hour()
-            char(':')
-            minute()
+        private val dateTimeFormat = DateTimeComponents.Format {
+            date(LocalDate.Formats.ISO)
+            alternativeParsing({}) {
+                alternativeParsing({ char(' ') }) { char('T') }
+                hour()
+                alternativeParsing({}) {
+                    char(':')
+                    minute()
+                    optional {
+                        char(':')
+                        second()
+                        optional {
+                            char('.')
+                            secondFraction()
+                        }
+                    }
+                }
+            }
+            optional { offset(UtcOffset.Formats.ISO) }
         }
     }
 }
