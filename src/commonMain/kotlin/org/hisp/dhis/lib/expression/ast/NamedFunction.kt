@@ -9,8 +9,8 @@ enum class NamedFunction(
     vararg parameterTypes: ValueType
 ) : Typed {
     // Base Functions
-    contains("contains", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
-    containsItems("containsItems", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
+    contains("contains", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING),
+    containsItems("containsItems", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING),
     firstNonNull("firstNonNull", ValueType.SAME, true, ValueType.SAME),
     greatest("greatest", ValueType.NUMBER, true, ValueType.NUMBER),
     ifThenElse("if", ValueType.SAME, ValueType.BOOLEAN, ValueType.SAME, ValueType.SAME),
@@ -41,21 +41,21 @@ enum class NamedFunction(
 
     // Somewhat aggregation functions but not quite
     normDistCum("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
-    normDistDen("normDistCum", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
+    normDistDen("normDistDen", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
 
     // Program Functions
     d2_addDays("d2:addDays", ValueType.DATE, ValueType.DATE, ValueType.NUMBER),
     d2_ceil("d2:ceil", ValueType.NUMBER, ValueType.NUMBER),
     d2_concatenate("d2:concatenate", ValueType.STRING, true, ValueType.STRING),
     d2_condition("d2:condition", ValueType.SAME, ValueType.BOOLEAN, ValueType.SAME, ValueType.SAME),
-    d2_contains("d2:contains", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
-    d2_containsItems("d2:containsItems", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING, ValueType.STRING),
+    d2_contains("d2:contains", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING),
+    d2_containsItems("d2:containsItems", ValueType.BOOLEAN, true, ValueType.STRING, ValueType.STRING),
     d2_count("d2:count", ValueType.NUMBER, ValueType.MIXED),
-    d2_countIfCondition("d2:countIfCondition", ValueType.NUMBER, ValueType.BOOLEAN, ValueType.MIXED),
+    d2_countIfCondition("d2:countIfCondition", ValueType.NUMBER, ValueType.MIXED, ValueType.STRING),
     d2_countIfValue("d2:countIfValue", ValueType.NUMBER, ValueType.MIXED, ValueType.MIXED),
     d2_countIfZeroPos("d2:countIfZeroPos", ValueType.NUMBER, ValueType.NUMBER),
     d2_daysBetween("d2:daysBetween", ValueType.NUMBER, ValueType.DATE, ValueType.DATE),
-    d2_exponent("d2:exponent", ValueType.NUMBER, ValueType.NUMBER),
+    d2_exponent("d2:exponent", ValueType.NUMBER, ValueType.NUMBER, ValueType.NUMBER),
     d2_extractDataMatrixValue("d2:extractDataMatrixValue", ValueType.STRING, ValueType.STRING, ValueType.STRING),
     d2_floor("d2:floor", ValueType.NUMBER, ValueType.NUMBER),
     d2_hasUserRole("d2:hasUserRole", ValueType.BOOLEAN, ValueType.STRING),

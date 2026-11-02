@@ -1,7 +1,10 @@
 package org.hisp.dhis.lib.expression
 
+import org.hisp.dhis.lib.expression.ast.BinaryOperator
+import org.hisp.dhis.lib.expression.ast.FunctionSignature
 import org.hisp.dhis.lib.expression.ast.NamedFunction
 import org.hisp.dhis.lib.expression.ast.Node
+import org.hisp.dhis.lib.expression.ast.UnaryOperator
 import org.hisp.dhis.lib.expression.ast.VariableType
 import org.hisp.dhis.lib.expression.eval.Api.collectDataItems
 import org.hisp.dhis.lib.expression.eval.Api.collectFunctionStringArguments
@@ -15,6 +18,7 @@ import org.hisp.dhis.lib.expression.eval.Api.regenerate
 import org.hisp.dhis.lib.expression.eval.Api.validate
 import org.hisp.dhis.lib.expression.spi.*
 import org.hisp.dhis.lib.expression.syntax.Parser
+import kotlin.jvm.JvmStatic
 
 /**
  * Facade API for working with DHIS2 expressions.
@@ -133,5 +137,40 @@ class Expression(
      */
     override fun toString(): String {
         return expression
+    }
+
+    companion object {
+
+        /**
+         * @param mode the expression mode to list the functions of
+         * @return the signatures of all functions that can be used in an expression of the given mode (a new list on
+         * each call)
+         */
+        @JvmStatic
+        fun getFunctions(mode: ExpressionMode): List<FunctionSignature> {
+            return mode.functions.toList()
+        }
+
+        /**
+         * All binary operators are available in every mode.
+         *
+         * @return all binary operators that can be used in an expression
+         */
+        @JvmStatic
+        fun getBinaryOperators(): List<BinaryOperator> {
+            return BinaryOperator.entries.toList()
+        }
+
+        /**
+         * The parser accepts all unary operators in every mode, but [UnaryOperator.DISTINCT] only has an effect on the
+         * argument of an aggregation function, so it is only listed for modes that have aggregation functions.
+         *
+         * @param mode the expression mode to list the unary operators of
+         * @return the unary operators that are meaningful in an expression of the given mode (a new list on each call)
+         */
+        @JvmStatic
+        fun getUnaryOperators(mode: ExpressionMode): List<UnaryOperator> {
+            return mode.unaryOperators.toList()
+        }
     }
 }

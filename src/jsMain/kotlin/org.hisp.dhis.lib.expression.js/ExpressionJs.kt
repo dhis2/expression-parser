@@ -67,6 +67,25 @@ class ExpressionJs(expression: String, mode: ExpressionMode) {
     companion object {
         val MODES = ExpressionMode.entries.map { it.name }.toTypedArray()
 
+        fun getFunctions(mode: ExpressionMode): Array<FunctionJs> {
+            return Expression.getFunctions(mode).map { fn -> FunctionJs(
+                name = fn.getName(),
+                returnType = fn.getReturnType(),
+                parameters = fn.parameters.map { ParameterJs(it.type, it.isOptional, it.isVarargs) }.toTypedArray())
+            }.toTypedArray()
+        }
+
+        fun getBinaryOperators(): Array<OperatorJs> {
+            return Expression.getBinaryOperators()
+                .map { OperatorJs(it.symbol, it.aliases.toTypedArray(), it.getValueType(), it.operandsType) }.toTypedArray()
+        }
+
+        fun getUnaryOperators(mode: ExpressionMode): Array<OperatorJs> {
+            // unary operators expect an operand of the type they return (SAME for distinct)
+            return Expression.getUnaryOperators(mode)
+                .map { OperatorJs(it.symbol, it.aliases.toTypedArray(), it.getValueType(), it.getValueType()) }.toTypedArray()
+        }
+
         internal fun <Kf, Vf, K, V> toMap(map: JsMap<Kf, Vf>, key: (Kf) -> K, value: (Vf) -> V): Map<K, V> {
             val res : MutableMap<K, V> = mutableMapOf()
             map.forEach { v, k -> res[key(k)] = value(v) }

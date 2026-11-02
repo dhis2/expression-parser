@@ -9,6 +9,7 @@ import org.hisp.dhis.lib.expression.ast.Nodes.AndroidCustomIntentNode
 import org.hisp.dhis.lib.expression.ast.Nodes.ProgramVariableNode
 import org.hisp.dhis.lib.expression.ast.Nodes.ReportingRateTypeNode
 import org.hisp.dhis.lib.expression.spi.DataItemType
+import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.syntax.Fragment.Companion.constant
 
 /**
@@ -21,9 +22,17 @@ import org.hisp.dhis.lib.expression.syntax.Fragment.Companion.constant
  */
 object ExpressionGrammar {
 
-    private val STRING_PARSED = Fragment {expr, ctx ->
-        val nestedExpr = Literals.parseString(expr) // consumes the literal in parent expr
-        Expr.parse(nestedExpr, ctx, false)
+    /**
+     * A string literal containing a nested expression, e.g. the condition of `d2:condition('#{a} > 1', 1, 2)`.
+     * In the AST the argument is the nested expression, but it is written as a [ValueType.STRING] literal.
+     */
+    private val STRING_PARSED = object : Fragment {
+        override fun parse(expr: Expr, ctx: ParseContext) {
+            val nestedExpr = Literals.parseString(expr) // consumes the literal in parent expr
+            Expr.parse(nestedExpr, ctx, false)
+        }
+
+        override fun literalType(): ValueType = ValueType.STRING
     }
 
     /*
@@ -225,7 +234,7 @@ object ExpressionGrammar {
 
     private fun fn(function: NamedFunction, vararg args: Fragment): Fragment {
         val name = function.getName()
-        return block(NodeType.FUNCTION, name, '(', ',', ')', *args).named(name)
+        return FunctionFragment(function, args.toList(), block(NodeType.FUNCTION, name, '(', ',', ')', *args))
     }
 
     fun item(value: DataItemType, vararg args: Fragment): Fragment {
