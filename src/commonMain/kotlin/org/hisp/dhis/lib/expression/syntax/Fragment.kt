@@ -1,6 +1,7 @@
 package org.hisp.dhis.lib.expression.syntax
 
 import org.hisp.dhis.lib.expression.ast.NodeType
+import org.hisp.dhis.lib.expression.spi.ValueType
 
 /**
  * A [Fragment] is a building block of a grammar that consists of further blocks that either are [Fragment]s
@@ -24,6 +25,12 @@ fun interface Fragment {
     fun isMaybe(): Boolean { return false }
 
     fun isVarargs(): Boolean { return false }
+
+    /**
+     * @return the type of the literal this argument is written as, if it differs from the type of the argument in the
+     * AST (e.g. a string literal that is parsed as a nested expression), otherwise null
+     */
+    fun literalType(): ValueType? { return null }
 
     /**
      * @return the name of this block as used when doing a lookup for a named block
@@ -103,6 +110,10 @@ fun interface Fragment {
 
         override fun isVarargs(): Boolean {
             return to.isVarargs()
+        }
+
+        override fun literalType(): ValueType? {
+            return to.literalType()
         }
 
         override fun name(): String? {

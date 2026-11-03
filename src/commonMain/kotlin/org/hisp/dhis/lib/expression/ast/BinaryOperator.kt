@@ -7,9 +7,16 @@ import org.hisp.dhis.lib.expression.spi.ValueType
 import kotlin.math.pow
 
 /**
+ * @param symbol the canonical symbol of the operator
+ * @param aliases alternative spellings of the operator that are also accepted by the parser
  * @author Jan Bernitt
  */
-enum class BinaryOperator(val symbol: String, private val returnType: ValueType, val operandsType: ValueType) : Typed {
+enum class BinaryOperator(
+    val symbol: String,
+    private val returnType: ValueType,
+    val operandsType: ValueType,
+    vararg aliases: String
+) : Typed {
     // OBS!!! in order of precedence - highest to lowest
     EXP("^", ValueType.NUMBER, ValueType.NUMBER),
 
@@ -25,8 +32,10 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
     GE(">=", ValueType.BOOLEAN, ValueType.NUMBER),
     EQ("==", ValueType.BOOLEAN, ValueType.SAME),
     NEQ("!=", ValueType.BOOLEAN, ValueType.SAME),
-    AND("&&", ValueType.BOOLEAN, ValueType.BOOLEAN),
-    OR("||", ValueType.BOOLEAN, ValueType.BOOLEAN);
+    AND("&&", ValueType.BOOLEAN, ValueType.BOOLEAN, "and"),
+    OR("||", ValueType.BOOLEAN, ValueType.BOOLEAN, "or");
+
+    val aliases: List<String> = listOf(*aliases)
 
     override fun getValueType(): ValueType {
         return returnType
@@ -78,11 +87,7 @@ enum class BinaryOperator(val symbol: String, private val returnType: ValueType,
     companion object {
 
         fun fromSymbol(symbol: String): BinaryOperator {
-            return when (symbol) {
-                "and" -> AND
-                "or" -> OR
-                else -> entries.first { it.symbol == symbol }
-            }
+            return entries.first { it.symbol == symbol || symbol in it.aliases }
         }
 
         /*

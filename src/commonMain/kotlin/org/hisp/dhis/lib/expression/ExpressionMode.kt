@@ -1,9 +1,13 @@
 package org.hisp.dhis.lib.expression
 
+import org.hisp.dhis.lib.expression.ast.FunctionSignature
+import org.hisp.dhis.lib.expression.ast.NamedFunction
+import org.hisp.dhis.lib.expression.ast.UnaryOperator
 import org.hisp.dhis.lib.expression.eval.NodeValidator
 import org.hisp.dhis.lib.expression.spi.ValueType
 import org.hisp.dhis.lib.expression.syntax.ExpressionGrammar
 import org.hisp.dhis.lib.expression.syntax.Fragment
+import org.hisp.dhis.lib.expression.syntax.FunctionFragment
 import kotlin.js.JsExport
 
 @JsExport
@@ -48,6 +52,27 @@ enum class ExpressionMode(
         ValueType.NUMBER);
 
     internal val resultTypes: Set<ValueType> = setOf(*resultTypes)
+
+    /**
+     * The signatures of the functions that can be used in this mode, in declaration order of [NamedFunction].
+     * Derived from the grammar fragments so arity, optional and varargs parameters match what the parser accepts.
+     */
+    internal val functions: List<FunctionSignature> by lazy {
+        fragments.mapNotNull { FunctionFragment.of(it)?.signature() }
+            .sortedBy { it.function.ordinal }
+    }
+
+    /**
+     * The unary operators that are meaningful in this mode.
+     *
+     * The parser accepts [UnaryOperator.DISTINCT] in every mode, but it only has an effect on the argument of an
+     * aggregation function (when the expression is translated to SQL); evaluating it directly fails.
+     * It is therefore only listed for modes that have aggregation functions.
+     */
+    internal val unaryOperators: List<UnaryOperator> by lazy {
+        if (functions.any { it.function.isAggregating() }) UnaryOperator.entries.toList()
+        else UnaryOperator.entries.filter { it != UnaryOperator.DISTINCT }
+    }
 
     constructor(fragments: List<Fragment>, vararg resultTypes: ValueType) : this(
         fragments,
