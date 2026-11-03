@@ -71,7 +71,7 @@ class ExpressionJs(expression: String, mode: ExpressionMode) {
             return Expression.getFunctions(mode).map { fn -> FunctionJs(
                 name = fn.getName(),
                 returnType = fn.getReturnType(),
-                parameters = fn.parameters.map { ParameterJs(it.type, it.isOptional, it.isVarargs) }.toTypedArray())
+                parameters = fn.parameters.map { ParameterJs(it.type, it.isOptional, it.isVarargs, it.name) }.toTypedArray())
             }.toTypedArray()
         }
 

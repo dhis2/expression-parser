@@ -108,13 +108,16 @@ public final class org/hisp/dhis/lib/expression/ast/DataItemModifier : java/lang
 }
 
 public final class org/hisp/dhis/lib/expression/ast/FunctionParameter {
-	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/ValueType;ZZ)V
+	public fun <init> (Lorg/hisp/dhis/lib/expression/spi/ValueType;ZZLjava/lang/String;)V
+	public synthetic fun <init> (Lorg/hisp/dhis/lib/expression/spi/ValueType;ZZLjava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
 	public final fun component2 ()Z
 	public final fun component3 ()Z
-	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/ValueType;ZZ)Lorg/hisp/dhis/lib/expression/ast/FunctionParameter;
-	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/ast/FunctionParameter;Lorg/hisp/dhis/lib/expression/spi/ValueType;ZZILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/ast/FunctionParameter;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Lorg/hisp/dhis/lib/expression/spi/ValueType;ZZLjava/lang/String;)Lorg/hisp/dhis/lib/expression/ast/FunctionParameter;
+	public static synthetic fun copy$default (Lorg/hisp/dhis/lib/expression/ast/FunctionParameter;Lorg/hisp/dhis/lib/expression/spi/ValueType;ZZLjava/lang/String;ILjava/lang/Object;)Lorg/hisp/dhis/lib/expression/ast/FunctionParameter;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
 	public final fun getType ()Lorg/hisp/dhis/lib/expression/spi/ValueType;
 	public fun hashCode ()I
 	public final fun isOptional ()Z
@@ -1829,6 +1832,8 @@ public abstract interface class org/hisp/dhis/lib/expression/syntax/Fragment {
 	public fun maybe ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public fun name ()Ljava/lang/String;
 	public fun named (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun param (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun paramName ()Ljava/lang/String;
 	public abstract fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
 	public fun plus ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public fun quoted ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
@@ -1846,6 +1851,8 @@ public final class org/hisp/dhis/lib/expression/syntax/Fragment$DefaultImpls {
 	public static fun maybe (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public static fun name (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Ljava/lang/String;
 	public static fun named (Lorg/hisp/dhis/lib/expression/syntax/Fragment;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun param (Lorg/hisp/dhis/lib/expression/syntax/Fragment;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun paramName (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Ljava/lang/String;
 	public static fun plus (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public static fun quoted (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public static fun star (Lorg/hisp/dhis/lib/expression/syntax/Fragment;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
@@ -1860,6 +1867,8 @@ public abstract class org/hisp/dhis/lib/expression/syntax/Fragment$Delegate : or
 	public fun maybe ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public fun name ()Ljava/lang/String;
 	public fun named (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun param (Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public fun paramName ()Ljava/lang/String;
 	public fun parse (Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
 	public fun plus ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public fun quoted ()Lorg/hisp/dhis/lib/expression/syntax/Fragment;
@@ -1941,6 +1950,8 @@ public final class org/hisp/dhis/lib/expression/syntax/Terminal$DefaultImpls {
 	public static fun maybe (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public static fun name (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Ljava/lang/String;
 	public static fun named (Lorg/hisp/dhis/lib/expression/syntax/Terminal;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun param (Lorg/hisp/dhis/lib/expression/syntax/Terminal;Ljava/lang/String;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
+	public static fun paramName (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Ljava/lang/String;
 	public static fun parse (Lorg/hisp/dhis/lib/expression/syntax/Terminal;Lorg/hisp/dhis/lib/expression/syntax/Expr;Lorg/hisp/dhis/lib/expression/syntax/ParseContext;)V
 	public static fun plus (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;
 	public static fun quoted (Lorg/hisp/dhis/lib/expression/syntax/Terminal;)Lorg/hisp/dhis/lib/expression/syntax/Fragment;

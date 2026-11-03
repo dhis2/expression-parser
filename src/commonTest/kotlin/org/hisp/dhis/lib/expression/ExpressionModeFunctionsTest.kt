@@ -37,26 +37,62 @@ internal class ExpressionModeFunctionsTest {
     @Test
     fun testFunctions_SignatureMatchesGrammar() {
         val functions = Expression.getFunctions(ExpressionMode.PROGRAM_INDICATOR_EXPRESSION).associateBy { it.function }
-        val number = FunctionParameter(ValueType.NUMBER, isOptional = false, isVarargs = false)
-        val optionalNumber = FunctionParameter(ValueType.NUMBER, isOptional = true, isVarargs = false)
-        assertEquals(listOf(number, optionalNumber), functions[NamedFunction.log]?.parameters)
-        assertEquals(listOf(number, optionalNumber), functions[NamedFunction.d2_log]?.parameters)
-        assertEquals(listOf(number, optionalNumber, optionalNumber), functions[NamedFunction.normDistCum]?.parameters)
+        fun number(name: String) = FunctionParameter(ValueType.NUMBER, isOptional = false, isVarargs = false, name)
+        fun optionalNumber(name: String) = FunctionParameter(ValueType.NUMBER, isOptional = true, isVarargs = false, name)
+        assertEquals(listOf(number("value"), optionalNumber("base")), functions[NamedFunction.log]?.parameters)
+        assertEquals(listOf(number("value"), optionalNumber("base")), functions[NamedFunction.d2_log]?.parameters)
+        assertEquals(
+            listOf(number("x"), optionalNumber("mean"), optionalNumber("stddev")),
+            functions[NamedFunction.normDistCum]?.parameters)
         assertEquals(
             listOf(FunctionParameter(ValueType.STRING, isOptional = true, isVarargs = false)),
             functions[NamedFunction.d2_relationshipCount]?.parameters)
         assertEquals(
             listOf(
-                FunctionParameter(ValueType.STRING, isOptional = false, isVarargs = false),
-                FunctionParameter(ValueType.STRING, isOptional = false, isVarargs = true)),
+                FunctionParameter(ValueType.STRING, isOptional = false, isVarargs = false, "text"),
+                FunctionParameter(ValueType.STRING, isOptional = false, isVarargs = true, "substrings")),
             functions[NamedFunction.contains]?.parameters)
         assertEquals(ValueType.BOOLEAN, functions[NamedFunction.contains]?.getReturnType())
-        assertEquals(listOf(number, number), functions[NamedFunction.d2_exponent]?.parameters)
+        assertEquals(listOf(number("base"), number("exponent")), functions[NamedFunction.d2_exponent]?.parameters)
         assertEquals(
             listOf(
-                FunctionParameter(ValueType.MIXED, isOptional = false, isVarargs = false),
-                FunctionParameter(ValueType.STRING, isOptional = false, isVarargs = false)),
+                FunctionParameter(ValueType.MIXED, isOptional = false, isVarargs = false, "dataItem"),
+                FunctionParameter(ValueType.STRING, isOptional = false, isVarargs = false, "condition")),
             functions[NamedFunction.d2_countIfCondition]?.parameters)
+    }
+
+    @Test
+    fun testFunctions_ParameterNames() {
+        val functions = Expression.getFunctions(ExpressionMode.RULE_ENGINE_ACTION).associateBy { it.function }
+        assertEquals(listOf("text", "regex"), functions[NamedFunction.d2_validatePattern]?.parameters?.map { it.name })
+        assertEquals(
+            listOf("condition", "trueValue", "falseValue"),
+            functions[NamedFunction.d2_condition]?.parameters?.map { it.name })
+        // single parameter functions are not named, as the meaning is obvious from the function name
+        assertEquals(listOf(null), functions[NamedFunction.d2_ceil]?.parameters?.map { it.name })
+    }
+
+    @Test
+    fun testFunctions_ParameterNamesAreConsistent() {
+        for (mode in ExpressionMode.entries) {
+            for (fn in Expression.getFunctions(mode)) {
+                val names = fn.parameters.map { it.name }
+                if (fn.parameters.size > 1) {
+                    // functions with more than one parameter name all of them, or none
+                    assertTrue(names.all { it != null } || names.all { it == null }, "$mode: ${fn.getName()}: $names")
+                }
+                val named = names.filterNotNull()
+                assertEquals(named.size, named.toSet().size, "$mode: ${fn.getName()} has duplicate parameter names")
+            }
+        }
+    }
+
+    @Test
+    fun testFunctions_ParameterNamesDoNotAffectParsing() {
+        val fn = ExpressionMode.RULE_ENGINE_ACTION.fragments.first { it.name() == NamedFunction.d2_round.getName() }
+        assertEquals(NamedFunction.d2_round.getName(), fn.name())
+        assertEquals(true, Expression("d2:validatePattern('123', '[0-9]+')", ExpressionMode.RULE_ENGINE_CONDITION).evaluate())
+        assertEquals(2.57, Expression("d2:round(2.567, 2)", ExpressionMode.RULE_ENGINE_ACTION).evaluate())
     }
 
     @Test

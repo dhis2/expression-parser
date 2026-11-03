@@ -33,6 +33,13 @@ fun interface Fragment {
     fun literalType(): ValueType? { return null }
 
     /**
+     * @return the name of the parameter this block is the argument for (only in function argument lists), or null if
+     * the parameter is not named
+     * @see .param
+     */
+    fun paramName(): String? { return null }
+
+    /**
      * @return the name of this block as used when doing a lookup for a named block
      * @see .named
      */
@@ -89,6 +96,23 @@ fun interface Fragment {
         return Named(if (this is Named) to else this)
     }
 
+    /**
+     * Names the parameter this block is the argument for, so that it can be described to users (e.g. `regex` for the
+     * second argument of `d2:validatePattern`). This is purely descriptive and does not affect parsing.
+     *
+     * Not to be confused with [named], which labels a block for lookup.
+     *
+     * @return this block as argument of a parameter with the given name
+     */
+    fun param(name: String): Fragment {
+        class Param(body: Fragment) : Delegate(body) {
+            override fun paramName(): String {
+                return name
+            }
+        }
+        return Param(if (this is Param) to else this)
+    }
+
     fun quoted(): Fragment {
         return Fragment { expr, ctx ->
             val c = expr.peek()
@@ -114,6 +138,10 @@ fun interface Fragment {
 
         override fun literalType(): ValueType? {
             return to.literalType()
+        }
+
+        override fun paramName(): String? {
+            return to.paramName()
         }
 
         override fun name(): String? {

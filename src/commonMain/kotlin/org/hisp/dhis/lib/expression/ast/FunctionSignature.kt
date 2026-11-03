@@ -21,5 +21,11 @@ data class FunctionSignature(val function: NamedFunction, val parameters: List<F
  * @param type the type expected for the argument
  * @param isOptional true, if the argument can be omitted (optional parameters are always at the end)
  * @param isVarargs true, if this is the last parameter and it can be repeated
+ * @param name a descriptive name of the parameter (e.g. `regex`), or null if it is not named because the meaning is
+ * obvious from the function name (e.g. the only parameter of `d2:ceil`)
  */
-data class FunctionParameter(val type: ValueType, val isOptional: Boolean, val isVarargs: Boolean)
+data class FunctionParameter(
+    val type: ValueType,
+    val isOptional: Boolean,
+    val isVarargs: Boolean,
+    val name: String? = null)
