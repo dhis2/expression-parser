@@ -31,7 +31,7 @@ internal class FunctionFragment(
     fun signature(): FunctionSignature {
         val types = function.parameterTypes
         return FunctionSignature(function, args.mapIndexed { i, arg ->
-            FunctionParameter(arg.literalType() ?: types[i], arg.isMaybe(), arg.isVarargs())
+            FunctionParameter(arg.literalType() ?: types[i], arg.isMaybe(), arg.isVarargs(), arg.paramName())
         })
     }
 

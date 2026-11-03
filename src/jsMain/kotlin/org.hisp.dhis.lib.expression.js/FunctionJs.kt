@@ -32,4 +32,5 @@ data class FunctionJs(
 data class ParameterJs(
     val type: ValueType,
     val isOptional: Boolean,
-    val isVarargs: Boolean)
+    val isVarargs: Boolean,
+    val name: String?)

@@ -64,8 +64,8 @@ object ExpressionGrammar {
     private val SUB_EXPRESSION = fn(NamedFunction.subExpression, expr)
 
     private val CommonBooleanFunctions = listOf( // Common functions returning boolean
-        fn(NamedFunction.contains, expr, expr.plus()),
-        fn(NamedFunction.containsItems, expr, expr.plus()),
+        fn(NamedFunction.contains, expr.param("text"), expr.plus().param("substrings")),
+        fn(NamedFunction.containsItems, expr.param("text"), expr.plus().param("items")),
         fn(NamedFunction.isNotNull, expr),
         fn(NamedFunction.isNull, expr)
     )
@@ -73,15 +73,15 @@ object ExpressionGrammar {
     private val CommonNumberFunctions = listOf( // Common functions returning Number
         fn(NamedFunction.greatest, expr.plus()),
         fn(NamedFunction.least, expr.plus()),
-        fn(NamedFunction.log, expr, expr.maybe()),
+        fn(NamedFunction.log, expr.param("value"), expr.maybe().param("base")),
         fn(NamedFunction.log10, expr),
-        fn(NamedFunction.normDistCum, expr, expr.maybe(), expr.maybe()),
-        fn(NamedFunction.normDistDen, expr, expr.maybe(), expr.maybe())
+        fn(NamedFunction.normDistCum, expr.param("x"), expr.maybe().param("mean"), expr.maybe().param("stddev")),
+        fn(NamedFunction.normDistDen, expr.param("x"), expr.maybe().param("mean"), expr.maybe().param("stddev"))
     )
 
     private val CommonSameFunctions = listOf( // Common functions returning same type
         fn(NamedFunction.firstNonNull, expr.plus()),
-        fn(NamedFunction.ifThenElse, expr, expr, expr),
+        fn(NamedFunction.ifThenElse, expr.param("condition"), expr.param("trueValue"), expr.param("falseValue")),
         fn(NamedFunction.removeZeros, expr)
     )
 
@@ -101,56 +101,56 @@ object ExpressionGrammar {
     )
     private val PredictorAggregationFunctions = listOf( // (alphabetical)
         fn(NamedFunction.median, expr),
-        fn(NamedFunction.percentileCont, expr, expr),
+        fn(NamedFunction.percentileCont, expr.param("values"), expr.param("fraction")),
         fn(NamedFunction.stddevPop, expr),
         fn(NamedFunction.stddevSamp, expr),
         fn(NamedFunction.variance, expr)
     )
     private val CommonD2Functions = listOf( // (alphabetical)
-        fn(NamedFunction.d2_condition, STRING_PARSED, expr, expr),
-        fn(NamedFunction.d2_contains, expr, expr.plus()),
-        fn(NamedFunction.d2_containsItems, expr, expr.plus()),
-        fn(NamedFunction.d2_count, dataItem),
-        fn(NamedFunction.d2_countIfValue, dataItem, expr),
-        fn(NamedFunction.d2_daysBetween, expr, expr),
-        fn(NamedFunction.d2_exponent, expr, expr),
-        fn(NamedFunction.d2_hasValue, dataItem),
-        fn(NamedFunction.d2_log, expr, expr.maybe()),
-        fn(NamedFunction.d2_maxValue, dataItem),
-        fn(NamedFunction.d2_minutesBetween, expr, expr),
-        fn(NamedFunction.d2_minValue, dataItem),
-        fn(NamedFunction.d2_monthsBetween, expr, expr),
+        fn(NamedFunction.d2_condition, STRING_PARSED.param("condition"), expr.param("trueValue"), expr.param("falseValue")),
+        fn(NamedFunction.d2_contains, expr.param("text"), expr.plus().param("substrings")),
+        fn(NamedFunction.d2_containsItems, expr.param("text"), expr.plus().param("items")),
+        fn(NamedFunction.d2_count, dataItem.param("dataItem")),
+        fn(NamedFunction.d2_countIfValue, dataItem.param("dataItem"), expr.param("value")),
+        fn(NamedFunction.d2_daysBetween, expr.param("startDate"), expr.param("endDate")),
+        fn(NamedFunction.d2_exponent, expr.param("base"), expr.param("exponent")),
+        fn(NamedFunction.d2_hasValue, dataItem.param("dataItem")),
+        fn(NamedFunction.d2_log, expr.param("value"), expr.maybe().param("base")),
+        fn(NamedFunction.d2_maxValue, dataItem.param("dataItem")),
+        fn(NamedFunction.d2_minutesBetween, expr.param("startDateTime"), expr.param("endDateTime")),
+        fn(NamedFunction.d2_minValue, dataItem.param("dataItem")),
+        fn(NamedFunction.d2_monthsBetween, expr.param("startDate"), expr.param("endDate")),
         fn(NamedFunction.d2_oizp, expr),
-        fn(NamedFunction.d2_weeksBetween, expr, expr),
-        fn(NamedFunction.d2_yearsBetween, expr, expr),
+        fn(NamedFunction.d2_weeksBetween, expr.param("startDate"), expr.param("endDate")),
+        fn(NamedFunction.d2_yearsBetween, expr.param("startDate"), expr.param("endDate")),
         fn(NamedFunction.d2_zing, expr),
         fn(NamedFunction.d2_zpvc, expr.plus())
     )
     private val RuleEngineD2Functions = listOf(
-        fn(NamedFunction.d2_addDays, expr, expr),
+        fn(NamedFunction.d2_addDays, expr.param("date"), expr.param("days")),
         fn(NamedFunction.d2_ceil, expr),
         fn(NamedFunction.d2_concatenate, expr.plus()),
         fn(NamedFunction.d2_countIfZeroPos, dataItem),
-        fn(NamedFunction.d2_extractDataMatrixValue, expr, expr),
+        fn(NamedFunction.d2_extractDataMatrixValue, expr.param("key"), expr.param("dataMatrixText")),
         fn(NamedFunction.d2_floor, expr),
-        fn(NamedFunction.d2_hasUserRole, expr),
-        fn(NamedFunction.d2_inUserGroup, expr),
-        fn(NamedFunction.d2_inOrgUnitGroup, expr),
+        fn(NamedFunction.d2_hasUserRole, expr.param("userRole")),
+        fn(NamedFunction.d2_inUserGroup, expr.named("userGroupId")),
+        fn(NamedFunction.d2_inOrgUnitGroup, expr.named("orgunitGroupCode")),
         fn(NamedFunction.d2_lastEventDate, expr),
-        fn(NamedFunction.d2_left, expr, expr),
+        fn(NamedFunction.d2_left, expr.param("text"), expr.param("length")),
         fn(NamedFunction.d2_length, expr),
-        fn(NamedFunction.d2_modulus, expr, expr),
-        fn(NamedFunction.d2_right, expr, expr),
-        fn(NamedFunction.d2_round, expr, INTEGER.maybe()),
-        fn(NamedFunction.d2_split, expr, expr, expr),
-        fn(NamedFunction.d2_substring, expr, expr, expr),
-        fn(NamedFunction.d2_validatePattern, expr, expr),
-        fn(NamedFunction.d2_zScoreHFA, expr, expr, expr),
-        fn(NamedFunction.d2_zScoreWFA, expr, expr, expr),
-        fn(NamedFunction.d2_zScoreWFH, expr, expr, expr)
+        fn(NamedFunction.d2_modulus, expr.param("dividend"), expr.param("divisor")),
+        fn(NamedFunction.d2_right, expr.param("text"), expr.param("length")),
+        fn(NamedFunction.d2_round, expr.param("value"), INTEGER.maybe().param("decimals")),
+        fn(NamedFunction.d2_split, expr.param("text"), expr.param("delimiter"), expr.param("index")),
+        fn(NamedFunction.d2_substring, expr.param("text"), expr.param("startIndex"), expr.param("endIndex")),
+        fn(NamedFunction.d2_validatePattern, expr.param("text"), expr.param("regex")),
+        fn(NamedFunction.d2_zScoreHFA, expr.param("ageInMonths"), expr.param("height"), expr.param("gender")),
+        fn(NamedFunction.d2_zScoreWFA, expr.param("ageInMonths"), expr.param("weight"), expr.param("gender")),
+        fn(NamedFunction.d2_zScoreWFH, expr.param("height"), expr.param("weight"), expr.param("gender"))
     )
     private val ProgramIndicatorD2Functions = listOf(
-        fn(NamedFunction.d2_countIfCondition, expr, STRING),
+        fn(NamedFunction.d2_countIfCondition, expr.param("dataItem"), STRING.param("condition")),
         fn(NamedFunction.d2_relationshipCount, UID.quoted().maybe())
     )
     private val CommonConstants = listOf(
